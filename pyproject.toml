@@ -1,16 +1,19 @@
 [tool.poetry]
 name = "chaine"
 version = "0.1.0"
-description = "Conditional Random Field"
+description = "A Linear-Chain Conditional Random Field"
 authors = ["Severin Simmler <severin.simmler@posteo.de>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.8"
 numpy = "^1.18.4"
+scipy = "^1.4.1"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^2.1.3"
+black = "^19.10b0"
+isort = "^4.3.21"
 
 [build-system]
 requires = ["poetry-core>=1.0.0a5"]

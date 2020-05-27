@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "crf"
+version = "0.1.0"
+description = "Conditional Random Field"
+authors = ["Severin Simmler <severin.simmler@posteo.de>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "^1.18.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0a5"]
+build-backend = "poetry.core.masonry.api"

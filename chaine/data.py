@@ -15,6 +15,15 @@ from chaine.typing import (
 )
 
 
+class Label:
+    def __init__(self, gold: str):
+        self.gold = gold
+        self.values = ["*"] + values
+
+    def __getitem__(self, index: int):
+        return self.values[index]
+
+
 class Token:
     def __init__(self, index: int, text: str, label: Optional[Label] = None):
         self.index = index
@@ -163,12 +172,3 @@ class Dataset:
                     index = 0
             if sentence:
                 yield Sentence(sentence, features)
-
-
-class Label:
-    def __init__(self, gold: str):
-        self.gold = gold
-        self.values = ["*"] + values
-
-    def __getitem__(self, index: int):
-        return self.values[index]

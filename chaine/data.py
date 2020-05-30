@@ -1,218 +1,174 @@
-import numpy as np
-from collections import Counter
+import json
+from pathlib import Path
 
+from chaine.typing import (
+    Callable,
+    FeatureGenerator,
+    Filepath,
+    List,
+    Matrix,
+    MatrixGenerator,
+    Optional,
+    SentenceGenerator,
+    TokenGenerator,
+    Vector,
+)
 
-STARTING_LABEL = '*'        # Label of t=-1
-STARTING_LABEL_INDEX = 0
-
-class Label:
-    def __init__(self, value: str):
-        self.value = value
 
 class Token:
-    def __init__(self, value: str):
-        self.value = value
+    def __init__(self, index: int, text: str, label: Optional[Label] = None):
+        self.index = index
+        self.text = text
+        self.label = label
+
+    def __repr__(self) -> str:
+        return f"<Token {self.index}: {self.text}>"
+
+    def __len__(self) -> int:
+        return len(self.text)
+
+    def lower(self) -> str:
+        return self.text.lower()
+
+    def isupper(self) -> bool:
+        return self.text.isupper()
+
+    def istitle(self) -> bool:
+        return self.text.istitle()
+
+    def isdigit(self) -> bool:
+        return self.text.isdigit()
+
+    @property
+    def vector(self) -> Vector:
+        if not hasattr(self, "_vector"):
+            raise ValueError
+        else:
+            return self._vector
+
+    @vector.setter
+    def vector(self, vector: Vector):
+        self._vector = vector
+
 
 class Sentence:
-    def __init__(self, tokens: List[Token]):
+    def __init__(self, tokens: List[Token], features: "Features"):
+        for i, vector in enumerate(features.vectorize(tokens)):
+            tokens[i].vector = vector
         self.tokens = tokens
-        self.features = Features(tokens)
 
-class Dataset:
-    def __init__(self, sentences: List[Sentence]):
-        self.sentences = sentences
+    def __repr__(self) -> str:
+        return f"<Sentence: {' '.join([token.text for token in self.tokens])}>"
+
+    def __len__(self) -> int:
+        return len(self.tokens)
+
+    def __getitem__(self, index: int) -> Token:
+        return self.tokens[index]
+
+    def __iter__(self) -> TokenGenerator:
+        for token in self.tokens:
+            yield token
+
+    @property
+    def matrix(self) -> Matrix:
+        return [token.vector for token in self.tokens]
 
 
 class Features:
-    feature_dic = dict()
-    observation_set = set()
-    empirical_counts = Counter()
-    num_features = 0
+    def __init__(self):
+        self._values = dict()
 
-    label_dic = {STARTING_LABEL: STARTING_LABEL_INDEX}
-    label_array = [STARTING_LABEL]
+    def __repr__(self) -> str:
+        return f"<Features: {len(self._values)}>"
 
+    def __len__(self) -> int:
+        return len(self._values)
 
-    def __init__(self, feature_func=None):
-        # Sets a custom feature function.
-        if feature_func is not None:
-            self.feature_func = feature_func
+    def __getitem__(self, feature: str) -> int:
+        try:
+            return self._values[feature]
+        except KeyError:
+            raise KeyError(f"Feature '{feature}' is not available.")
 
-    def feature_func(_, X, t):
-        """
-        Returns a list of feature strings.
-        (Default feature function)
-        :param X: An observation vector
-        :param t: time
-        :return: A list of feature strings
-        """
-        length = len(X)
+    def vectorize(self, sentence: Sentence) -> FeatureGenerator:
+        for token in sentence:
+            features = list()
+            features.append(f"word.lower():{token.lower()}")
+            features.append(f"word.isupper():{token.isupper()}")
+            features.append(f"word.istitle():{token.istitle()}")
+            features.append(f"word.isdigit():{token.isdigit()}")
+            self._add_features(features)
+            yield [self._values[feature] for feature in features]
 
-        features = list()
-        features.append('U[0]:%s' % X[t][0])
-        features.append('POS_U[0]:%s' % X[t][1])
-        if t < length-1:
-            features.append('U[+1]:%s' % (X[t+1][0]))
-            features.append('B[0]:%s %s' % (X[t][0], X[t+1][0]))
-            features.append('POS_U[1]:%s' % X[t+1][1])
-            features.append('POS_B[0]:%s %s' % (X[t][1], X[t+1][1]))
-            if t < length-2:
-                features.append('U[+2]:%s' % (X[t+2][0]))
-                features.append('POS_U[+2]:%s' % (X[t+2][1]))
-                features.append('POS_B[+1]:%s %s' % (X[t+1][1], X[t+2][1]))
-                features.append('POS_T[0]:%s %s %s' % (X[t][1], X[t+1][1], X[t+2][1]))
-        if t > 0:
-            features.append('U[-1]:%s' % (X[t-1][0]))
-            features.append('B[-1]:%s %s' % (X[t-1][0], X[t][0]))
-            features.append('POS_U[-1]:%s' % (X[t-1][1]))
-            features.append('POS_B[-1]:%s %s' % (X[t-1][1], X[t][1]))
-            if t < length-1:
-                features.append('POS_T[-1]:%s %s %s' % (X[t-1][1], X[t][1], X[t+1][1]))
-            if t > 1:
-                features.append('U[-2]:%s' % (X[t-2][0]))
-                features.append('POS_U[-2]:%s' % (X[t-2][1]))
-                features.append('POS_B[-2]:%s %s' % (X[t-2][1], X[t-1][1]))
-                features.append('POS_T[-2]:%s %s %s' % (X[t-2][1], X[t-1][1], X[t][1]))
+    def _add_features(self, features):
+        for feature in features:
+            if feature not in self._values:
+                self._values[feature] = len(self._values)
 
-        return features
+    @classmethod
+    def load(self, filepath: Filepath) -> "Features":
+        with Path(filepath).open("r", encoding="utf-8") as features:
+            values = json.load(features)
+            features = cls()
+            features._values = values
+            return features
+
+    def save(self, filepath: Filepath):
+        with Path(filepath).open("w", encoding="utf-8") as features:
+            json.dump(self._values, features, indent=4, ensure_ascii=False)
 
 
-    def scan(self, data):
-        """
-        Constructs a feature set, a label set,
-            and a counter of empirical counts of each feature from the input data.
-        :param data: A list of (X, Y) pairs. (X: observation vector , Y: label vector)
-        """
-        # Constructs a feature set, and counts empirical counts.
-        for X, Y in data:
-            prev_y = STARTING_LABEL_INDEX
-            for t in range(len(X)):
-                # Gets a label id
-                try:
-                    y = self.label_dic[Y[t]]
-                except KeyError:
-                    y = len(self.label_dic)
-                    self.label_dic[Y[t]] = y
-                    self.label_array.append(Y[t])
-                # Adds features
-                self._add(prev_y, y, X, t)
-                prev_y = y
+class Dataset:
+    def __init__(self, sentences: List[Sentence], features: Features):
+        self.sentences = sentences
+        self.features = features
 
-    def load(self, feature_dic, num_features, label_array):
-        self.num_features = num_features
-        self.label_array = label_array
-        self.label_dic = {label: i for label, i in enumerate(label_array)}
-        self.feature_dic = self.deserialize_feature_dic(feature_dic)
+    def __repr__(self) -> str:
+        return f"<Dataset: {len(self.sentences)} sentences>"
 
-    def __len__(self):
-        return self.num_features
+    def __len__(self) -> int:
+        return len(self.sentences)
 
-    def _add(self, prev_y, y, X, t):
-        """
-        Generates features, constructs feature_dic.
-        :param prev_y: previous label
-        :param y: present label
-        :param X: observation vector
-        :param t: time
-        """
-        for feature_string in self.feature_func(X, t):
-            if feature_string in self.feature_dic.keys():
-                if (prev_y, y) in self.feature_dic[feature_string].keys():
-                    self.empirical_counts[self.feature_dic[feature_string][(prev_y, y)]] += 1
+    def __iter__(self) -> MatrixGenerator:
+        for sentence in self.sentences:
+            return sentence.matrix
+
+    def __getitem__(self, index: int) -> Sentence:
+        return self.sentences[index]
+
+    @classmethod
+    def load(cls, corpus: Filepath, features: Optional[Filepath] = None) -> "Dataset":
+        if features:
+            features = Features.load(features)
+        else:
+            features = Features()
+        sentences = list(cls._read_dataset(corpus, features))
+        return cls(sentences, features)
+
+    @staticmethod
+    def _read_dataset(filepath: Filepath, features: Features) -> SentenceGenerator:
+        with Path(filepath).open("r", encoding="utf-8") as dataset:
+            sentence = list()
+            index = 0
+            for row in dataset:
+                if row:
+                    token, label = row.strip().split(" ")
+                    token = Token(index, token)
+                    sentence.append(token)
+                    index += 1
                 else:
-                    feature_id = self.num_features
-                    self.feature_dic[feature_string][(prev_y, y)] = feature_id
-                    self.empirical_counts[feature_id] += 1
-                    self.num_features += 1
-                if (-1, y) in self.feature_dic[feature_string].keys():
-                    self.empirical_counts[self.feature_dic[feature_string][(-1, y)]] += 1
-                else:
-                    feature_id = self.num_features
-                    self.feature_dic[feature_string][(-1, y)] = feature_id
-                    self.empirical_counts[feature_id] += 1
-                    self.num_features += 1
-            else:
-                self.feature_dic[feature_string] = dict()
-                # Bigram feature
-                feature_id = self.num_features
-                self.feature_dic[feature_string][(prev_y, y)] = feature_id
-                self.empirical_counts[feature_id] += 1
-                self.num_features += 1
-                # Unigram feature
-                feature_id = self.num_features
-                self.feature_dic[feature_string][(-1, y)] = feature_id
-                self.empirical_counts[feature_id] += 1
-                self.num_features += 1
+                    yield Sentence(sentence, features)
+                    sentence = list()
+                    index = 0
+            if sentence:
+                yield Sentence(sentence, features)
 
-    def get_feature_vector(self, prev_y, y, X, t):
-        """
-        Returns a list of feature ids of given observation and transition.
-        :param prev_y: previous label
-        :param y: present label
-        :param X: observation vector
-        :param t: time
-        :return: A list of feature ids
-        """
-        feature_ids = list()
-        for feature_string in self.feature_func(X, t):
-            try:
-                feature_ids.append(self.feature_dic[feature_string][(prev_y, y)])
-            except KeyError:
-                pass
-        return feature_ids
 
-    def get_labels(self):
-        """
-        Returns a label dictionary and array.
-        """
-        return self.label_dic, self.label_array
+class Label:
+    def __init__(self, gold: str):
+        self.gold = gold
+        self.values = ["*"] + values
 
-    def calc_inner_products(self, params, X, t):
-        """
-        Calculates inner products of the given parameters and feature vectors of the given observations at time t.
-        :param params: parameter vector
-        :param X: observation vector
-        :param t: time
-        :return:
-        """
-        inner_products = Counter()
-        for feature_string in self.feature_func(X, t):
-            try:
-                for (prev_y, y), feature_id in self.feature_dic[feature_string].items():
-                    inner_products[(prev_y, y)] += params[feature_id]
-            except KeyError:
-                pass
-        return [((prev_y, y), score) for (prev_y, y), score in inner_products.items()]
-
-    def get_empirical_counts(self):
-        empirical_counts = np.ndarray((self.num_features,))
-        for feature_id, counts in self.empirical_counts.items():
-            empirical_counts[feature_id] = counts
-        return empirical_counts
-
-    def get_feature_list(self, X, t):
-        feature_list_dic = dict()
-        for feature_string in self.feature_func(X, t):
-            for (prev_y, y), feature_id in self.feature_dic[feature_string].items():
-                if (prev_y, y) in feature_list_dic.keys():
-                    feature_list_dic[(prev_y, y)].add(feature_id)
-                else:
-                    feature_list_dic[(prev_y, y)] = {feature_id}
-        return [((prev_y, y), feature_ids) for (prev_y, y), feature_ids in feature_list_dic.items()]
-
-    def serialize_feature_dic(self):
-        serialized = dict()
-        for feature_string in self.feature_dic.keys():
-            serialized[feature_string] = dict()
-            for (prev_y, y), feature_id in self.feature_dic[feature_string].items():
-                serialized[feature_string]['%d_%d' % (prev_y, y)] = feature_id
-        return serialized
-
-    def deserialize_feature_dic(self, serialized):
-        feature_dic = dict()
-        for feature_string in serialized.keys():
-            feature_dic[feature_string] = dict()
-            for transition_string, feature_id in serialized[feature_string].items():
-                prev_y, y = transition_string.split('_')
-                feature_dic[feature_string][(int(prev_y), int(y))] = feature_id
-        return feature_dic
+    def __getitem__(self, index: int):
+        return self.values[index]

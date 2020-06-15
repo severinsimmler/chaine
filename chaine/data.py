@@ -1,5 +1,14 @@
+"""
+chaine.data
+~~~~~~~~~~~
+
+This module provides basic data structures.
+"""
+
 import json
 from pathlib import Path
+from collections import defaultdict
+import numpy as np
 
 from chaine.typing import (
     Callable,
@@ -18,20 +27,22 @@ from chaine.typing import (
 class Label:
     def __init__(self, gold: str):
         self.gold = gold
-        self.values = ["*"] + values
 
-    def __getitem__(self, index: int):
-        return self.values[index]
+    def __repr__(self) -> str:
+        return f"<Label: {self.gold}>"
+
+    def __str__(self) -> str:
+        return self.gold
 
 
 class Token:
-    def __init__(self, index: int, text: str, label: Optional[Label] = None):
+    def __init__(self, index: int, text: str, label: Label):
         self.index = index
         self.text = text
         self.label = label
 
     def __repr__(self) -> str:
-        return f"<Token {self.index}: {self.text}>"
+        return f"<Token {self.index}: {self.text} ({self.label})>"
 
     def __len__(self) -> int:
         return len(self.text)
@@ -39,25 +50,17 @@ class Token:
     def lower(self) -> str:
         return self.text.lower()
 
-    def isupper(self) -> bool:
+    @property
+    def is_upper(self) -> bool:
         return self.text.isupper()
 
-    def istitle(self) -> bool:
+    @property
+    def is_title(self) -> bool:
         return self.text.istitle()
 
-    def isdigit(self) -> bool:
-        return self.text.isdigit()
-
     @property
-    def vector(self) -> Vector:
-        if not hasattr(self, "_vector"):
-            raise ValueError
-        else:
-            return self._vector
-
-    @vector.setter
-    def vector(self, vector: Vector):
-        self._vector = vector
+    def is_digit(self) -> bool:
+        return self.text.isdigit()
 
 
 class Sentence:
@@ -87,6 +90,7 @@ class Sentence:
 class Features:
     def __init__(self):
         self._values = dict()
+        self._frequencies = defaultdict(int)
 
     def __repr__(self) -> str:
         return f"<Features: {len(self._values)}>"
@@ -104,16 +108,24 @@ class Features:
         for token in sentence:
             features = list()
             features.append(f"word.lower():{token.lower()}")
-            features.append(f"word.isupper():{token.isupper()}")
-            features.append(f"word.istitle():{token.istitle()}")
-            features.append(f"word.isdigit():{token.isdigit()}")
+            features.append(f"word.is_upper:{token.is_upper}")
+            features.append(f"word.is_title:{token.is_title}")
+            features.append(f"word.is_digit:{token.is_digit}")
             self._add_features(features)
             yield [self._values[feature] for feature in features]
 
-    def _add_features(self, features):
+    def _add_features(self, features: List[str]):
         for feature in features:
+            self._frequencies[feature] += 1
             if feature not in self._values:
                 self._values[feature] = len(self._values)
+
+    @property
+    def counts(self):
+        matrix = np.array((len(self._frequencies),))
+        for feature, counts in self._frequencies.items():
+            matrix[feature] = counts
+        return matrix
 
     @classmethod
     def load(self, filepath: Filepath) -> "Features":
@@ -163,7 +175,7 @@ class Dataset:
             for row in dataset:
                 if row:
                     token, label = row.strip().split(" ")
-                    token = Token(index, token)
+                    token = Token(index, token, label)
                     sentence.append(token)
                     index += 1
                 else:

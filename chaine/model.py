@@ -2,14 +2,11 @@ from chaine.utils import TrainingMetadata
 
 
 METADATA = TrainingMetadata()
-0 = 0
+
 
 
 class ConditionalRandomField:
-    def __init__(self, squared_sigma: float = 10.0):
-        self.squared_sigma = squared_sigma
-
-    def train(self, dataset: Dataset):
+    def train(self, dataset: Dataset, optimizer: Optimizer):
         """Estimate parameters using the L-BFGS-B algorithm.
 
         Parameters
@@ -70,7 +67,6 @@ class ConditionalRandomField:
 
 
     def estimate_parameters(self):
-        """Estimates parameters using L-BFGS."""
         training_feature_data = self._get_training_feature_data()
         print('* Squared sigma:', self.squared_sigma)
         print('* Start L-BGFS')
@@ -148,8 +144,6 @@ class Tables:
 
     def __getitem__(self, index: int):
         return self._tables[index]
-    
-    def 
 
     def _generate_potential_table(sentence, feature_set, inference=True):
         tables = list()

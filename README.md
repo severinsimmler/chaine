@@ -1,4 +1,4 @@
-# A lightweight Linear-Chain Conditional Random Field
+# A lightweight Linear-Chain Conditional Random Field implementation
 
 Introduction
 

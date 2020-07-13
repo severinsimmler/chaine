@@ -1,6 +1,4 @@
-# A lightweight Linear-Chain Conditional Random Field implementation
-
-Introduction
+# A lightweight Linear-Chain Conditional Random Field
 
 
 ## Installation
@@ -17,5 +15,4 @@ $ pip install chaine
 >>> from chaine import ConditionalRandomField
 >>> crf = ConditionalRandomField()
 >>> crf.train(dataset)
->>> crf.predict(dataset)
 ```

@@ -1,11 +1,14 @@
 from chaine.utils import TrainingMetadata
-
-
+from chaine.data import Parameters
+from dataclasses import dataclass
 METADATA = TrainingMetadata()
 
 
-
+@dataclass
 class ConditionalRandomField:
+    parameters: Parameters
+
+
     def train(self, dataset, optimizer):
         """Estimate parameters using the L-BFGS-B algorithm.
 

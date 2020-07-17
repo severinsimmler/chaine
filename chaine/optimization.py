@@ -37,9 +37,7 @@ class Optimizer:
                         if prev_y is STARTING_LABEL_INDEX or y is STARTING_LABEL_INDEX:
                             continue
                         else:
-                            prob = (
-                                alpha[t - 1, prev_y] * potential[prev_y, y] * beta[t, y]
-                            ) / Z
+                            prob = (alpha[t - 1, prev_y] * potential[prev_y, y] * beta[t, y]) / Z
                     for fid in feature_ids:
                         expected_counts[fid] += prob
 
@@ -50,9 +48,7 @@ class Optimizer:
         )
 
         self.callback.gradient = (
-            dataset.features.empirical_counts
-            - expected_counts
-            - parameters / squared_sigma
+            dataset.features.empirical_counts - expected_counts - parameters / squared_sigma
         )
         self.callback.sub_iteration += 1
 
@@ -61,10 +57,7 @@ class Optimizer:
     def optimize(self):
         x0 = np.zeros(len(self.dataset.features))
         return scipy.optimize.fmin_l_bfgs_b(
-            func=self.log_likelihood,
-            fprime=self.gradient,
-            callback=self.callback,
-            x0=x0,
+            func=self.log_likelihood, fprime=self.gradient, callback=self.callback, x0=x0,
         )
 
     def forward_backward(self, num_labels, time_length, potential_table):
@@ -80,9 +73,7 @@ class Optimizer:
             overflow_occured = False
             label_id = 1
             while label_id < num_labels:
-                alpha[t, label_id] = np.dot(
-                    alpha[t - 1, :], potential_table[t][:, label_id]
-                )
+                alpha[t, label_id] = np.dot(alpha[t - 1, :], potential_table[t][:, label_id])
                 if alpha[t, label_id] > SCALING_THRESHOLD:
                     if overflow_occured:
                         print("******** Consecutive overflow ********")
@@ -106,9 +97,7 @@ class Optimizer:
             beta[t, label_id] = 1.0
         for t in range(time_length - 2, -1, -1):
             for label_id in range(1, num_labels):
-                beta[t, label_id] = np.dot(
-                    beta[t + 1, :], potential_table[t + 1][label_id, :]
-                )
+                beta[t, label_id] = np.dot(beta[t + 1, :], potential_table[t + 1][label_id, :])
             if t in scaling.keys():
                 beta[t] /= scaling[t]
 

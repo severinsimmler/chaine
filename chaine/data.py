@@ -47,7 +47,7 @@ class Token:
 
 
 @dataclass
-class Sentence:
+class Sequence:
     tokens: List[Token]
 
     def __getitem__(self, index: int) -> Token:
@@ -61,22 +61,22 @@ class Sentence:
         return len(self.tokens)
 
     def __repr__(self) -> str:
-        return f"<Sentence: {self.tokens}>"
+        return f"<Sequence: {self.tokens}>"
 
 
 @dataclass
 class FeatureMatrix:
-    sentences: List[Sentence]
+    sequences: List[Sequence]
 
     def __post_init__(self):
         self._feature2index = {}
 
     def __iter__(self):
-        for sentence in self.sentences:
-            yield [self.vectorize(token) for token in sentence]
+        for sequence in self.sequences:
+            yield [self.vectorize(token) for token in sequence]
 
     def __repr__(self) -> str:
-        return f"<FeatureMatrix: {len(self.sentences)} Sentences>"
+        return f"<FeatureMatrix: {len(self.sequences)} Sentences>"
 
     def vectorize(self, token: Token):
         features = []

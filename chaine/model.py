@@ -7,15 +7,6 @@ METADATA = TrainingMetadata()
 
 class ConditionalRandomField:
     def train(self, dataset: Dataset, optimizer: Optimizer):
-        """Estimate parameters using the L-BFGS-B algorithm.
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-        """
-
         self.index2label = 
         self.num_labels = 
         self.parameters = self.estimate_parameters()

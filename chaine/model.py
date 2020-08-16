@@ -1,14 +1,25 @@
 from chaine.utils import TrainingMetadata
-
-
+from chaine.data import Parameters
+from dataclasses import dataclass
 METADATA = TrainingMetadata()
 
 
-
+@dataclass
 class ConditionalRandomField:
-    def train(self, dataset: Dataset, optimizer: Optimizer):
-        self.index2label = 
-        self.num_labels = 
+    parameters: Parameters
+
+    def train(self, dataset, optimizer):
+        """Estimate parameters using the L-BFGS-B algorithm.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        """
+
+        self.index2label = None
+        self.num_labels = None
         self.parameters = self.estimate_parameters()
 
 
@@ -32,7 +43,7 @@ class ConditionalRandomField:
                  "params": list(self.params)}
 
 
-    def save(self, filepath: Filepath):
+    def save(self, filepath):
         model = self.export()
         with Path(filepath).open("w", encoding="utf-8") as f:
             json.dump(model, f, ensure_ascii=False, indent=4)
@@ -49,7 +60,7 @@ class ConditionalRandomField:
         self.num_labels = len(self.label_array)
         self.params = np.asarray(model['params'])
 
-    def predict(self, sentence: Sentence):
+    def predict(self, sentence):
         potential_table = _generate_potential_table(self.params, self.num_labels,
                                                     self.feature_set, X, inference=True)
 
@@ -129,7 +140,7 @@ class ConditionalRandomField:
 
 
 class Tables:
-    def __init__(self, sentence: Sentence, inference: bool = True):
+    def __init__(self, sentence, inference: bool = True):
         self.inference = inference
         self._tables = list()
 

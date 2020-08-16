@@ -29,7 +29,7 @@ class Optimizer:
                         else:
                             prob = (alpha[t, y] * beta[t, y]) / Z
                     elif t == 0:
-                        if prev_y is not STARTING_LABEL_INDEX:
+                        if prev_y is not s:
                             continue
                         else:
                             prob = (potential[STARTING_LABEL_INDEX, y] * beta[t, y]) / Z
@@ -76,8 +76,7 @@ class Optimizer:
                 alpha[t, label_id] = np.dot(alpha[t - 1, :], potential_table[t][:, label_id])
                 if alpha[t, label_id] > SCALING_THRESHOLD:
                     if overflow_occured:
-                        print("******** Consecutive overflow ********")
-                        raise BaseException()
+                        raise Exception("Consecutive overflow")
                     overflow_occured = True
                     scaling_time = t - 1
                     scaling_coefficient = SCALING_THRESHOLD

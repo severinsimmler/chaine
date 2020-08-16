@@ -1,5 +1,6 @@
 # A lightweight Linear-Chain Conditional Random Field
 
+This is a work in progress.
 
 ## Installation
 

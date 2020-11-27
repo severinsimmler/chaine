@@ -14,11 +14,4 @@ $ pip install chaine
 
 ```python
 >>> import chaine
->>> tokens = ["Foo", "bar"]
->>> matrix = chaine.matrix(tokens)
->>> matrix
-<FeatureMatrix: 2 Tokens>
->>> matrix.numpy()
-array([[0, 1, 2, 3],
-       [4, 1, 5, 3]])
 ```

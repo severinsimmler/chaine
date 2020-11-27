@@ -1,15 +1,18 @@
 import glob
 import subprocess
-
-from setuptools import Extension
 from distutils.command.build_ext import build_ext as _build_ext
 
+from setuptools import Extension
 
-sources = ["chaine/model.cpp", "chaine/trainer_wrapper.cpp"]
+
+sources = [
+    "chaine/model.cpp",
+    "chaine/trainer_wrapper.cpp",
+    "chaine/crfsuite/lib/cqdb/src/cqdb.c",
+    "chaine/crfsuite/lib/cqdb/src/lookup3.c",
+]
 sources += glob.glob("chaine/crfsuite/lib/crf/src/*.c")
 sources += glob.glob("chaine/crfsuite/swig/*.cpp")
-sources += ["chaine/crfsuite/lib/cqdb/src/cqdb.c"]
-sources += ["chaine/crfsuite/lib/cqdb/src/lookup3.c"]
 sources += glob.glob("chaine/liblbfgs/lib/*.c")
 sources = sorted(sources)
 
@@ -35,12 +38,15 @@ class build_ext(_build_ext):
         _build_ext.build_extensions(self)
 
 
-ext_modules = [Extension("chaine.model", include_dirs=includes, language="c++", sources=sources)]
+ext_modules = [
+    Extension("chaine.model", include_dirs=includes, language="c++", sources=sources)
+]
 
 
 def build(setup_kwargs):
     # cythonize
-    subprocess.check_call(["cython", "chaine/model.pyx", "--cplus", "-2", "-I", "chaine"])
+    command = ["cython", "chaine/model.pyx", "--cplus", "-2", "-I", "chaine"]
+    subprocess.check_call(command)
 
     # update setup.py kwargs
     kwargs = {"cmdclass": {"build_ext": build_ext}, "ext_modules": ext_modules}

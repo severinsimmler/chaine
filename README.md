@@ -1,6 +1,6 @@
 # A lightweight Linear-Chain Conditional Random Field
 
-[Chaine](https://severinsimmler.github.io/chaine) is a modern, fast and no-dependency Python library implementing a linear-chain conditional random field for natural language processing.
+This is a modern, fast and no-dependency Python library implementing a linear-chain conditional random field for natural language processing.
 
 
 ## Installation

@@ -1,4 +1,0 @@
-Bar B-PER
-Foo I-PER
-123 O
-456 0

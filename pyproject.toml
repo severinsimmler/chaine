@@ -1,10 +1,12 @@
 [tool.poetry]
 name = "chaine"
 version = "0.1.0"
-description = "A Linear-Chain Conditional Random Field"
+description = "A lightweight Linear-Chain Conditional Random Field"
 authors = ["Severin Simmler <severin.simmler@posteo.de>"]
 license = "MIT"
 readme = "README.md"
+exclude = ["chaine/crfsuite/**/*", "chaine/liblbfgs/**/*"]
+build = "build.py"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -25,5 +27,5 @@ include_trailing_comma = true
 multi_line_output = 3
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.0.0", "setuptools", "wheel", "cython"]
 build-backend = "poetry.core.masonry.api"

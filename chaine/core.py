@@ -1,6 +1,6 @@
 """
-chaine.api
-~~~~~~~~~~
+chaine.core
+~~~~~~~~~~~
 
 This module implements the high-level API
 """

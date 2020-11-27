@@ -210,12 +210,15 @@ cdef class CRF:
     def _marginal(self, label, index):
         return self.c_tagger.marginal(label, index)
 
-    def predict_marginals(self, sequence):
+    def predict_marginals_single(self, sequence):
         self._set_sequence(sequence)
         return [
             {label: self._marginal(label, index) for label in self.labels}
             for index in range(len(sequence))
         ]
+
+    def predict_marginals(self, sequences):
+        return [self.predict_marginals_single(sequence) for sequence in sequences]
 
     cpdef _set_sequence(self, sequence) except +:
         self.c_tagger.set(to_seq(sequence))

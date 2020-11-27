@@ -2,7 +2,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 
-cdef extern from "../crfsuite/include/crfsuite.h":
+cdef extern from "crfsuite/include/crfsuite.h":
     ctypedef enum:
         CRFSUITE_SUCCESS
         CRFSUITEERR_UNKNOWN
@@ -14,7 +14,7 @@ cdef extern from "../crfsuite/include/crfsuite.h":
         CRFSUITEERR_NOTIMPLEMENTED
 
 
-cdef extern from "../crfsuite/include/crfsuite_api.hpp" namespace "CRFSuite":
+cdef extern from "crfsuite/include/crfsuite_api.hpp" namespace "CRFSuite":
     cdef cppclass Attribute:
         string attr
         double value

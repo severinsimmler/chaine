@@ -7,7 +7,6 @@ This module implements the high-level API
 
 from chaine.data import FeatureMatrix, Features, Sequence, Token
 from chaine.typing import List, Optional, Iterable
-from chaine.model import ConditionalRandomField
 
 
 def matrix(tokens: Iterable[str], features: Optional[Features] = None) -> FeatureMatrix:

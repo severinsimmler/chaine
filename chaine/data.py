@@ -7,8 +7,6 @@ This module provides basic data structures
 
 from dataclasses import dataclass
 
-import numpy as np
-
 from chaine.typing import FeatureGenerator, List, TokenGenerator
 
 
@@ -95,10 +93,6 @@ class FeatureMatrix:
 
     def __repr__(self) -> str:
         return f"<FeatureMatrix: {len(self.sequence)} Tokens>"
-
-    def numpy(self) -> np.ndarray:
-        matrix = list(self)
-        return np.array(matrix)
 
 
 class Labels:

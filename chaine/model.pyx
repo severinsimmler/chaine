@@ -5,6 +5,7 @@
 
 cimport crfsuite_api
 from libcpp.string cimport string
+import os
 
 from chaine.utils import _LogParser
 
@@ -126,7 +127,7 @@ cdef class Trainer:
             "variance": float,
             "gamma": float,
         }
-    _log_parser = LogParser()
+    _log_parser = _LogParser()
 
     def __init__(self, algorithm, **params):
         self._select_algorithm(algorithm)

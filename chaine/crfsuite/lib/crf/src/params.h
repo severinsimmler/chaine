@@ -30,51 +30,55 @@
 
 /* $Id$ */
 
-#ifndef    __PARAMS_H__
-#define    __PARAMS_H__
+#ifndef __PARAMS_H__
+#define __PARAMS_H__
 
-crfsuite_params_t* params_create_instance();
-int params_add_int(crfsuite_params_t* params, const char *name, int value, const char *help);
-int params_add_float(crfsuite_params_t* params, const char *name, floatval_t value, const char *help);
-int params_add_string(crfsuite_params_t* params, const char *name, const char *value, const char *help);
+crfsuite_params_t *params_create_instance();
+int params_add_int(crfsuite_params_t *params, const char *name, int value, const char *help);
+int params_add_float(crfsuite_params_t *params, const char *name, floatval_t value, const char *help);
+int params_add_string(crfsuite_params_t *params, const char *name, const char *value, const char *help);
 
-enum {
+enum
+{
     PARAMS_READ = -1,
     PARAMS_INIT = 0,
     PARAMS_WRITE = 1,
 };
 
-#define    BEGIN_PARAM_MAP(params, mode) \
-    do { \
-        int __ret = 0; \
-        int __mode = mode; \
-        crfsuite_params_t* __params = params;
+#define BEGIN_PARAM_MAP(params, mode) \
+    do                                \
+    {                                 \
+        int __ret = 0;                \
+        int __mode = mode;            \
+        crfsuite_params_t *__params = params;
 
-#define    END_PARAM_MAP() \
-    } while (0) ;
+#define END_PARAM_MAP() \
+    }                   \
+    while (0)           \
+        ;
 
-#define    DDX_PARAM_INT(name, var, defval, help) \
-    if (__mode < 0) \
+#define DDX_PARAM_INT(name, var, defval, help)           \
+    if (__mode < 0)                                      \
         __ret = __params->get_int(__params, name, &var); \
-    else if (__mode > 0) \
-        __ret = __params->set_int(__params, name, var); \
-    else \
+    else if (__mode > 0)                                 \
+        __ret = __params->set_int(__params, name, var);  \
+    else                                                 \
         __ret = params_add_int(__params, name, defval, help);
 
-#define    DDX_PARAM_FLOAT(name, var, defval, help) \
-    if (__mode < 0) \
+#define DDX_PARAM_FLOAT(name, var, defval, help)           \
+    if (__mode < 0)                                        \
         __ret = __params->get_float(__params, name, &var); \
-    else if (__mode > 0) \
-        __ret = __params->set_float(__params, name, var); \
-    else \
+    else if (__mode > 0)                                   \
+        __ret = __params->set_float(__params, name, var);  \
+    else                                                   \
         __ret = params_add_float(__params, name, defval, help);
 
-#define    DDX_PARAM_STRING(name, var, defval, help) \
-    if (__mode < 0) \
+#define DDX_PARAM_STRING(name, var, defval, help)           \
+    if (__mode < 0)                                         \
         __ret = __params->get_string(__params, name, &var); \
-    else if (__mode > 0) \
-        __ret = __params->set_string(__params, name, var); \
-    else \
+    else if (__mode > 0)                                    \
+        __ret = __params->set_string(__params, name, var);  \
+    else                                                    \
         __ret = params_add_string(__params, name, defval, help);
 
-#endif/*__PARAMS_H__*/
+#endif /*__PARAMS_H__*/

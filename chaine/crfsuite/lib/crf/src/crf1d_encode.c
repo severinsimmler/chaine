@@ -30,9 +30,9 @@
 
 /* $Id$ */
 
-#ifdef    HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif/*HAVE_CONFIG_H*/
+#endif /*HAVE_CONFIG_H*/
 
 #include <os.h>
 
@@ -50,38 +50,38 @@
 /**
  * Parameters for feature generation.
  */
-typedef struct {
-    floatval_t  feature_minfreq;                /** The threshold for occurrences of features. */
-    int         feature_possible_states;        /** Dense state features. */
-    int         feature_possible_transitions;   /** Dense transition features. */
+typedef struct
+{
+    floatval_t feature_minfreq;       /** The threshold for occurrences of features. */
+    int feature_possible_states;      /** Dense state features. */
+    int feature_possible_transitions; /** Dense transition features. */
 } crf1de_option_t;
 
 /**
  * CRF1d internal data.
  */
-typedef struct {
-    int num_labels;                 /**< Number of distinct output labels (L). */
-    int num_attributes;             /**< Number of distinct attributes (A). */
+typedef struct
+{
+    int num_labels;     /**< Number of distinct output labels (L). */
+    int num_attributes; /**< Number of distinct attributes (A). */
 
-    int cap_items;                  /**< Maximum length of sequences in the data set. */
+    int cap_items; /**< Maximum length of sequences in the data set. */
 
-    int num_features;               /**< Number of distinct features (K). */
-    crf1df_feature_t *features;     /**< Array of feature descriptors [K]. */
-    feature_refs_t* attributes;     /**< References to attribute features [A]. */
-    feature_refs_t* forward_trans;  /**< References to transition features [L]. */
+    int num_features;              /**< Number of distinct features (K). */
+    crf1df_feature_t *features;    /**< Array of feature descriptors [K]. */
+    feature_refs_t *attributes;    /**< References to attribute features [A]. */
+    feature_refs_t *forward_trans; /**< References to transition features [L]. */
 
-    crf1d_context_t *ctx;           /**< CRF1d context. */
-    crf1de_option_t opt;            /**< CRF1d options. */
+    crf1d_context_t *ctx; /**< CRF1d context. */
+    crf1de_option_t opt;  /**< CRF1d options. */
 } crf1de_t;
 
-#define    FEATURE(crf1de, k) \
+#define FEATURE(crf1de, k) \
     (&(crf1de)->features[(k)])
-#define    ATTRIBUTE(crf1de, a) \
+#define ATTRIBUTE(crf1de, a) \
     (&(crf1de)->attributes[(a)])
-#define    TRANSITION(crf1de, i) \
+#define TRANSITION(crf1de, i) \
     (&(crf1de)->forward_trans[(i)])
-
-
 
 static void crf1de_init(crf1de_t *crf1de)
 {
@@ -100,23 +100,29 @@ static void crf1de_finish(crf1de_t *crf1de)
 {
     int i;
 
-    if (crf1de->ctx != NULL) {
+    if (crf1de->ctx != NULL)
+    {
         crf1dc_delete(crf1de->ctx);
         crf1de->ctx = NULL;
     }
-    if (crf1de->features != NULL) {
+    if (crf1de->features != NULL)
+    {
         free(crf1de->features);
         crf1de->features = NULL;
     }
-    if (crf1de->attributes != NULL) {
-        for (i = 0; i < crf1de->num_attributes; ++i) {
+    if (crf1de->attributes != NULL)
+    {
+        for (i = 0; i < crf1de->num_attributes; ++i)
+        {
             free(crf1de->attributes[i].fids);
         }
         free(crf1de->attributes);
         crf1de->attributes = NULL;
     }
-    if (crf1de->forward_trans != NULL) {
-        for (i = 0; i < crf1de->num_labels; ++i) {
+    if (crf1de->forward_trans != NULL)
+    {
+        for (i = 0; i < crf1de->num_labels; ++i)
+        {
             free(crf1de->forward_trans[i].fids);
         }
         free(crf1de->forward_trans);
@@ -126,29 +132,31 @@ static void crf1de_finish(crf1de_t *crf1de)
 
 static void crf1de_state_score(
     crf1de_t *crf1de,
-    const crfsuite_instance_t* inst,
-    const floatval_t* w
-    )
+    const crfsuite_instance_t *inst,
+    const floatval_t *w)
 {
     int i, t, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    crf1d_context_t *ctx = crf1de->ctx;
     const int T = inst->num_items;
     const int L = crf1de->num_labels;
 
     /* Loop over the items in the sequence. */
-    for (t = 0;t < T;++t) {
+    for (t = 0; t < T; ++t)
+    {
         const crfsuite_item_t *item = &inst->items[t];
         floatval_t *state = STATE_SCORE(ctx, t);
 
         /* Loop over the contents (attributes) attached to the item. */
-        for (i = 0;i < item->num_contents;++i) {
+        for (i = 0; i < item->num_contents; ++i)
+        {
             /* Access the list of state features associated with the attribute. */
             int a = item->contents[i].aid;
             const feature_refs_t *attr = ATTRIBUTE(crf1de, a);
             floatval_t value = item->contents[i].value;
 
             /* Loop over the state features associated with the attribute. */
-            for (r = 0;r < attr->num_features;++r) {
+            for (r = 0; r < attr->num_features; ++r)
+            {
                 /* State feature associates the attribute #a with the label #(f->dst). */
                 int fid = attr->fids[r];
                 const crf1df_feature_t *f = FEATURE(crf1de, fid);
@@ -160,37 +168,40 @@ static void crf1de_state_score(
 
 static void
 crf1de_state_score_scaled(
-    crf1de_t* crf1de,
-    const crfsuite_instance_t* inst,
-    const floatval_t* w,
-    const floatval_t scale
-    )
+    crf1de_t *crf1de,
+    const crfsuite_instance_t *inst,
+    const floatval_t *w,
+    const floatval_t scale)
 {
     int i, t, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    crf1d_context_t *ctx = crf1de->ctx;
     const int T = inst->num_items;
     const int L = crf1de->num_labels;
 
     /* Forward to the non-scaling version for fast computation when scale == 1. */
-    if (scale == 1.) {
+    if (scale == 1.)
+    {
         crf1de_state_score(crf1de, inst, w);
         return;
     }
 
     /* Loop over the items in the sequence. */
-    for (t = 0;t < T;++t) {
+    for (t = 0; t < T; ++t)
+    {
         const crfsuite_item_t *item = &inst->items[t];
         floatval_t *state = STATE_SCORE(ctx, t);
 
         /* Loop over the contents (attributes) attached to the item. */
-        for (i = 0;i < item->num_contents;++i) {
+        for (i = 0; i < item->num_contents; ++i)
+        {
             /* Access the list of state features associated with the attribute. */
             int a = item->contents[i].aid;
             const feature_refs_t *attr = ATTRIBUTE(crf1de, a);
             floatval_t value = item->contents[i].value * scale;
 
             /* Loop over the state features associated with the attribute. */
-            for (r = 0;r < attr->num_features;++r) {
+            for (r = 0; r < attr->num_features; ++r)
+            {
                 /* State feature associates the attribute #a with the label #(f->dst). */
                 int fid = attr->fids[r];
                 const crf1df_feature_t *f = FEATURE(crf1de, fid);
@@ -202,54 +213,57 @@ crf1de_state_score_scaled(
 
 static void
 crf1de_transition_score(
-    crf1de_t* crf1de,
-    const floatval_t* w
-    )
+    crf1de_t *crf1de,
+    const floatval_t *w)
 {
     int i, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    crf1d_context_t *ctx = crf1de->ctx;
     const int L = crf1de->num_labels;
 
     /* Compute transition scores between two labels. */
-    for (i = 0;i < L;++i) {
+    for (i = 0; i < L; ++i)
+    {
         floatval_t *trans = TRANS_SCORE(ctx, i);
         const feature_refs_t *edge = TRANSITION(crf1de, i);
-        for (r = 0;r < edge->num_features;++r) {
+        for (r = 0; r < edge->num_features; ++r)
+        {
             /* Transition feature from #i to #(f->dst). */
             int fid = edge->fids[r];
             const crf1df_feature_t *f = FEATURE(crf1de, fid);
             trans[f->dst] = w[fid];
-        }        
+        }
     }
 }
 
 static void
 crf1de_transition_score_scaled(
-    crf1de_t* crf1de,
-    const floatval_t* w,
-    const floatval_t scale
-    )
+    crf1de_t *crf1de,
+    const floatval_t *w,
+    const floatval_t scale)
 {
     int i, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    crf1d_context_t *ctx = crf1de->ctx;
     const int L = crf1de->num_labels;
 
     /* Forward to the non-scaling version for fast computation when scale == 1. */
-    if (scale == 1.) {
+    if (scale == 1.)
+    {
         crf1de_transition_score(crf1de, w);
         return;
     }
 
     /* Compute transition scores between two labels. */
-    for (i = 0;i < L;++i) {
+    for (i = 0; i < L; ++i)
+    {
         floatval_t *trans = TRANS_SCORE(ctx, i);
         const feature_refs_t *edge = TRANSITION(crf1de, i);
-        for (r = 0;r < edge->num_features;++r) {
+        for (r = 0; r < edge->num_features; ++r)
+        {
             /* Transition feature from #i to #(f->dst). */
             int fid = edge->fids[r];
             const crf1df_feature_t *f = FEATURE(crf1de, fid);
             trans[f->dst] = w[fid] * scale;
-        }        
+        }
     }
 }
 
@@ -259,44 +273,50 @@ crf1de_features_on_path(
     const crfsuite_instance_t *inst,
     const int *labels,
     crfsuite_encoder_features_on_path_callback func,
-    void *instance
-    )
+    void *instance)
 {
     int c, i = -1, t, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    crf1d_context_t *ctx = crf1de->ctx;
     const int T = inst->num_items;
     const int L = crf1de->num_labels;
 
     /* Loop over the items in the sequence. */
-    for (t = 0;t < T;++t) {
+    for (t = 0; t < T; ++t)
+    {
         const crfsuite_item_t *item = &inst->items[t];
         const int j = labels[t];
 
         /* Loop over the contents (attributes) attached to the item. */
-        for (c = 0;c < item->num_contents;++c) {
+        for (c = 0; c < item->num_contents; ++c)
+        {
             /* Access the list of state features associated with the attribute. */
             int a = item->contents[c].aid;
             const feature_refs_t *attr = ATTRIBUTE(crf1de, a);
             floatval_t value = item->contents[c].value;
 
             /* Loop over the state features associated with the attribute. */
-            for (r = 0;r < attr->num_features;++r) {
+            for (r = 0; r < attr->num_features; ++r)
+            {
                 /* State feature associates the attribute #a with the label #(f->dst). */
                 int fid = attr->fids[r];
                 const crf1df_feature_t *f = FEATURE(crf1de, fid);
-                if (f->dst == j) {
+                if (f->dst == j)
+                {
                     func(instance, fid, value);
                 }
             }
         }
 
-        if (i != -1) {
+        if (i != -1)
+        {
             const feature_refs_t *edge = TRANSITION(crf1de, i);
-            for (r = 0;r < edge->num_features;++r) {
+            for (r = 0; r < edge->num_features; ++r)
+            {
                 /* Transition feature from #i to #(f->dst). */
                 int fid = edge->fids[r];
                 const crf1df_feature_t *f = FEATURE(crf1de, fid);
-                if (f->dst == j) {
+                if (f->dst == j)
+                {
                     func(instance, fid, 1.);
                 }
             }
@@ -308,48 +328,54 @@ crf1de_features_on_path(
 
 static void
 crf1de_observation_expectation(
-    crf1de_t* crf1de,
-    const crfsuite_instance_t* inst,
+    crf1de_t *crf1de,
+    const crfsuite_instance_t *inst,
     const int *labels,
     floatval_t *w,
-    const floatval_t scale
-    )
+    const floatval_t scale)
 {
     int c, i = -1, t, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    crf1d_context_t *ctx = crf1de->ctx;
     const int T = inst->num_items;
     const int L = crf1de->num_labels;
 
     /* Loop over the items in the sequence. */
-    for (t = 0;t < T;++t) {
+    for (t = 0; t < T; ++t)
+    {
         const crfsuite_item_t *item = &inst->items[t];
         const int j = labels[t];
 
         /* Loop over the contents (attributes) attached to the item. */
-        for (c = 0;c < item->num_contents;++c) {
+        for (c = 0; c < item->num_contents; ++c)
+        {
             /* Access the list of state features associated with the attribute. */
             int a = item->contents[c].aid;
             const feature_refs_t *attr = ATTRIBUTE(crf1de, a);
             floatval_t value = item->contents[c].value;
 
             /* Loop over the state features associated with the attribute. */
-            for (r = 0;r < attr->num_features;++r) {
+            for (r = 0; r < attr->num_features; ++r)
+            {
                 /* State feature associates the attribute #a with the label #(f->dst). */
                 int fid = attr->fids[r];
                 const crf1df_feature_t *f = FEATURE(crf1de, fid);
-                if (f->dst == j) {
+                if (f->dst == j)
+                {
                     w[fid] += value * scale;
                 }
             }
         }
 
-        if (i != -1) {
+        if (i != -1)
+        {
             const feature_refs_t *edge = TRANSITION(crf1de, i);
-            for (r = 0;r < edge->num_features;++r) {
+            for (r = 0; r < edge->num_features; ++r)
+            {
                 /* Transition feature from #i to #(f->dst). */
                 int fid = edge->fids[r];
                 const crf1df_feature_t *f = FEATURE(crf1de, fid);
-                if (f->dst == j) {
+                if (f->dst == j)
+                {
                     w[fid] += scale;
                 }
             }
@@ -364,29 +390,31 @@ crf1de_model_expectation(
     crf1de_t *crf1de,
     const crfsuite_instance_t *inst,
     floatval_t *w,
-    const floatval_t scale
-    )
+    const floatval_t scale)
 {
     int a, c, i, t, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    crf1d_context_t *ctx = crf1de->ctx;
     const feature_refs_t *attr = NULL, *trans = NULL;
-    const crfsuite_item_t* item = NULL;
+    const crfsuite_item_t *item = NULL;
     const int T = inst->num_items;
     const int L = crf1de->num_labels;
 
-    for (t = 0;t < T;++t) {
+    for (t = 0; t < T; ++t)
+    {
         floatval_t *prob = STATE_MEXP(ctx, t);
 
         /* Compute expectations for state features at position #t. */
         item = &inst->items[t];
-        for (c = 0;c < item->num_contents;++c) {
+        for (c = 0; c < item->num_contents; ++c)
+        {
             /* Access the attribute. */
             floatval_t value = item->contents[c].value;
             a = item->contents[c].aid;
             attr = ATTRIBUTE(crf1de, a);
 
             /* Loop over state features for the attribute. */
-            for (r = 0;r < attr->num_features;++r) {
+            for (r = 0; r < attr->num_features; ++r)
+            {
                 int fid = attr->fids[r];
                 crf1df_feature_t *f = FEATURE(crf1de, fid);
                 w[fid] += prob[f->dst] * value * scale;
@@ -395,10 +423,12 @@ crf1de_model_expectation(
     }
 
     /* Loop over the labels (t, i) */
-    for (i = 0;i < L;++i) {
+    for (i = 0; i < L; ++i)
+    {
         const floatval_t *prob = TRANS_MEXP(ctx, i);
         const feature_refs_t *edge = TRANSITION(crf1de, i);
-        for (r = 0;r < edge->num_features;++r) {
+        for (r = 0; r < edge->num_features; ++r)
+        {
             /* Transition feature from #i to #(f->dst). */
             int fid = edge->fids[r];
             crf1df_feature_t *f = FEATURE(crf1de, fid);
@@ -413,8 +443,7 @@ crf1de_set_data(
     dataset_t *ds,
     int num_labels,
     int num_attributes,
-    logging_t *lg
-    )
+    logging_t *lg)
 {
     int i, ret = 0;
     clock_t begin = 0;
@@ -430,16 +459,19 @@ crf1de_set_data(
     crf1de->num_labels = L;
 
     /* Find the maximum length of items in the data set. */
-    for (i = 0;i < N;++i) {
+    for (i = 0; i < N; ++i)
+    {
         const crfsuite_instance_t *inst = dataset_get(ds, i);
-        if (T < inst->num_items) {
+        if (T < inst->num_items)
+        {
             T = inst->num_items;
         }
     }
 
     /* Construct a CRF context. */
     crf1de->ctx = crf1dc_new(CTXF_MARGINALS | CTXF_VITERBI, L, T);
-    if (crf1de->ctx == NULL) {
+    if (crf1de->ctx == NULL)
+    {
         ret = CRFSUITEERR_OUTOFMEMORY;
         goto error_exit;
     }
@@ -460,9 +492,9 @@ crf1de_set_data(
         opt->feature_possible_transitions ? 1 : 0,
         opt->feature_minfreq,
         lg->func,
-        lg->instance
-        );
-    if (crf1de->features == NULL) {
+        lg->instance);
+    if (crf1de->features == NULL)
+    {
         ret = CRFSUITEERR_OUTOFMEMORY;
         goto error_exit;
     }
@@ -478,7 +510,8 @@ crf1de_set_data(
         crf1de->num_features,
         A,
         L);
-    if (crf1de->attributes == NULL || crf1de->forward_trans == NULL) {
+    if (crf1de->attributes == NULL || crf1de->forward_trans == NULL)
+    {
         ret = CRFSUITEERR_OUTOFMEMORY;
         goto error_exit;
     }
@@ -497,13 +530,12 @@ crf1de_save_model(
     const floatval_t *w,
     crfsuite_dictionary_t *attrs,
     crfsuite_dictionary_t *labels,
-    logging_t *lg
-    )
+    logging_t *lg)
 {
     int a, k, l, ret;
     clock_t begin;
     int *fmap = NULL, *amap = NULL;
-    crf1dmw_t* writer = NULL;
+    crf1dmw_t *writer = NULL;
     const feature_refs_t *edge = NULL, *attr = NULL;
     const floatval_t threshold = 0.01;
     const int L = crf1de->num_labels;
@@ -516,39 +548,47 @@ crf1de_save_model(
     begin = clock();
 
     /* Allocate and initialize the feature mapping. */
-    fmap = (int*)calloc(K, sizeof(int));
-    if (fmap == NULL) {
+    fmap = (int *)calloc(K, sizeof(int));
+    if (fmap == NULL)
+    {
         goto error_exit;
     }
-#ifdef  CRF_TRAIN_SAVE_NO_PRUNING
-    for (k = 0;k < K;++k) fmap[k] = k;
+#ifdef CRF_TRAIN_SAVE_NO_PRUNING
+    for (k = 0; k < K; ++k)
+        fmap[k] = k;
     J = K;
 #else
-    for (k = 0;k < K;++k) fmap[k] = -1;
-#endif/*CRF_TRAIN_SAVE_NO_PRUNING*/
+    for (k = 0; k < K; ++k)
+        fmap[k] = -1;
+#endif /*CRF_TRAIN_SAVE_NO_PRUNING*/
 
     /* Allocate and initialize the attribute mapping. */
-    amap = (int*)calloc(A, sizeof(int));
-    if (amap == NULL) {
+    amap = (int *)calloc(A, sizeof(int));
+    if (amap == NULL)
+    {
         goto error_exit;
     }
-#ifdef  CRF_TRAIN_SAVE_NO_PRUNING
-    for (a = 0;a < A;++a) amap[a] = a;
+#ifdef CRF_TRAIN_SAVE_NO_PRUNING
+    for (a = 0; a < A; ++a)
+        amap[a] = a;
     B = A;
 #else
-    for (a = 0;a < A;++a) amap[a] = -1;
-#endif/*CRF_TRAIN_SAVE_NO_PRUNING*/
+    for (a = 0; a < A; ++a)
+        amap[a] = -1;
+#endif /*CRF_TRAIN_SAVE_NO_PRUNING*/
 
     /*
      *  Open a model writer.
      */
     writer = crf1mmw(filename);
-    if (writer == NULL) {
+    if (writer == NULL)
+    {
         goto error_exit;
     }
 
     /* Open a feature chunk in the model file. */
-    if (ret = crf1dmw_open_features(writer)) {
+    if (ret = crf1dmw_open_features(writer))
+    {
         goto error_exit;
     }
 
@@ -556,25 +596,31 @@ crf1de_save_model(
      *  Write the feature values.
      *     (with determining active features and attributes).
      */
-    for (k = 0;k < K;++k) {
-        crf1df_feature_t* f = &crf1de->features[k];
-        if (w[k] != 0) {
+    for (k = 0; k < K; ++k)
+    {
+        crf1df_feature_t *f = &crf1de->features[k];
+        if (w[k] != 0)
+        {
             int src;
             crf1dm_feature_t feat;
 
 #ifndef CRF_TRAIN_SAVE_NO_PRUNING
             /* The feature (#k) will have a new feature id (#J). */
-            fmap[k] = J++;        /* Feature #k -> #fmap[k]. */
+            fmap[k] = J++; /* Feature #k -> #fmap[k]. */
 
             /* Map the source of the field. */
-            if (f->type == FT_STATE) {
+            if (f->type == FT_STATE)
+            {
                 /* The attribute #(f->src) will have a new attribute id (#B). */
-                if (amap[f->src] < 0) amap[f->src] = B++;    /* Attribute #a -> #amap[a]. */
+                if (amap[f->src] < 0)
+                    amap[f->src] = B++; /* Attribute #a -> #amap[a]. */
                 src = amap[f->src];
-            } else {
+            }
+            else
+            {
                 src = f->src;
             }
-#endif/*CRF_TRAIN_SAVE_NO_PRUNING*/
+#endif /*CRF_TRAIN_SAVE_NO_PRUNING*/
 
             feat.type = f->type;
             feat.src = src;
@@ -582,14 +628,16 @@ crf1de_save_model(
             feat.weight = w[k];
 
             /* Write the feature. */
-            if (ret = crf1dmw_put_feature(writer, fmap[k], &feat)) {
+            if (ret = crf1dmw_put_feature(writer, fmap[k], &feat))
+            {
                 goto error_exit;
             }
         }
     }
 
     /* Close the feature chunk. */
-    if (ret = crf1dmw_close_features(writer)) {
+    if (ret = crf1dmw_close_features(writer))
+    {
         goto error_exit;
     }
 
@@ -599,73 +647,93 @@ crf1de_save_model(
 
     /* Write labels. */
     logging(lg, "Writing labels\n", L);
-    if (ret = crf1dmw_open_labels(writer, L)) {
+    if (ret = crf1dmw_open_labels(writer, L))
+    {
         goto error_exit;
     }
-    for (l = 0;l < L;++l) {
+    for (l = 0; l < L; ++l)
+    {
         const char *str = NULL;
         labels->to_string(labels, l, &str);
-        if (str != NULL) {
-            if (ret = crf1dmw_put_label(writer, l, str)) {
+        if (str != NULL)
+        {
+            if (ret = crf1dmw_put_label(writer, l, str))
+            {
                 goto error_exit;
             }
             labels->free(labels, str);
         }
     }
-    if (ret = crf1dmw_close_labels(writer)) {
+    if (ret = crf1dmw_close_labels(writer))
+    {
         goto error_exit;
     }
 
     /* Write attributes. */
     logging(lg, "Writing attributes\n");
-    if (ret = crf1dmw_open_attrs(writer, B)) {
+    if (ret = crf1dmw_open_attrs(writer, B))
+    {
         goto error_exit;
     }
-    for (a = 0;a < A;++a) {
-        if (0 <= amap[a]) {
+    for (a = 0; a < A; ++a)
+    {
+        if (0 <= amap[a])
+        {
             const char *str = NULL;
             attrs->to_string(attrs, a, &str);
-            if (str != NULL) {
-                if (ret = crf1dmw_put_attr(writer, amap[a], str)) {
+            if (str != NULL)
+            {
+                if (ret = crf1dmw_put_attr(writer, amap[a], str))
+                {
                     goto error_exit;
                 }
                 attrs->free(attrs, str);
             }
         }
     }
-    if (ret = crf1dmw_close_attrs(writer)) {
+    if (ret = crf1dmw_close_attrs(writer))
+    {
         goto error_exit;
     }
 
     /* Write label feature references. */
     logging(lg, "Writing feature references for transitions\n");
-    if (ret = crf1dmw_open_labelrefs(writer, L+2)) {
+    if (ret = crf1dmw_open_labelrefs(writer, L + 2))
+    {
         goto error_exit;
     }
-    for (l = 0;l < L;++l) {
+    for (l = 0; l < L; ++l)
+    {
         edge = TRANSITION(crf1de, l);
-        if (ret = crf1dmw_put_labelref(writer, l, edge, fmap)) {
+        if (ret = crf1dmw_put_labelref(writer, l, edge, fmap))
+        {
             goto error_exit;
         }
     }
-    if (ret = crf1dmw_close_labelrefs(writer)) {
+    if (ret = crf1dmw_close_labelrefs(writer))
+    {
         goto error_exit;
     }
 
     /* Write attribute feature references. */
     logging(lg, "Writing feature references for attributes\n");
-    if (ret = crf1dmw_open_attrrefs(writer, B)) {
+    if (ret = crf1dmw_open_attrrefs(writer, B))
+    {
         goto error_exit;
     }
-    for (a = 0;a < A;++a) {
-        if (0 <= amap[a]) {
+    for (a = 0; a < A; ++a)
+    {
+        if (0 <= amap[a])
+        {
             attr = ATTRIBUTE(crf1de, a);
-            if (ret = crf1dmw_put_attrref(writer, amap[a], attr, fmap)) {
+            if (ret = crf1dmw_put_attrref(writer, amap[a], attr, fmap))
+            {
                 goto error_exit;
             }
         }
     }
-    if (ret = crf1dmw_close_attrrefs(writer)) {
+    if (ret = crf1dmw_close_attrrefs(writer))
+    {
         goto error_exit;
     }
 
@@ -679,45 +747,44 @@ crf1de_save_model(
     return 0;
 
 error_exit:
-    if (writer != NULL) {
+    if (writer != NULL)
+    {
         crf1dmw_close(writer);
     }
-    if (amap != NULL) {
+    if (amap != NULL)
+    {
         free(amap);
     }
-    if (fmap != NULL) {
+    if (fmap != NULL)
+    {
         free(fmap);
     }
     return ret;
 }
 
-static int crf1de_exchange_options(crfsuite_params_t* params, crf1de_option_t* opt, int mode)
+static int crf1de_exchange_options(crfsuite_params_t *params, crf1de_option_t *opt, int mode)
 {
     BEGIN_PARAM_MAP(params, mode)
-        DDX_PARAM_FLOAT(
-            "feature.minfreq", opt->feature_minfreq, 0.0,
-            "The minimum frequency of features."
-            )
-        DDX_PARAM_INT(
-            "feature.possible_states", opt->feature_possible_states, 0,
-            "Force to generate possible state features."
-            )
-        DDX_PARAM_INT(
-            "feature.possible_transitions", opt->feature_possible_transitions, 0,
-            "Force to generate possible transition features."
-            )
+    DDX_PARAM_FLOAT(
+        "feature.minfreq", opt->feature_minfreq, 0.0,
+        "The minimum frequency of features.")
+    DDX_PARAM_INT(
+        "feature.possible_states", opt->feature_possible_states, 0,
+        "Force to generate possible state features.")
+    DDX_PARAM_INT(
+        "feature.possible_transitions", opt->feature_possible_transitions, 0,
+        "Force to generate possible transition features.")
     END_PARAM_MAP()
 
     return 0;
 }
 
-
-
 /*
  *    Implementation of encoder_t object.
  */
 
-enum {
+enum
+{
     /** No precomputation. */
     LEVEL_NONE = 0,
     /** Feature weights are set. */
@@ -733,7 +800,7 @@ enum {
 static void set_level(encoder_t *self, int level)
 {
     int prev = self->level;
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
 
     /*
         Each training algorithm has a different requirement for processing a
@@ -743,20 +810,23 @@ static void set_level(encoder_t *self, int level)
      */
 
     /* LEVEL_WEIGHT: set transition scores. */
-    if (LEVEL_WEIGHT <= level && prev < LEVEL_WEIGHT) {
+    if (LEVEL_WEIGHT <= level && prev < LEVEL_WEIGHT)
+    {
         crf1dc_reset(crf1de->ctx, RF_TRANS);
         crf1de_transition_score_scaled(crf1de, self->w, self->scale);
     }
 
     /* LEVEL_INSTANCE: set state scores. */
-    if (LEVEL_INSTANCE <= level && prev < LEVEL_INSTANCE) {
+    if (LEVEL_INSTANCE <= level && prev < LEVEL_INSTANCE)
+    {
         crf1dc_set_num_items(crf1de->ctx, self->inst->num_items);
         crf1dc_reset(crf1de->ctx, RF_STATE);
         crf1de_state_score_scaled(crf1de, self->inst, self->w, self->scale);
     }
 
     /* LEVEL_ALPHABETA: perform the forward-backward algorithm. */
-    if (LEVEL_ALPHABETA <= level && prev < LEVEL_ALPHABETA) {
+    if (LEVEL_ALPHABETA <= level && prev < LEVEL_ALPHABETA)
+    {
         crf1dc_exp_transition(crf1de->ctx);
         crf1dc_exp_state(crf1de->ctx);
         crf1dc_alpha_score(crf1de->ctx);
@@ -764,23 +834,24 @@ static void set_level(encoder_t *self, int level)
     }
 
     /* LEVEL_MARGINAL: compute the marginal probability. */
-    if (LEVEL_MARGINAL <= level && prev < LEVEL_MARGINAL) {
+    if (LEVEL_MARGINAL <= level && prev < LEVEL_MARGINAL)
+    {
         crf1dc_marginals(crf1de->ctx);
     }
 
     self->level = level;
 }
 
-static int encoder_exchange_options(encoder_t *self, crfsuite_params_t* params, int mode)
+static int encoder_exchange_options(encoder_t *self, crfsuite_params_t *params, int mode)
 {
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
     return crf1de_exchange_options(params, &crf1de->opt, mode);
 }
 
 static int encoder_initialize(encoder_t *self, dataset_t *ds, logging_t *lg)
 {
     int ret;
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
 
     ret = crf1de_set_data(
         crf1de,
@@ -799,15 +870,16 @@ static int encoder_objective_and_gradients_batch(encoder_t *self, dataset_t *ds,
 {
     int i;
     floatval_t logp = 0, logl = 0;
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
     const int N = ds->num_instances;
     const int K = crf1de->num_features;
 
     /*
         Initialize the gradients with observation expectations.
      */
-    for (i = 0;i < K;++i) {
-        crf1df_feature_t* f = &crf1de->features[i];
+    for (i = 0; i < K; ++i)
+    {
+        crf1df_feature_t *f = &crf1de->features[i];
         g[i] = -f->freq;
     }
 
@@ -822,7 +894,8 @@ static int encoder_objective_and_gradients_batch(encoder_t *self, dataset_t *ds,
     /*
         Compute model expectations.
      */
-    for (i = 0;i < N;++i) {
+    for (i = 0; i < N; ++i)
+    {
         const crfsuite_instance_t *seq = dataset_get(ds, i);
 
         /* Set label sequences and state scores. */
@@ -852,7 +925,7 @@ static int encoder_objective_and_gradients_batch(encoder_t *self, dataset_t *ds,
 /* LEVEL_NONE -> LEVEL_NONE. */
 static int encoder_features_on_path(encoder_t *self, const crfsuite_instance_t *inst, const int *path, crfsuite_encoder_features_on_path_callback func, void *instance)
 {
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
     crf1de_features_on_path(crf1de, inst, path, func, instance);
     return 0;
 }
@@ -860,8 +933,8 @@ static int encoder_features_on_path(encoder_t *self, const crfsuite_instance_t *
 /* LEVEL_NONE -> LEVEL_NONE. */
 static int encoder_save_model(encoder_t *self, const char *filename, const floatval_t *w, logging_t *lg)
 {
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
-    return crf1de_save_model(crf1de, filename, w, self->ds->data->attrs,  self->ds->data->labels, lg);
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
+    return crf1de_save_model(crf1de, filename, w, self->ds->data->attrs, self->ds->data->labels, lg);
 }
 
 /* LEVEL_NONE -> LEVEL_WEIGHT. */
@@ -869,7 +942,7 @@ static int encoder_set_weights(encoder_t *self, const floatval_t *w, floatval_t 
 {
     self->w = w;
     self->scale = scale;
-    self->level = LEVEL_WEIGHT-1;
+    self->level = LEVEL_WEIGHT - 1;
     set_level(self, LEVEL_WEIGHT);
     return 0;
 }
@@ -878,7 +951,7 @@ static int encoder_set_weights(encoder_t *self, const floatval_t *w, floatval_t 
 static int encoder_set_instance(encoder_t *self, const crfsuite_instance_t *inst)
 {
     self->inst = inst;
-    self->level = LEVEL_INSTANCE-1;
+    self->level = LEVEL_INSTANCE - 1;
     set_level(self, LEVEL_INSTANCE);
     return 0;
 }
@@ -886,7 +959,7 @@ static int encoder_set_instance(encoder_t *self, const crfsuite_instance_t *inst
 /* LEVEL_INSTANCE -> LEVEL_INSTANCE. */
 static int encoder_score(encoder_t *self, const int *path, floatval_t *ptr_score)
 {
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
     *ptr_score = crf1dc_score(crf1de->ctx, path);
     return 0;
 }
@@ -896,9 +969,10 @@ static int encoder_viterbi(encoder_t *self, int *path, floatval_t *ptr_score)
 {
     int i;
     floatval_t score;
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
     score = crf1dc_viterbi(crf1de->ctx, path);
-    if (ptr_score != NULL) {
+    if (ptr_score != NULL)
+    {
         *ptr_score = score;
     }
     return 0;
@@ -907,7 +981,7 @@ static int encoder_viterbi(encoder_t *self, int *path, floatval_t *ptr_score)
 /* LEVEL_INSTANCE -> LEVEL_ALPHABETA. */
 static int encoder_partition_factor(encoder_t *self, floatval_t *ptr_pf)
 {
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
     set_level(self, LEVEL_ALPHABETA);
     *ptr_pf = crf1dc_lognorm(crf1de->ctx);
     return 0;
@@ -916,18 +990,18 @@ static int encoder_partition_factor(encoder_t *self, floatval_t *ptr_pf)
 /* LEVEL_INSTANCE -> LEVEL_MARGINAL. */
 static int encoder_objective_and_gradients(encoder_t *self, floatval_t *f, floatval_t *g, floatval_t gain, floatval_t weight)
 {
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
     set_level(self, LEVEL_MARGINAL);
     gain *= weight;
     crf1de_observation_expectation(crf1de, self->inst, self->inst->labels, g, gain);
     crf1de_model_expectation(crf1de, self->inst, g, -gain);
-    *f = (-crf1dc_score(crf1de->ctx,  self->inst->labels) + crf1dc_lognorm(crf1de->ctx)) * weight;
+    *f = (-crf1dc_score(crf1de->ctx, self->inst->labels) + crf1dc_lognorm(crf1de->ctx)) * weight;
     return 0;
 }
 
 static void encoder_release(encoder_t *self)
 {
-    crf1de_t *crf1de = (crf1de_t*)self->internal;
+    crf1de_t *crf1de = (crf1de_t *)self->internal;
     crf1de_finish(crf1de);
     free(crf1de);
     free(self);
@@ -935,10 +1009,12 @@ static void encoder_release(encoder_t *self)
 
 encoder_t *crf1d_create_encoder()
 {
-    encoder_t *self = (encoder_t*)calloc(1, sizeof(encoder_t));
-    if (self != NULL) {
-        crf1de_t *enc = (crf1de_t*)calloc(1, sizeof(crf1de_t));
-        if (enc != NULL) {
+    encoder_t *self = (encoder_t *)calloc(1, sizeof(encoder_t));
+    if (self != NULL)
+    {
+        crf1de_t *enc = (crf1de_t *)calloc(1, sizeof(crf1de_t));
+        if (enc != NULL)
+        {
             crf1de_init(enc);
 
             self->exchange_options = encoder_exchange_options;
@@ -946,7 +1022,7 @@ encoder_t *crf1d_create_encoder()
             self->objective_and_gradients_batch = encoder_objective_and_gradients_batch;
             self->save_model = encoder_save_model;
             self->features_on_path = encoder_features_on_path;
-            self->set_weights =  encoder_set_weights;
+            self->set_weights = encoder_set_weights;
             self->set_instance = encoder_set_instance;
             self->score = encoder_score;
             self->viterbi = encoder_viterbi;

@@ -86,10 +86,9 @@
     4) Goto 1 until convergence.
 */
 
-
-#ifdef    HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif/*HAVE_CONFIG_H*/
+#endif /*HAVE_CONFIG_H*/
 
 #include <os.h>
 
@@ -108,20 +107,21 @@
 #include "crf1d.h"
 #include "vecmath.h"
 
-#define MIN(a, b)   ((a) < (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-typedef struct {
-    floatval_t  c2;
-    floatval_t  lambda;
-    floatval_t  t0;
-    int         max_iterations;
-    int         period;
-    floatval_t  delta;
-    floatval_t  calibration_eta;
-    floatval_t  calibration_rate;
-    int         calibration_samples;
-    int         calibration_candidates;
-    int         calibration_max_trials;
+typedef struct
+{
+    floatval_t c2;
+    floatval_t lambda;
+    floatval_t t0;
+    int max_iterations;
+    int period;
+    floatval_t delta;
+    floatval_t calibration_eta;
+    floatval_t calibration_rate;
+    int calibration_samples;
+    int calibration_candidates;
+    int calibration_max_trials;
 } training_option_t;
 
 static int l2sgd(
@@ -137,8 +137,7 @@ static int l2sgd(
     int calibration,
     int period,
     const floatval_t epsilon,
-    floatval_t *ptr_loss
-    )
+    floatval_t *ptr_loss)
 {
     int i, epoch, ret = 0;
     floatval_t t = 0;
@@ -152,10 +151,12 @@ static int l2sgd(
     clock_t clk_prev, clk_begin = clock();
     const int K = gm->num_features;
 
-    if (!calibration) {
-        pf = (floatval_t*)malloc(sizeof(floatval_t) * period);
-        best_w = (floatval_t*)calloc(K, sizeof(floatval_t));
-        if (pf == NULL || best_w == NULL) {
+    if (!calibration)
+    {
+        pf = (floatval_t *)malloc(sizeof(floatval_t) * period);
+        best_w = (floatval_t *)calloc(K, sizeof(floatval_t));
+        if (pf == NULL || best_w == NULL)
+        {
             ret = CRFSUITEERR_OUTOFMEMORY;
             goto error_exit;
         }
@@ -165,10 +166,12 @@ static int l2sgd(
     vecset(w, 0, K);
 
     /* Loop for epochs. */
-    for (epoch = 1;epoch <= num_epochs;++epoch) {
+    for (epoch = 1; epoch <= num_epochs; ++epoch)
+    {
         clk_prev = clock();
 
-        if (!calibration) {
+        if (!calibration)
+        {
             logging(lg, "***** Epoch #%d *****\n", epoch);
             /* Shuffle the training instances. */
             dataset_shuffle(trainset);
@@ -176,7 +179,8 @@ static int l2sgd(
 
         /* Loop for instances. */
         sum_loss = 0.;
-        for (i = 0;i < N;++i) {
+        for (i = 0; i < N; ++i)
+        {
             const crfsuite_instance_t *inst = dataset_get(trainset, i);
 
             /* Update various factors. */
@@ -194,7 +198,8 @@ static int l2sgd(
         }
 
         /* Terminate when the loss is abnormal (NaN, -Inf, +Inf). */
-        if (!isfinite(loss)) {
+        if (!isfinite(loss))
+        {
             logging(lg, "ERROR: overflow loss\n");
             ret = CRFSUITEERR_OVERFLOW;
             sum_loss = loss;
@@ -211,26 +216,32 @@ static int l2sgd(
         sum_loss += 0.5 * lambda * norm2 * N;
 
         /* One epoch finished. */
-        if (!calibration) {
+        if (!calibration)
+        {
             /* Check if the current epoch is the best. */
-            if (sum_loss < best_sum_loss) {
+            if (sum_loss < best_sum_loss)
+            {
                 /* Store the feature weights to best_w. */
                 best_sum_loss = sum_loss;
                 veccopy(best_w, w, K);
             }
 
             /* We don't test the stopping criterion while period < epoch. */
-            if (period < epoch) {
-                improvement = (pf[(epoch-1) % period] - sum_loss) / sum_loss;
-            } else {
+            if (period < epoch)
+            {
+                improvement = (pf[(epoch - 1) % period] - sum_loss) / sum_loss;
+            }
+            else
+            {
                 improvement = epsilon;
             }
 
             /* Store the current value of the objective function. */
-            pf[(epoch-1) % period] = sum_loss;
+            pf[(epoch - 1) % period] = sum_loss;
 
             logging(lg, "Loss: %f\n", sum_loss);
-            if (period < epoch) {
+            if (period < epoch)
+            {
                 logging(lg, "Improvement ratio: %f\n", improvement);
             }
             logging(lg, "Feature L2-norm: %f\n", sqrt(norm2));
@@ -239,13 +250,15 @@ static int l2sgd(
             logging(lg, "Seconds required for this iteration: %.3f\n", (clock() - clk_prev) / (double)CLOCKS_PER_SEC);
 
             /* Holdout evaluation if necessary. */
-            if (testset != NULL) {
+            if (testset != NULL)
+            {
                 holdout_evaluation(gm, testset, w, lg);
             }
             logging(lg, "\n");
 
             /* Check for the stopping criterion. */
-            if (improvement < epsilon) {
+            if (improvement < epsilon)
+            {
                 ret = 0;
                 break;
             }
@@ -253,20 +266,28 @@ static int l2sgd(
     }
 
     /* Output the optimization result. */
-    if (!calibration) {
-        if (ret == 0) {
-            if (epoch < num_epochs) {
+    if (!calibration)
+    {
+        if (ret == 0)
+        {
+            if (epoch < num_epochs)
+            {
                 logging(lg, "SGD terminated with the stopping criteria\n");
-            } else {
+            }
+            else
+            {
                 logging(lg, "SGD terminated with the maximum number of iterations\n");
             }
-        } else {
+        }
+        else
+        {
             logging(lg, "SGD terminated with error code (%d)\n", ret);
         }
     }
 
     /* Restore the best weights. */
-    if (best_w != NULL) {
+    if (best_w != NULL)
+    {
         sum_loss = best_sum_loss;
         veccopy(w, best_w, K);
     }
@@ -274,7 +295,8 @@ static int l2sgd(
 error_exit:
     free(best_w);
     free(pf);
-    if (ptr_loss != NULL) {
+    if (ptr_loss != NULL)
+    {
         *ptr_loss = sum_loss;
     }
     return ret;
@@ -286,8 +308,7 @@ l2sgd_calibration(
     dataset_t *ds,
     floatval_t *w,
     logging_t *lg,
-    const training_option_t* opt
-    )
+    const training_option_t *opt)
 {
     int i;
     int dec = 0, ok, trials = 1;
@@ -321,7 +342,8 @@ l2sgd_calibration(
     /* Compute the initial loss. */
     gm->set_weights(gm, w, 1.);
     init_loss = 0;
-    for (i = 0;i < S;++i) {
+    for (i = 0; i < S; ++i)
+    {
         floatval_t score;
         const crfsuite_instance_t *inst = dataset_get(ds, i);
         gm->set_instance(gm, inst);
@@ -333,7 +355,8 @@ l2sgd_calibration(
     init_loss += 0.5 * lambda * vecdot(w, w, K) * N;
     logging(lg, "Initial loss: %f\n", init_loss);
 
-    while (num > 0 || !dec) {
+    while (num > 0 || !dec)
+    {
         logging(lg, "Trial #%d (eta = %f): ", trials, eta);
 
         /* Perform SGD for one epoch. */
@@ -347,32 +370,43 @@ l2sgd_calibration(
 
         /* Make sure that the learning rate decreases the log-likelihood. */
         ok = isfinite(loss) && (loss < init_loss);
-        if (ok) {
+        if (ok)
+        {
             logging(lg, "%f\n", loss);
             --num;
-        } else {
+        }
+        else
+        {
             logging(lg, "%f (worse)\n", loss);
         }
 
-        if (isfinite(loss) && loss < best_loss) {
+        if (isfinite(loss) && loss < best_loss)
+        {
             best_loss = loss;
             best_eta = eta;
         }
 
-        if (!dec) {
-            if (ok && 0 < num) {
+        if (!dec)
+        {
+            if (ok && 0 < num)
+            {
                 eta *= rate;
-            } else {
+            }
+            else
+            {
                 dec = 1;
                 num = opt->calibration_candidates;
                 eta = init_eta / rate;
             }
-        } else {
+        }
+        else
+        {
             eta /= rate;
         }
 
         ++trials;
-        if (opt->calibration_max_trials <= trials) {
+        if (opt->calibration_max_trials <= trials)
+        {
             break;
         }
     }
@@ -385,53 +419,44 @@ l2sgd_calibration(
     return 1.0 / (lambda * eta);
 }
 
-int exchange_options(crfsuite_params_t* params, training_option_t* opt, int mode)
+int exchange_options(crfsuite_params_t *params, training_option_t *opt, int mode)
 {
     BEGIN_PARAM_MAP(params, mode)
-        DDX_PARAM_FLOAT(
-            "c2", opt->c2, 1.,
-            "Coefficient for L2 regularization."
-            )
-        DDX_PARAM_INT(
-            "max_iterations", opt->max_iterations, 1000,
-            "The maximum number of iterations (epochs) for SGD optimization."
-            )
-        DDX_PARAM_INT(
-            "period", opt->period, 10,
-            "The duration of iterations to test the stopping criterion."
-            )
-        DDX_PARAM_FLOAT(
-            "delta", opt->delta, 1e-6,
-            "The threshold for the stopping criterion; an optimization process stops when\n"
-            "the improvement of the log likelihood over the last ${period} iterations is no\n"
-            "greater than this threshold."
-            )
-        DDX_PARAM_FLOAT(
-            "calibration.eta", opt->calibration_eta, 0.1,
-            "The initial value of learning rate (eta) used for calibration."
-            )
-        DDX_PARAM_FLOAT(
-            "calibration.rate", opt->calibration_rate, 2.,
-            "The rate of increase/decrease of learning rate for calibration."
-            )
-        DDX_PARAM_INT(
-            "calibration.samples", opt->calibration_samples, 1000,
-            "The number of instances used for calibration."
-            )
-        DDX_PARAM_INT(
-            "calibration.candidates", opt->calibration_candidates, 10,
-            "The number of candidates of learning rate."
-            )
-        DDX_PARAM_INT(
-            "calibration.max_trials", opt->calibration_max_trials, 20,
-            "The maximum number of trials of learning rates for calibration."
-            )
+    DDX_PARAM_FLOAT(
+        "c2", opt->c2, 1.,
+        "Coefficient for L2 regularization.")
+    DDX_PARAM_INT(
+        "max_iterations", opt->max_iterations, 1000,
+        "The maximum number of iterations (epochs) for SGD optimization.")
+    DDX_PARAM_INT(
+        "period", opt->period, 10,
+        "The duration of iterations to test the stopping criterion.")
+    DDX_PARAM_FLOAT(
+        "delta", opt->delta, 1e-6,
+        "The threshold for the stopping criterion; an optimization process stops when\n"
+        "the improvement of the log likelihood over the last ${period} iterations is no\n"
+        "greater than this threshold.")
+    DDX_PARAM_FLOAT(
+        "calibration.eta", opt->calibration_eta, 0.1,
+        "The initial value of learning rate (eta) used for calibration.")
+    DDX_PARAM_FLOAT(
+        "calibration.rate", opt->calibration_rate, 2.,
+        "The rate of increase/decrease of learning rate for calibration.")
+    DDX_PARAM_INT(
+        "calibration.samples", opt->calibration_samples, 1000,
+        "The number of instances used for calibration.")
+    DDX_PARAM_INT(
+        "calibration.candidates", opt->calibration_candidates, 10,
+        "The number of candidates of learning rate.")
+    DDX_PARAM_INT(
+        "calibration.max_trials", opt->calibration_max_trials, 20,
+        "The maximum number of trials of learning rates for calibration.")
     END_PARAM_MAP()
 
     return 0;
 }
 
-void crfsuite_train_l2sgd_init(crfsuite_params_t* params)
+void crfsuite_train_l2sgd_init(crfsuite_params_t *params)
 {
     exchange_options(params, NULL, 0);
 }
@@ -442,8 +467,7 @@ int crfsuite_train_l2sgd(
     dataset_t *testset,
     crfsuite_params_t *params,
     logging_t *lg,
-    floatval_t **ptr_w
-    )
+    floatval_t **ptr_w)
 {
     int ret = 0;
     floatval_t *w = NULL;
@@ -458,8 +482,9 @@ int crfsuite_train_l2sgd(
     exchange_options(params, &opt, -1);
 
     /* Allocate arrays. */
-    w = (floatval_t*)calloc(sizeof(floatval_t), K);
-    if (w == NULL) {
+    w = (floatval_t *)calloc(sizeof(floatval_t), K);
+    if (w == NULL)
+    {
         ret = CRFSUITEERR_OUTOFMEMORY;
         goto error_exit;
     }
@@ -491,8 +516,7 @@ int crfsuite_train_l2sgd(
         0,
         opt.period,
         opt.delta,
-        &loss
-        );
+        &loss);
 
     logging(lg, "Loss: %f\n", loss);
     logging(lg, "Total seconds required for training: %.3f\n", (clock() - clk_begin) / (double)CLOCKS_PER_SEC);

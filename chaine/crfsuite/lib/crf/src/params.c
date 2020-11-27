@@ -38,48 +38,54 @@
 #include <crfsuite.h>
 #include "quark.h"
 
-enum {
+enum
+{
     PT_NONE = 0,
     PT_INT,
     PT_FLOAT,
     PT_STRING,
 };
 
-typedef struct {
-    char*       name;
-    int         type;
-    int         val_i;
-    floatval_t  val_f;
-    char*       val_s;
-    char*       help;
+typedef struct
+{
+    char *name;
+    int type;
+    int val_i;
+    floatval_t val_f;
+    char *val_s;
+    char *help;
 } param_t;
 
-typedef struct {
+typedef struct
+{
     int num_params;
-    param_t* params;
+    param_t *params;
 } params_t;
 
 static char *mystrdup(const char *src)
 {
-    char *dst = (char*)malloc(strlen(src) + 1);
-    if (dst != NULL) {
+    char *dst = (char *)malloc(strlen(src) + 1);
+    if (dst != NULL)
+    {
         strcpy(dst, src);
     }
     return dst;
 }
 
-static int params_addref(crfsuite_params_t* params)
+static int params_addref(crfsuite_params_t *params)
 {
     return crfsuite_interlocked_increment(&params->nref);
 }
 
-static int params_release(crfsuite_params_t* params)
+static int params_release(crfsuite_params_t *params)
 {
     int count = crfsuite_interlocked_decrement(&params->nref);
-    if (count == 0) {
+    if (count == 0)
+    {
         int i;
-        params_t* pars = (params_t*)params->internal;
-        for (i = 0;i < pars->num_params;++i) {
+        params_t *pars = (params_t *)params->internal;
+        for (i = 0; i < pars->num_params; ++i)
+        {
             free(pars->params[i].name);
             free(pars->params[i].val_s);
             free(pars->params[i].help);
@@ -91,12 +97,14 @@ static int params_release(crfsuite_params_t* params)
     return count;
 }
 
-static param_t* find_param(params_t* pars, const char *name)
+static param_t *find_param(params_t *pars, const char *name)
 {
     int i;
 
-    for (i = 0;i < pars->num_params;++i) {
-        if (strcmp(pars->params[i].name, name) == 0) {
+    for (i = 0; i < pars->num_params; ++i)
+    {
+        if (strcmp(pars->params[i].name, name) == 0)
+        {
             return &pars->params[i];
         }
     }
@@ -104,25 +112,27 @@ static param_t* find_param(params_t* pars, const char *name)
     return NULL;
 }
 
-static int params_num(crfsuite_params_t* params)
+static int params_num(crfsuite_params_t *params)
 {
-    params_t* pars = (params_t*)params->internal;
+    params_t *pars = (params_t *)params->internal;
     return pars->num_params;
 }
 
-static int params_name(crfsuite_params_t* params, int i, char **ptr_name)
+static int params_name(crfsuite_params_t *params, int i, char **ptr_name)
 {
-    params_t* pars = (params_t*)params->internal;
+    params_t *pars = (params_t *)params->internal;
     *ptr_name = mystrdup(pars->params[i].name);
     return 0;
 }
 
-static int params_set(crfsuite_params_t* params, const char *name, const char *value)
+static int params_set(crfsuite_params_t *params, const char *name, const char *value)
 {
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    switch (par->type) {
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    switch (par->type)
+    {
     case PT_INT:
         par->val_i = (value != NULL) ? atoi(value) : 0;
         break;
@@ -136,19 +146,21 @@ static int params_set(crfsuite_params_t* params, const char *name, const char *v
     return 0;
 }
 
-static int params_get(crfsuite_params_t* params, const char *name, char **value)
+static int params_get(crfsuite_params_t *params, const char *name, char **value)
 {
     char buffer[1024];
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    switch (par->type) {
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    switch (par->type)
+    {
     case PT_INT:
-        snprintf(buffer, sizeof(buffer)-1, "%d", par->val_i);
+        snprintf(buffer, sizeof(buffer) - 1, "%d", par->val_i);
         *value = mystrdup(buffer);
         break;
     case PT_FLOAT:
-        snprintf(buffer, sizeof(buffer)-1, "%f", par->val_f);
+        snprintf(buffer, sizeof(buffer) - 1, "%f", par->val_f);
         *value = mystrdup(buffer);
         break;
     case PT_STRING:
@@ -157,79 +169,94 @@ static int params_get(crfsuite_params_t* params, const char *name, char **value)
     return 0;
 }
 
-static void params_free(crfsuite_params_t* params, const char *value)
+static void params_free(crfsuite_params_t *params, const char *value)
 {
-    free((char*)value);
+    free((char *)value);
 }
 
-static int params_set_int(crfsuite_params_t* params, const char *name, int value)
+static int params_set_int(crfsuite_params_t *params, const char *name, int value)
 {
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    if (par->type != PT_INT) return -1;
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    if (par->type != PT_INT)
+        return -1;
     par->val_i = value;
     return 0;
 }
 
-static int params_set_float(crfsuite_params_t* params, const char *name, floatval_t value)
+static int params_set_float(crfsuite_params_t *params, const char *name, floatval_t value)
 {
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    if (par->type != PT_FLOAT) return -1;
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    if (par->type != PT_FLOAT)
+        return -1;
     par->val_f = value;
     return 0;
 }
 
-static int params_set_string(crfsuite_params_t* params, const char *name, const char *value)
+static int params_set_string(crfsuite_params_t *params, const char *name, const char *value)
 {
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    if (par->type != PT_STRING) return -1;
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    if (par->type != PT_STRING)
+        return -1;
     free(par->val_s);
     par->val_s = mystrdup(value);
     return 0;
 }
 
-static int params_get_int(crfsuite_params_t* params, const char *name, int *value)
+static int params_get_int(crfsuite_params_t *params, const char *name, int *value)
 {
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    if (par->type != PT_INT) return -1;
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    if (par->type != PT_INT)
+        return -1;
     *value = par->val_i;
     return 0;
 }
 
-static int params_get_float(crfsuite_params_t* params, const char *name, floatval_t *value)
+static int params_get_float(crfsuite_params_t *params, const char *name, floatval_t *value)
 {
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    if (par->type != PT_FLOAT) return -1;
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    if (par->type != PT_FLOAT)
+        return -1;
     *value = par->val_f;
     return 0;
 }
 
-static int params_get_string(crfsuite_params_t* params, const char *name, char **value)
+static int params_get_string(crfsuite_params_t *params, const char *name, char **value)
 {
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    if (par->type != PT_STRING) return -1;
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    if (par->type != PT_STRING)
+        return -1;
     *value = par->val_s;
     return 0;
 }
 
-static int params_help(crfsuite_params_t* params, const char *name, char **ptr_type, char **ptr_help)
+static int params_help(crfsuite_params_t *params, const char *name, char **ptr_type, char **ptr_help)
 {
-    params_t* pars = (params_t*)params->internal;
-    param_t* par = find_param(pars, name);
-    if (par == NULL) return -1;
-    if (ptr_type != NULL) {
-        switch (par->type) {
+    params_t *pars = (params_t *)params->internal;
+    param_t *par = find_param(pars, name);
+    if (par == NULL)
+        return -1;
+    if (ptr_type != NULL)
+    {
+        switch (par->type)
+        {
         case PT_INT:
             *ptr_type = mystrdup("int");
             break;
@@ -243,20 +270,23 @@ static int params_help(crfsuite_params_t* params, const char *name, char **ptr_t
             *ptr_type = mystrdup("unknown");
         }
     }
-    if (ptr_help != NULL) {
+    if (ptr_help != NULL)
+    {
         *ptr_help = mystrdup(par->help);
     }
     return 0;
 }
 
-crfsuite_params_t* params_create_instance()
+crfsuite_params_t *params_create_instance()
 {
-    crfsuite_params_t* params = (crfsuite_params_t*)calloc(1, sizeof(crfsuite_params_t));
+    crfsuite_params_t *params = (crfsuite_params_t *)calloc(1, sizeof(crfsuite_params_t));
 
-    if (params != NULL) {
+    if (params != NULL)
+    {
         /* Construct the internal data. */
-        params->internal = (params_t*)calloc(1, sizeof(params_t));
-        if (params->internal == NULL) {
+        params->internal = (params_t *)calloc(1, sizeof(params_t));
+        if (params->internal == NULL)
+        {
             free(params);
             return NULL;
         }
@@ -282,12 +312,13 @@ crfsuite_params_t* params_create_instance()
     return params;
 }
 
-int params_add_int(crfsuite_params_t* params, const char *name, int value, const char *help)
+int params_add_int(crfsuite_params_t *params, const char *name, int value, const char *help)
 {
-    param_t* par = NULL;
-    params_t* pars = (params_t*)params->internal;
-    pars->params = (param_t*)realloc(pars->params, (pars->num_params+1) * sizeof(param_t));
-    if (pars->params == NULL) {
+    param_t *par = NULL;
+    params_t *pars = (params_t *)params->internal;
+    pars->params = (param_t *)realloc(pars->params, (pars->num_params + 1) * sizeof(param_t));
+    if (pars->params == NULL)
+    {
         return -1;
     }
 
@@ -300,12 +331,13 @@ int params_add_int(crfsuite_params_t* params, const char *name, int value, const
     return 0;
 }
 
-int params_add_float(crfsuite_params_t* params, const char *name, floatval_t value, const char *help)
+int params_add_float(crfsuite_params_t *params, const char *name, floatval_t value, const char *help)
 {
-    param_t* par = NULL;
-    params_t* pars = (params_t*)params->internal;
-    pars->params = (param_t*)realloc(pars->params, (pars->num_params+1) * sizeof(param_t));
-    if (pars->params == NULL) {
+    param_t *par = NULL;
+    params_t *pars = (params_t *)params->internal;
+    pars->params = (param_t *)realloc(pars->params, (pars->num_params + 1) * sizeof(param_t));
+    if (pars->params == NULL)
+    {
         return -1;
     }
 
@@ -318,12 +350,13 @@ int params_add_float(crfsuite_params_t* params, const char *name, floatval_t val
     return 0;
 }
 
-int params_add_string(crfsuite_params_t* params, const char *name, const char *value, const char *help)
+int params_add_string(crfsuite_params_t *params, const char *name, const char *value, const char *help)
 {
-    param_t* par = NULL;
-    params_t* pars = (params_t*)params->internal;
-    pars->params = (param_t*)realloc(pars->params, (pars->num_params+1) * sizeof(param_t));
-    if (pars->params == NULL) {
+    param_t *par = NULL;
+    params_t *pars = (params_t *)params->internal;
+    pars->params = (param_t *)realloc(pars->params, (pars->num_params + 1) * sizeof(param_t));
+    if (pars->params == NULL)
+    {
         return -1;
     }
 

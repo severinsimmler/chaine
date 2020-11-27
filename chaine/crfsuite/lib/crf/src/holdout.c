@@ -30,9 +30,9 @@
 
 /* $Id$ */
 
-#ifdef    HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif/*HAVE_CONFIG_H*/
+#endif /*HAVE_CONFIG_H*/
 
 #include <os.h>
 
@@ -45,8 +45,7 @@ void holdout_evaluation(
     encoder_t *gm,
     dataset_t *ds,
     const floatval_t *w,
-    logging_t *lg
-    )
+    logging_t *lg)
 {
     int i;
     crfsuite_evaluation_t eval;
@@ -59,13 +58,15 @@ void holdout_evaluation(
 
     gm->set_weights(gm, w, 1.);
 
-    for (i = 0;i < N;++i) {
+    for (i = 0; i < N; ++i)
+    {
         floatval_t score;
         const crfsuite_instance_t *inst = dataset_get(ds, i);
 
-        if (max_length < inst->num_items) {
+        if (max_length < inst->num_items)
+        {
             free(viterbi);
-            viterbi = (int*)malloc(sizeof(int) * inst->num_items);
+            viterbi = (int *)malloc(sizeof(int) * inst->num_items);
         }
 
         gm->set_instance(gm, inst);
@@ -77,5 +78,6 @@ void holdout_evaluation(
     /* Report the performance. */
     crfsuite_evaluation_finalize(&eval);
     crfsuite_evaluation_output(&eval, ds->data->labels, lg->func, lg->instance);
-	if(viterbi)free(viterbi);
+    if (viterbi)
+        free(viterbi);
 }

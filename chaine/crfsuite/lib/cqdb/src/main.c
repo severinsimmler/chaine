@@ -37,46 +37,51 @@
 #include "cqdb.h"
 
 //#define    TEST_WRITE    1
-#define    CHECK_VALIDITY
+#define CHECK_VALIDITY
 
-#define    DBNAME        "test.cqdb"
-#define    NUMELEMS    1000000
+#define DBNAME "test.cqdb"
+#define NUMELEMS 1000000
 
-#ifdef    TEST_WRITE
+#ifdef TEST_WRITE
 
 int main(int argc, char *argv[])
 {
     int i, ret;
     char str[10];
     FILE *fp = NULL;
-    cqdb_writer_t* dbw = NULL;
+    cqdb_writer_t *dbw = NULL;
 
     // Open a file for writing.
     fp = fopen(DBNAME, "wb");
-    if (fp == NULL) {
+    if (fp == NULL)
+    {
         fprintf(stderr, "ERROR: failed to open the file.\n");
         return 1;
     }
 
     // Create a CQDB on the file stream.
     dbw = cqdb_writer(fp, 0);
-    if (dbw == NULL) {
+    if (dbw == NULL)
+    {
         fprintf(stderr, "ERROR: failed to create a CQDB on the file.\n");
         goto error_exit;
     }
 
     // Put string/integer associations, "00000001"/1, ..., "01000000"/1000000.
-    for (i = 0;i < NUMELEMS;++i) {
+    for (i = 0; i < NUMELEMS; ++i)
+    {
         sprintf(str, "%08d", i);
-        if (ret = cqdb_writer_put(dbw, str, i)) {
+        if (ret = cqdb_writer_put(dbw, str, i))
+        {
             fprintf(stderr, "ERROR: failed to put a pair '%s'/%d.\n", str, i);
-            goto error_exit;    
+            goto error_exit;
         }
     }
 
     // Close the CQDB.
-    if (ret = cqdb_writer_close(dbw)) {
-        fprintf(stderr, "ERROR: failed to close the CQDB.\n");        
+    if (ret = cqdb_writer_close(dbw))
+    {
+        fprintf(stderr, "ERROR: failed to close the CQDB.\n");
         goto error_exit;
     }
 
@@ -85,8 +90,10 @@ int main(int argc, char *argv[])
     return 0;
 
 error_exit:
-    if (dbw != NULL) cqdb_writer_close(dbw);
-    if (fp != NULL) fclose(fp);
+    if (dbw != NULL)
+        cqdb_writer_close(dbw);
+    if (fp != NULL)
+        fclose(fp);
     return 1;
 }
 
@@ -99,11 +106,12 @@ int main(int argc, char *argv[])
     const char *value = NULL;
     char str[10], *buffer = NULL;
     FILE *fp = NULL;
-    cqdb_t* db = NULL;
+    cqdb_t *db = NULL;
 
     // Open the database.
     fp = fopen(DBNAME, "rb");
-    if (fp == NULL) {
+    if (fp == NULL)
+    {
         fprintf(stderr, "ERROR: failed to open the file\n");
         return 1;
     }
@@ -115,7 +123,8 @@ int main(int argc, char *argv[])
 
     // Read the content of the file.
     buffer = (char *)malloc(size);
-    if (buffer == NULL) {
+    if (buffer == NULL)
+    {
         fprintf(stderr, "ERROR: out of memory.\n");
         goto error_exit;
     }
@@ -125,33 +134,38 @@ int main(int argc, char *argv[])
 
     // Open the database on the memory.
     db = cqdb_reader(buffer, size);
-    if (db == NULL) {
+    if (db == NULL)
+    {
         fprintf(stderr, "ERROR: failed to open a CQDB on the file.\n");
         goto error_exit;
     }
 
     // Forward lookups: strings to integer identifiers.
-    for (i = 0;i < NUMELEMS;++i) {
+    for (i = 0; i < NUMELEMS; ++i)
+    {
         sprintf(str, "%08d", i);
         j = cqdb_to_id(db, str);
-#ifdef    CHECK_VALIDITY
-        if (i != j) {
+#ifdef CHECK_VALIDITY
+        if (i != j)
+        {
             fprintf(stderr, "ERROR: inconsistency error '%s'/%d.\n", str, i);
-            goto error_exit;    
+            goto error_exit;
         }
-#endif/*CHECK_VALIDITY*/
+#endif /*CHECK_VALIDITY*/
     }
 
     // Backward lookups: integer identifiers to strings.
-    for (i = 0;i < NUMELEMS;++i) {
+    for (i = 0; i < NUMELEMS; ++i)
+    {
         sprintf(str, "%08d", i);
         value = cqdb_to_string(db, i);
-#ifdef    CHECK_VALIDITY
-        if (strcmp(str, value) != 0) {
+#ifdef CHECK_VALIDITY
+        if (strcmp(str, value) != 0)
+        {
             fprintf(stderr, "ERROR: inconsistency error '%s'/%d.\n", str, i);
-            goto error_exit;    
+            goto error_exit;
         }
-#endif/*CHECK_VALIDITY*/
+#endif /*CHECK_VALIDITY*/
     }
 
     cqdb_delete(db);
@@ -160,9 +174,11 @@ int main(int argc, char *argv[])
     return 0;
 
 error_exit:
-    if (fp != NULL) fclose(fp);
-    if (buffer != NULL) free(buffer);
+    if (fp != NULL)
+        fclose(fp);
+    if (buffer != NULL)
+        free(buffer);
     return 1;
 }
 
-#endif/*TEST_WRITE*/
+#endif /*TEST_WRITE*/

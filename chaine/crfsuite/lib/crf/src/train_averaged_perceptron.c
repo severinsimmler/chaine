@@ -30,9 +30,9 @@
 
 /* $Id$ */
 
-#ifdef    HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif/*HAVE_CONFIG_H*/
+#endif /*HAVE_CONFIG_H*/
 
 #include <os.h>
 
@@ -49,7 +49,8 @@
 /**
  * Training parameters (configurable with crfsuite_params_t interface).
  */
-typedef struct {
+typedef struct
+{
     int max_iterations;
     floatval_t epsilon;
 } training_option_t;
@@ -57,7 +58,8 @@ typedef struct {
 /**
  * Internal data structure for updating (averaging) feature weights.
  */
-typedef struct {
+typedef struct
+{
     floatval_t *w;
     floatval_t *ws;
     floatval_t c;
@@ -66,7 +68,7 @@ typedef struct {
 
 static void update_weights(void *instance, int fid, floatval_t value)
 {
-    update_data *ud = (update_data*)instance;
+    update_data *ud = (update_data *)instance;
     ud->w[fid] += ud->c * value;
     ud->ws[fid] += ud->cs * value;
 }
@@ -74,31 +76,31 @@ static void update_weights(void *instance, int fid, floatval_t value)
 static int diff(int *x, int *y, int n)
 {
     int i, d = 0;
-    for (i = 0;i < n;++i) {
-        if (x[i] != y[i]) {
+    for (i = 0; i < n; ++i)
+    {
+        if (x[i] != y[i])
+        {
             ++d;
         }
     }
     return d;
 }
 
-static int exchange_options(crfsuite_params_t* params, training_option_t* opt, int mode)
+static int exchange_options(crfsuite_params_t *params, training_option_t *opt, int mode)
 {
     BEGIN_PARAM_MAP(params, mode)
-        DDX_PARAM_INT(
-            "max_iterations", opt->max_iterations, 100,
-            "The maximum number of iterations."
-            )
-        DDX_PARAM_FLOAT(
-            "epsilon", opt->epsilon, 0.,
-            "The stopping criterion (the ratio of incorrect label predictions)."
-            )
+    DDX_PARAM_INT(
+        "max_iterations", opt->max_iterations, 100,
+        "The maximum number of iterations.")
+    DDX_PARAM_FLOAT(
+        "epsilon", opt->epsilon, 0.,
+        "The stopping criterion (the ratio of incorrect label predictions).")
     END_PARAM_MAP()
 
     return 0;
 }
 
-void crfsuite_train_averaged_perceptron_init(crfsuite_params_t* params)
+void crfsuite_train_averaged_perceptron_init(crfsuite_params_t *params)
 {
     exchange_options(params, NULL, 0);
 }
@@ -109,8 +111,7 @@ int crfsuite_train_averaged_perceptron(
     dataset_t *testset,
     crfsuite_params_t *params,
     logging_t *lg,
-    floatval_t **ptr_w
-    )
+    floatval_t **ptr_w)
 {
     int n, i, c, ret = 0;
     int *viterbi = NULL;
@@ -124,18 +125,19 @@ int crfsuite_train_averaged_perceptron(
     update_data ud;
     clock_t begin = clock();
 
-	/* Initialize the variable. */
-	memset(&ud, 0, sizeof(ud));
+    /* Initialize the variable. */
+    memset(&ud, 0, sizeof(ud));
 
     /* Obtain parameter values. */
     exchange_options(params, &opt, -1);
 
     /* Allocate arrays. */
-    w = (floatval_t*)calloc(sizeof(floatval_t), K);
-    ws = (floatval_t*)calloc(sizeof(floatval_t), K);
-    wa = (floatval_t*)calloc(sizeof(floatval_t), K);
-    viterbi = (int*)calloc(sizeof(int), T);
-    if (w == NULL || ws == NULL || wa == NULL || viterbi == NULL) {
+    w = (floatval_t *)calloc(sizeof(floatval_t), K);
+    ws = (floatval_t *)calloc(sizeof(floatval_t), K);
+    wa = (floatval_t *)calloc(sizeof(floatval_t), K);
+    viterbi = (int *)calloc(sizeof(int), T);
+    if (w == NULL || ws == NULL || wa == NULL || viterbi == NULL)
+    {
         ret = CRFSUITEERR_OUTOFMEMORY;
         goto error_exit;
     }
@@ -150,16 +152,18 @@ int crfsuite_train_averaged_perceptron(
     ud.w = w;
     ud.ws = ws;
 
-	/* Loop for epoch. */
-    for (i = 0;i < opt.max_iterations;++i) {
+    /* Loop for epoch. */
+    for (i = 0; i < opt.max_iterations; ++i)
+    {
         floatval_t norm = 0., loss = 0.;
         clock_t iteration_begin = clock();
 
         /* Shuffle the instances. */
         dataset_shuffle(trainset);
 
-		/* Loop for each instance. */
-        for (n = 0;n < N;++n) {
+        /* Loop for each instance. */
+        for (n = 0; n < N; ++n)
+        {
             int d = 0;
             floatval_t score;
             const crfsuite_instance_t *inst = dataset_get(trainset, n);
@@ -173,7 +177,8 @@ int crfsuite_train_averaged_perceptron(
 
             /* Compute the number of different labels. */
             d = diff(inst->labels, viterbi, inst->num_items);
-            if (0 < d) {
+            if (0 < d)
+            {
                 /*
                     For every feature k on the correct path:
                         w[k] += 1; ws[k] += c;
@@ -199,23 +204,25 @@ int crfsuite_train_averaged_perceptron(
 
         /* Perform averaging to wa. */
         veccopy(wa, w, K);
-        vecasub(wa, 1./c, ws, K);
+        vecasub(wa, 1. / c, ws, K);
 
         /* Output the progress. */
-        logging(lg, "***** Iteration #%d *****\n", i+1);
+        logging(lg, "***** Iteration #%d *****\n", i + 1);
         logging(lg, "Loss: %f\n", loss);
         logging(lg, "Feature norm: %f\n", sqrt(vecdot(wa, wa, K)));
         logging(lg, "Seconds required for this iteration: %.3f\n", (clock() - iteration_begin) / (double)CLOCKS_PER_SEC);
 
         /* Holdout evaluation if necessary. */
-        if (testset != NULL) {
+        if (testset != NULL)
+        {
             holdout_evaluation(gm, testset, wa, lg);
         }
 
         logging(lg, "\n");
 
         /* Convergence test. */
-        if (loss / N < opt.epsilon) {
+        if (loss / N < opt.epsilon)
+        {
             logging(lg, "Terminated with the stopping criterion\n");
             logging(lg, "\n");
             break;

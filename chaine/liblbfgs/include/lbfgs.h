@@ -29,28 +29,29 @@
 #ifndef __LBFGS_H__
 #define __LBFGS_H__
 
-#ifdef  __cplusplus
-extern "C" {
-#endif/*__cplusplus*/
+#ifdef __cplusplus
+extern "C"
+{
+#endif /*__cplusplus*/
 
 /*
  * The default precision of floating point values is 64bit (double).
  */
 #ifndef LBFGS_FLOAT
-#define LBFGS_FLOAT     64
-#endif/*LBFGS_FLOAT*/
+#define LBFGS_FLOAT 64
+#endif /*LBFGS_FLOAT*/
 
 /*
  * Activate optimization routines for IEEE754 floating point values.
  */
 #ifndef LBFGS_IEEE_FLOAT
-#define LBFGS_IEEE_FLOAT    1
-#endif/*LBFGS_IEEE_FLOAT*/
+#define LBFGS_IEEE_FLOAT 1
+#endif /*LBFGS_IEEE_FLOAT*/
 
-#if     LBFGS_FLOAT == 32
-typedef float lbfgsfloatval_t;
+#if LBFGS_FLOAT == 32
+  typedef float lbfgsfloatval_t;
 
-#elif   LBFGS_FLOAT == 64
+#elif LBFGS_FLOAT == 64
 typedef double lbfgsfloatval_t;
 
 #else
@@ -58,20 +59,20 @@ typedef double lbfgsfloatval_t;
 
 #endif
 
-
-/** 
+  /** 
  * \addtogroup liblbfgs_api libLBFGS API
  * @{
  *
  *  The libLBFGS API.
  */
 
-/**
+  /**
  * Return values of lbfgs().
  * 
  *  Roughly speaking, a negative value indicates an error.
  */
-enum {
+  enum
+  {
     /** L-BFGS reaches convergence. */
     LBFGS_SUCCESS = 0,
     LBFGS_CONVERGENCE = 0,
@@ -144,12 +145,13 @@ enum {
     LBFGSERR_INVALIDPARAMETERS,
     /** The current search direction increases the objective function value. */
     LBFGSERR_INCREASEGRADIENT,
-};
+  };
 
-/**
+  /**
  * Line search algorithms.
  */
-enum {
+  enum
+  {
     /** The default algorithm (MoreThuente method). */
     LBFGS_LINESEARCH_DEFAULT = 0,
     /** MoreThuente method proposd by More and Thuente. */
@@ -188,14 +190,15 @@ enum {
      *  a is the step length.
      */
     LBFGS_LINESEARCH_BACKTRACKING_STRONG_WOLFE = 3,
-};
+  };
 
-/**
+  /**
  * L-BFGS optimization parameters.
  *  Call lbfgs_parameter_init() function to initialize parameters to the
  *  default values.
  */
-typedef struct {
+  typedef struct
+  {
     /**
      * The number of corrections to approximate the inverse hessian matrix.
      *  The L-BFGS routine stores the computation results of previous \ref m
@@ -204,7 +207,7 @@ typedef struct {
      *  (corrections). The default value is \c 6. Values less than \c 3 are
      *  not recommended. Large values will result in excessive computing time.
      */
-    int             m;
+    int m;
 
     /**
      * Epsilon for convergence test.
@@ -223,7 +226,7 @@ typedef struct {
      *  parameter is zero, the library does not perform the delta-based
      *  convergence test. The default value is \c 0.
      */
-    int             past;
+    int past;
 
     /**
      * Delta for convergence test.
@@ -233,7 +236,7 @@ typedef struct {
      *      (f' - f) / f < \ref delta,
      *  where f' is the objective value of \ref past iterations ago, and f is
      *  the objective value of the current iteration.
-     *  The default value is \c 1e-5.
+     *  The default value is \c 0.
      */
     lbfgsfloatval_t delta;
 
@@ -245,21 +248,21 @@ typedef struct {
      *  optimization process until a convergence or error. The default value
      *  is \c 0.
      */
-    int             max_iterations;
+    int max_iterations;
 
     /**
      * The line search algorithm.
      *  This parameter specifies a line search algorithm to be used by the
      *  L-BFGS routine.
      */
-    int             linesearch;
+    int linesearch;
 
     /**
      * The maximum number of trials for the line search.
      *  This parameter controls the number of function and gradients evaluations
-     *  per iteration for the line search routine. The default value is \c 40.
+     *  per iteration for the line search routine. The default value is \c 20.
      */
-    int             max_linesearch;
+    int max_linesearch;
 
     /**
      * The minimum step of the line search routine.
@@ -345,7 +348,7 @@ typedef struct {
      *  variables, x_1, ..., x_{b-1} (e.g., a bias term of logistic
      *  regression) from being regularized. The default value is zero.
      */
-    int             orthantwise_start;
+    int orthantwise_start;
 
     /**
      * End index for computing L1 norm of the variables.
@@ -354,11 +357,10 @@ typedef struct {
      *  specifies the index number at which the library stops computing the
      *  L1 norm of the variables x,
      */
-    int             orthantwise_end;
-} lbfgs_parameter_t;
+    int orthantwise_end;
+  } lbfgs_parameter_t;
 
-
-/**
+  /**
  * Callback interface to provide objective function and gradient evaluations.
  *
  *  The lbfgs() function call this function to obtain the values of objective
@@ -375,15 +377,14 @@ typedef struct {
  *  @retval lbfgsfloatval_t The value of the objective function for the current
  *                          variables.
  */
-typedef lbfgsfloatval_t (*lbfgs_evaluate_t)(
-    void *instance,
-    const lbfgsfloatval_t *x,
-    lbfgsfloatval_t *g,
-    const int n,
-    const lbfgsfloatval_t step
-    );
+  typedef lbfgsfloatval_t (*lbfgs_evaluate_t)(
+      void *instance,
+      const lbfgsfloatval_t *x,
+      lbfgsfloatval_t *g,
+      const int n,
+      const lbfgsfloatval_t step);
 
-/**
+  /**
  * Callback interface to receive the progress of the optimization process.
  *
  *  The lbfgs() function call this function for each iteration. Implementing
@@ -403,20 +404,19 @@ typedef lbfgsfloatval_t (*lbfgs_evaluate_t)(
  *  @retval int         Zero to continue the optimization process. Returning a
  *                      non-zero value will cancel the optimization process.
  */
-typedef int (*lbfgs_progress_t)(
-    void *instance,
-    const lbfgsfloatval_t *x,
-    const lbfgsfloatval_t *g,
-    const lbfgsfloatval_t fx,
-    const lbfgsfloatval_t xnorm,
-    const lbfgsfloatval_t gnorm,
-    const lbfgsfloatval_t step,
-    int n,
-    int k,
-    int ls
-    );
+  typedef int (*lbfgs_progress_t)(
+      void *instance,
+      const lbfgsfloatval_t *x,
+      const lbfgsfloatval_t *g,
+      const lbfgsfloatval_t fx,
+      const lbfgsfloatval_t xnorm,
+      const lbfgsfloatval_t gnorm,
+      const lbfgsfloatval_t step,
+      int n,
+      int k,
+      int ls);
 
-/*
+  /*
 A user must implement a function compatible with ::lbfgs_evaluate_t (evaluation
 callback) and pass the pointer to the callback function to lbfgs() arguments.
 Similarly, a user can implement a function compatible with ::lbfgs_progress_t
@@ -437,7 +437,7 @@ when:
 In this formula, ||.|| denotes the Euclidean norm.
 */
 
-/**
+  /**
  * Start a L-BFGS optimization.
  *
  *  @param  n           The number of variables.
@@ -474,17 +474,16 @@ In this formula, ||.|| denotes the Euclidean norm.
  *                      minimization process terminates without an error. A
  *                      non-zero value indicates an error.
  */
-int lbfgs(
-    int n,
-    lbfgsfloatval_t *x,
-    lbfgsfloatval_t *ptr_fx,
-    lbfgs_evaluate_t proc_evaluate,
-    lbfgs_progress_t proc_progress,
-    void *instance,
-    lbfgs_parameter_t *param
-    );
+  int lbfgs(
+      int n,
+      lbfgsfloatval_t *x,
+      lbfgsfloatval_t *ptr_fx,
+      lbfgs_evaluate_t proc_evaluate,
+      lbfgs_progress_t proc_progress,
+      void *instance,
+      lbfgs_parameter_t *param);
 
-/**
+  /**
  * Initialize L-BFGS parameters to the default values.
  *
  *  Call this function to fill a parameter structure with the default values
@@ -492,9 +491,9 @@ int lbfgs(
  *
  *  @param  param       The pointer to the parameter structure.
  */
-void lbfgs_parameter_init(lbfgs_parameter_t *param);
+  void lbfgs_parameter_init(lbfgs_parameter_t *param);
 
-/**
+  /**
  * Allocate an array for variables.
  *
  *  This function allocates an array of variables for the convenience of
@@ -505,30 +504,21 @@ void lbfgs_parameter_init(lbfgs_parameter_t *param);
  *  
  *  @param  n           The number of variables.
  */
-lbfgsfloatval_t* lbfgs_malloc(int n);
+  lbfgsfloatval_t *lbfgs_malloc(int n);
 
-/**
+  /**
  * Free an array of variables.
  *  
  *  @param  x           The array of variables allocated by ::lbfgs_malloc
  *                      function.
  */
-void lbfgs_free(lbfgsfloatval_t *x);
+  void lbfgs_free(lbfgsfloatval_t *x);
 
-/**
- * Get string description of an lbfgs() return code.
- *
- *  @param err          A value returned by lbfgs().
- */
-const char* lbfgs_strerror(int err);
+  /** @} */
 
-/** @} */
-
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
-#endif/*__cplusplus*/
-
-
+#endif /*__cplusplus*/
 
 /**
 @mainpage libLBFGS: a library of Limited-memory Broyden-Fletcher-Goldfarb-Shanno (L-BFGS)
@@ -752,4 +742,4 @@ licence.
   <a href="http://cctbx.sourceforge.net/current_cvs/c_plus_plus/namespacescitbx_1_1lbfgs.html">scitbx::lbfgs</a>.
 */
 
-#endif/*__LBFGS_H__*/
+#endif /*__LBFGS_H__*/

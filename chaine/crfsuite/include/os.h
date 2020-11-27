@@ -30,37 +30,36 @@
 
 /* $Id$ */
 
-#ifndef    __OS_H__
-#define    __OS_H__
-
+#ifndef __OS_H__
+#define __OS_H__
 
 //#define    __SSE__ 1
-#define    LBFGS_FLOAT        64
+#define LBFGS_FLOAT 64
 
-#ifdef    _MSC_VER
+#ifdef _MSC_VER
 /* Microsoft Visual C/C++ specific */
 
-#define    _CRT_SECURE_NO_WARNINGS 1
+#define _CRT_SECURE_NO_WARNINGS 1
 #pragma warning(disable : 4996)
 
-#define alloca      _alloca
-#define strdup      _strdup
-#define open        _open
+#define alloca _alloca
+#define strdup _strdup
+#define open _open
 
-#if    _MSC_VER < 1900
+#if _MSC_VER < 1900
 /* Pre Microsoft Visual C 2015 */
 
-#define isfinite    _finite
-#define snprintf    _snprintf
-#endif/*_MSC_VER < 1900 */ 
+#define isfinite _finite
+#define snprintf _snprintf
+#endif /*_MSC_VER < 1900 */
 
-#ifndef    __cplusplus
+#ifndef __cplusplus
 /* Microsoft Visual C specific */
 
-#define    inline    __forceinline
+#define inline __forceinline
 
-#endif/*__cplusplus*/
+#endif /*__cplusplus*/
 
-#endif/*_MSC_VER*/
+#endif /*_MSC_VER*/
 
-#endif/*__OS_H__*/
+#endif /*__OS_H__*/

@@ -31,12 +31,10 @@
 
 /* $Id$ */
 
-#ifndef    __CQDB_H__
-#define    __CQDB_H__
+#ifndef __CQDB_H__
+#define __CQDB_H__
 
 /** @file */
-
-
 
 /** 
  * \addtogroup cqdb_const CQDB Constants
@@ -48,29 +46,29 @@
 /**
  * CQDB flags.
  */
-enum {
-    CQDB_NONE = 0,                        /**< No flag. */
-    CQDB_ONEWAY = 0x00000001,            /**< A reverse lookup array is omitted. */
-    CQDB_ERROR_OCCURRED = 0x00010000,    /**< An error has occurred. */
+enum
+{
+    CQDB_NONE = 0,                    /**< No flag. */
+    CQDB_ONEWAY = 0x00000001,         /**< A reverse lookup array is omitted. */
+    CQDB_ERROR_OCCURRED = 0x00010000, /**< An error has occurred. */
 };
 
 /**
  * CQDB status codes.
  */
-enum {
-    CQDB_SUCCESS = 0,                    /**< Success. */
-    CQDB_ERROR = -1024,                    /**< Unspecified error. */
-    CQDB_ERROR_NOTFOUND,                /**< String not found. */
-    CQDB_ERROR_OUTOFMEMORY,                /**< Insufficient memory. */
-    CQDB_ERROR_FILEWRITE,                /**< Error in fwrite() operations. */
-    CQDB_ERROR_FILETELL,                /**< Error in ftell() operations. */
-    CQDB_ERROR_FILESEEK,                /**< Error in fseek() operations. */
-    CQDB_ERROR_INVALIDID,                /**< Invalid parameters. */
+enum
+{
+    CQDB_SUCCESS = 0,       /**< Success. */
+    CQDB_ERROR = -1024,     /**< Unspecified error. */
+    CQDB_ERROR_NOTFOUND,    /**< String not found. */
+    CQDB_ERROR_OUTOFMEMORY, /**< Insufficient memory. */
+    CQDB_ERROR_FILEWRITE,   /**< Error in fwrite() operations. */
+    CQDB_ERROR_FILETELL,    /**< Error in ftell() operations. */
+    CQDB_ERROR_FILESEEK,    /**< Error in fseek() operations. */
+    CQDB_ERROR_INVALIDID,   /**< Invalid parameters. */
 };
 
 /** @} */
-
-
 
 /** 
  * \addtogroup cqdb_writer CQDB Writer API
@@ -96,7 +94,7 @@ enum {
  */
 
 struct tag_cqdb_writer;
-typedef struct tag_cqdb_writer cqdb_writer_t;    /**< Typedef of a CQDB writer. */
+typedef struct tag_cqdb_writer cqdb_writer_t; /**< Typedef of a CQDB writer. */
 
 /**
  * Create a new CQDB writer on a seekable stream.
@@ -114,7 +112,7 @@ typedef struct tag_cqdb_writer cqdb_writer_t;    /**< Typedef of a CQDB writer. 
  *    @retval    cqdb_writer_t*    The pointer to the new ::cqdb_writer_t instance if
  *                            successful; otherwise \c NULL.
  */
-cqdb_writer_t* cqdb_writer(FILE *fp, int flag);
+cqdb_writer_t *cqdb_writer(FILE *fp, int flag);
 
 /**
  * Put a string/identifier association to the database.
@@ -128,7 +126,7 @@ cqdb_writer_t* cqdb_writer(FILE *fp, int flag);
  *    @param    id            The identifier.
  *    @retval    int            Zero if successful, or a status code otherwise.
  */
-int cqdb_writer_put(cqdb_writer_t* dbw, const char *str, int id);
+int cqdb_writer_put(cqdb_writer_t *dbw, const char *str, int id);
 
 /**
  * Close a CQDB writer.
@@ -142,11 +140,9 @@ int cqdb_writer_put(cqdb_writer_t* dbw, const char *str, int id);
  *    @param    dbw            The pointer to the ::cqdb_writer_t instance.
  *    @retval    int            Zero if successful, or a status code otherwise.
  */
-int cqdb_writer_close(cqdb_writer_t* dbw);
+int cqdb_writer_close(cqdb_writer_t *dbw);
 
 /** @} */
-
-
 
 /** 
  * \addtogroup cqdb_reader CQDB Reader API
@@ -169,7 +165,7 @@ int cqdb_writer_close(cqdb_writer_t* dbw);
  */
 
 struct tag_cqdb;
-typedef struct tag_cqdb cqdb_t;        /**< Typedef of a CQDB reader. */
+typedef struct tag_cqdb cqdb_t; /**< Typedef of a CQDB reader. */
 
 /**
  * Open a new CQDB reader on a memory block.
@@ -181,7 +177,7 @@ typedef struct tag_cqdb cqdb_t;        /**< Typedef of a CQDB reader. */
  *    @param    size        The size of the memory block.
  *    @retval    cqdb_t*        The pointer to the ::cqdb_t instance.
  */
-cqdb_t* cqdb_reader(const void *buffer, size_t size);
+cqdb_t *cqdb_reader(const void *buffer, size_t size);
 
 /**
  * Delete the CQDB reader.
@@ -190,7 +186,7 @@ cqdb_t* cqdb_reader(const void *buffer, size_t size);
  *
  *    @param    db            The pointer to the ::cqdb_t instance.
  */
-void cqdb_delete(cqdb_t* db);
+void cqdb_delete(cqdb_t *db);
 
 /**
  * Retrieve the identifier associated with a string.
@@ -202,7 +198,7 @@ void cqdb_delete(cqdb_t* db);
  *    @retval    int            The non-negative identifier if successful, negative
  *                        status code otherwise.
  */
-int cqdb_to_id(cqdb_t* db, const char *str);
+int cqdb_to_id(cqdb_t *db, const char *str);
 
 /**
  * Retrieve the string associated with an identifier.
@@ -214,7 +210,7 @@ int cqdb_to_id(cqdb_t* db, const char *str);
  *    @retval    const char*    The pointer to the string associated with the
  *                        identifier if successful; otherwise \c NULL.
  */
-const char* cqdb_to_string(cqdb_t* db, int id);
+const char *cqdb_to_string(cqdb_t *db, int id);
 
 /**
  * Get the number of associations in the database.
@@ -224,11 +220,9 @@ const char* cqdb_to_string(cqdb_t* db, int id);
  *    @param    db            The pointer to the ::cqdb_t instance.
  *    @retval    int            The number of string/identifier associations.
  */
-int cqdb_num(cqdb_t* db);
+int cqdb_num(cqdb_t *db);
 
 /** @} */
-
-
 
 /**
 @mainpage Constant Quark Database (CQDB)
@@ -521,4 +515,4 @@ existing database libraries for implementing a static quark database.
 
 */
 
-#endif/*__CQDB_H__*/
+#endif /*__CQDB_H__*/

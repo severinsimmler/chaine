@@ -36,9 +36,9 @@
 #include <math.h>
 #include <memory.h>
 
-#ifdef  USE_SSE
+#ifdef USE_SSE
 #include <emmintrin.h>
-#endif/*USE_SSE*/
+#endif /*USE_SSE*/
 
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 #include <malloc.h>
@@ -46,17 +46,10 @@
 #include <stdlib.h>
 static inline void *_aligned_malloc(size_t size, size_t alignment)
 {
-#if __STDC_VERSION__ >= 201112L
-    return aligned_alloc(alignment, size);
-#elif _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600 || __APPLE__
     void *p;
     int ret = posix_memalign(&p, alignment, size);
     return (ret == 0) ? p : 0;
-#else
-    return memalign(alignment, size);
-#endif
 }
-
 static inline void _aligned_free(void *p)
 {
     free(p);
@@ -70,12 +63,13 @@ static inline void _aligned_free(void *p)
 #endif
 
 #define CONST_128D(var, val) \
-    MIE_ALIGN(16) static const double var[2] = {(val), (val)}
-
+    MIE_ALIGN(16)            \
+    static const double var[2] = {(val), (val)}
 
 inline static void veczero(floatval_t *x, const int n)
 {
-    if (n) {
+    if (n)
+    {
         memset(x, 0, sizeof(floatval_t) * n);
     }
 }
@@ -83,14 +77,16 @@ inline static void veczero(floatval_t *x, const int n)
 inline static void vecset(floatval_t *x, const floatval_t a, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         x[i] = a;
     }
 }
 
 inline static void veccopy(floatval_t *y, const floatval_t *x, const int n)
 {
-    if (n) {
+    if (n)
+    {
         memcpy(y, x, sizeof(floatval_t) * n);
     }
 }
@@ -98,7 +94,8 @@ inline static void veccopy(floatval_t *y, const floatval_t *x, const int n)
 inline static void vecadd(floatval_t *y, const floatval_t *x, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         y[i] += x[i];
     }
 }
@@ -106,7 +103,8 @@ inline static void vecadd(floatval_t *y, const floatval_t *x, const int n)
 inline static void vecaadd(floatval_t *y, const floatval_t a, const floatval_t *x, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         y[i] += a * x[i];
     }
 }
@@ -114,7 +112,8 @@ inline static void vecaadd(floatval_t *y, const floatval_t a, const floatval_t *
 inline static void vecsub(floatval_t *y, const floatval_t *x, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         y[i] -= x[i];
     }
 }
@@ -122,7 +121,8 @@ inline static void vecsub(floatval_t *y, const floatval_t *x, const int n)
 inline static void vecasub(floatval_t *y, const floatval_t a, const floatval_t *x, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         y[i] -= a * x[i];
     }
 }
@@ -130,7 +130,8 @@ inline static void vecasub(floatval_t *y, const floatval_t a, const floatval_t *
 inline static void vecmul(floatval_t *y, const floatval_t *x, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         y[i] *= x[i];
     }
 }
@@ -138,7 +139,8 @@ inline static void vecmul(floatval_t *y, const floatval_t *x, const int n)
 inline static void vecinv(floatval_t *y, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         y[i] = 1. / y[i];
     }
 }
@@ -146,7 +148,8 @@ inline static void vecinv(floatval_t *y, const int n)
 inline static void vecscale(floatval_t *y, const floatval_t a, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         y[i] *= a;
     }
 }
@@ -155,42 +158,45 @@ inline static floatval_t vecdot(const floatval_t *x, const floatval_t *y, const 
 {
     int i;
     floatval_t s = 0;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         s += x[i] * y[i];
     }
     return s;
 }
 
-inline static floatval_t vecsum(floatval_t* x, const int n)
+inline static floatval_t vecsum(floatval_t *x, const int n)
 {
     int i;
     floatval_t s = 0.;
 
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         s += x[i];
     }
     return s;
 }
 
-inline static floatval_t vecsumlog(floatval_t* x, const int n)
+inline static floatval_t vecsumlog(floatval_t *x, const int n)
 {
     int i;
     floatval_t s = 0.;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         s += log(x[i]);
     }
     return s;
 }
 
-#ifdef  USE_SSE
+#ifdef USE_SSE
 
 inline static void vecexp(double *values, const int n)
 {
     int i;
     CONST_128D(one, 1.);
     CONST_128D(log2e, 1.4426950408889634073599);
-    CONST_128D(maxlog, 7.09782712893383996843e2);   // log(2**1024)
-    CONST_128D(minlog, -7.08396418532264106224e2);  // log(2**-1022)
+    CONST_128D(maxlog, 7.09782712893383996843e2);  // log(2**1024)
+    CONST_128D(minlog, -7.08396418532264106224e2); // log(2**-1022)
     CONST_128D(c1, 6.93145751953125E-1);
     CONST_128D(c2, 1.42860682030941723212E-6);
     CONST_128D(w11, 3.5524625185478232665958141148891055719216674475023e-8);
@@ -207,7 +213,8 @@ inline static void vecexp(double *values, const int n)
     CONST_128D(w0, 0.99999999999999999566016490920259318691496540598896);
     const __m128i offset = _mm_setr_epi32(1023, 1023, 0, 0);
 
-    for (i = 0;i < n;i += 4) {
+    for (i = 0; i < n; i += 4)
+    {
         __m128i k1, k2;
         __m128d p1, p2;
         __m128d a1, a2;
@@ -217,8 +224,8 @@ inline static void vecexp(double *values, const int n)
         /* Load four double values. */
         xmm0 = _mm_load_pd(maxlog);
         xmm1 = _mm_load_pd(minlog);
-        x1 = _mm_load_pd(values+i);
-        x2 = _mm_load_pd(values+i+2);
+        x1 = _mm_load_pd(values + i);
+        x2 = _mm_load_pd(values + i + 2);
         x1 = _mm_min_pd(x1, xmm0);
         x2 = _mm_min_pd(x2, xmm0);
         x1 = _mm_max_pd(x1, xmm1);
@@ -332,8 +339,8 @@ inline static void vecexp(double *values, const int n)
         a2 = _mm_mul_pd(a2, p2);
 
         /* Store the results. */
-        _mm_store_pd(values+i, a1);
-        _mm_store_pd(values+i+2, a2);
+        _mm_store_pd(values + i, a1);
+        _mm_store_pd(values + i + 2, a2);
     }
 }
 
@@ -342,11 +349,12 @@ inline static void vecexp(double *values, const int n)
 inline static void vecexp(double *values, const int n)
 {
     int i;
-    for (i = 0;i < n;++i) {
+    for (i = 0; i < n; ++i)
+    {
         values[i] = exp(values[i]);
     }
 }
 
 #endif /*USE_SSE*/
 
-#endif/*__VECMATH_H__*/
+#endif /*__VECMATH_H__*/

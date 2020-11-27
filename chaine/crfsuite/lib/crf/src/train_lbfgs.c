@@ -30,9 +30,9 @@
 
 /* $Id$ */
 
-#ifdef    HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif/*HAVE_CONFIG_H*/
+#endif /*HAVE_CONFIG_H*/
 
 #include <os.h>
 
@@ -53,28 +53,30 @@
 /**
  * Training parameters (configurable with crfsuite_params_t interface).
  */
-typedef struct {
-    floatval_t  c1;
-    floatval_t  c2;
-    int         memory;
-    floatval_t  epsilon;
-    int         stop;
-    floatval_t  delta;
-    int         max_iterations;
-    char*       linesearch;
-    int         linesearch_max_iterations;
+typedef struct
+{
+    floatval_t c1;
+    floatval_t c2;
+    int memory;
+    floatval_t epsilon;
+    int stop;
+    floatval_t delta;
+    int max_iterations;
+    char *linesearch;
+    int linesearch_max_iterations;
 } training_option_t;
 
 /**
  * Internal data structure for the callback function of lbfgs().
  */
-typedef struct {
+typedef struct
+{
     encoder_t *gm;
     dataset_t *trainset;
     dataset_t *testset;
     logging_t *lg;
     floatval_t c2;
-    floatval_t* best_w;
+    floatval_t *best_w;
     clock_t begin;
 } lbfgs_internal_t;
 
@@ -83,22 +85,23 @@ static lbfgsfloatval_t lbfgs_evaluate(
     const lbfgsfloatval_t *x,
     lbfgsfloatval_t *g,
     const int n,
-    const lbfgsfloatval_t step
-    )
+    const lbfgsfloatval_t step)
 {
     int i;
     floatval_t f, norm = 0.;
-    lbfgs_internal_t *lbfgsi = (lbfgs_internal_t*)instance;
+    lbfgs_internal_t *lbfgsi = (lbfgs_internal_t *)instance;
     encoder_t *gm = lbfgsi->gm;
     dataset_t *trainset = lbfgsi->trainset;
 
     /* Compute the objective value and gradients. */
     gm->objective_and_gradients_batch(gm, trainset, x, &f, g);
-    
+
     /* L2 regularization. */
-    if (0 < lbfgsi->c2) {
+    if (0 < lbfgsi->c2)
+    {
         const floatval_t c22 = lbfgsi->c2 * 2.;
-        for (i = 0;i < n;++i) {
+        for (i = 0; i < n; ++i)
+        {
             g[i] += (c22 * x[i]);
             norm += x[i] * x[i];
         }
@@ -122,7 +125,7 @@ static int lbfgs_progress(
 {
     int i, num_active_features = 0;
     clock_t duration, clk = clock();
-    lbfgs_internal_t *lbfgsi = (lbfgs_internal_t*)instance;
+    lbfgs_internal_t *lbfgsi = (lbfgs_internal_t *)instance;
     dataset_t *testset = lbfgsi->testset;
     encoder_t *gm = lbfgsi->gm;
     logging_t *lg = lbfgsi->lg;
@@ -131,10 +134,12 @@ static int lbfgs_progress(
     duration = clk - lbfgsi->begin;
     lbfgsi->begin = clk;
 
-	/* Store the feature weight in case L-BFGS terminates with an error. */
-    for (i = 0;i < n;++i) {
+    /* Store the feature weight in case L-BFGS terminates with an error. */
+    for (i = 0; i < n; ++i)
+    {
         lbfgsi->best_w[i] = x[i];
-        if (x[i] != 0.) ++num_active_features;
+        if (x[i] != 0.)
+            ++num_active_features;
     }
 
     /* Report the progress. */
@@ -148,7 +153,8 @@ static int lbfgs_progress(
     logging(lg, "Seconds required for this iteration: %.3f\n", duration / (double)CLOCKS_PER_SEC);
 
     /* Send the tagger with the current parameters. */
-    if (testset != NULL) {
+    if (testset != NULL)
+    {
         holdout_evaluation(gm, testset, x, lg);
     }
 
@@ -158,58 +164,48 @@ static int lbfgs_progress(
     return 0;
 }
 
-static int exchange_options(crfsuite_params_t* params, training_option_t* opt, int mode)
+static int exchange_options(crfsuite_params_t *params, training_option_t *opt, int mode)
 {
     BEGIN_PARAM_MAP(params, mode)
-        DDX_PARAM_FLOAT(
-            "c1", opt->c1, 0,
-            "Coefficient for L1 regularization."
-            )
-        DDX_PARAM_FLOAT(
-            "c2", opt->c2, 1.0,
-            "Coefficient for L2 regularization."
-            )
-        DDX_PARAM_INT(
-            "max_iterations", opt->max_iterations, INT_MAX,
-            "The maximum number of iterations for L-BFGS optimization."
-            )
-        DDX_PARAM_INT(
-            "num_memories", opt->memory, 6,
-            "The number of limited memories for approximating the inverse hessian matrix."
-            )
-        DDX_PARAM_FLOAT(
-            "epsilon", opt->epsilon, 1e-5,
-            "Epsilon for testing the convergence of the objective."
-            )
-        DDX_PARAM_INT(
-            "period", opt->stop, 10,
-            "The duration of iterations to test the stopping criterion."
-            )
-        DDX_PARAM_FLOAT(
-            "delta", opt->delta, 1e-5,
-            "The threshold for the stopping criterion; an L-BFGS iteration stops when the\n"
-            "improvement of the log likelihood over the last ${period} iterations is no\n"
-            "greater than this threshold."
-            )
-        DDX_PARAM_STRING(
-            "linesearch", opt->linesearch, "MoreThuente",
-            "The line search algorithm used in L-BFGS updates:\n"
-            "{   'MoreThuente': More and Thuente's method,\n"
-            "    'Backtracking': Backtracking method with regular Wolfe condition,\n"
-            "    'StrongBacktracking': Backtracking method with strong Wolfe condition\n"
-            "}\n"
-            )
-        DDX_PARAM_INT(
-            "max_linesearch", opt->linesearch_max_iterations, 20,
-            "The maximum number of trials for the line search algorithm."
-            )
+    DDX_PARAM_FLOAT(
+        "c1", opt->c1, 0,
+        "Coefficient for L1 regularization.")
+    DDX_PARAM_FLOAT(
+        "c2", opt->c2, 1.0,
+        "Coefficient for L2 regularization.")
+    DDX_PARAM_INT(
+        "max_iterations", opt->max_iterations, INT_MAX,
+        "The maximum number of iterations for L-BFGS optimization.")
+    DDX_PARAM_INT(
+        "num_memories", opt->memory, 6,
+        "The number of limited memories for approximating the inverse hessian matrix.")
+    DDX_PARAM_FLOAT(
+        "epsilon", opt->epsilon, 1e-5,
+        "Epsilon for testing the convergence of the objective.")
+    DDX_PARAM_INT(
+        "period", opt->stop, 10,
+        "The duration of iterations to test the stopping criterion.")
+    DDX_PARAM_FLOAT(
+        "delta", opt->delta, 1e-5,
+        "The threshold for the stopping criterion; an L-BFGS iteration stops when the\n"
+        "improvement of the log likelihood over the last ${period} iterations is no\n"
+        "greater than this threshold.")
+    DDX_PARAM_STRING(
+        "linesearch", opt->linesearch, "MoreThuente",
+        "The line search algorithm used in L-BFGS updates:\n"
+        "{   'MoreThuente': More and Thuente's method,\n"
+        "    'Backtracking': Backtracking method with regular Wolfe condition,\n"
+        "    'StrongBacktracking': Backtracking method with strong Wolfe condition\n"
+        "}\n")
+    DDX_PARAM_INT(
+        "max_linesearch", opt->linesearch_max_iterations, 20,
+        "The maximum number of trials for the line search algorithm.")
     END_PARAM_MAP()
 
     return 0;
 }
 
-
-void crfsuite_train_lbfgs_init(crfsuite_params_t* params)
+void crfsuite_train_lbfgs_init(crfsuite_params_t *params)
 {
     exchange_options(params, NULL, 0);
 }
@@ -220,38 +216,39 @@ int crfsuite_train_lbfgs(
     dataset_t *testset,
     crfsuite_params_t *params,
     logging_t *lg,
-    floatval_t **ptr_w
-    )
+    floatval_t **ptr_w)
 {
     int ret = 0, lbret;
     floatval_t *w = NULL;
     clock_t begin = clock();
     const int N = trainset->num_instances;
     const int L = trainset->data->labels->num(trainset->data->labels);
-    const int A =  trainset->data->attrs->num(trainset->data->attrs);
+    const int A = trainset->data->attrs->num(trainset->data->attrs);
     const int K = gm->num_features;
     lbfgs_internal_t lbfgsi;
     lbfgs_parameter_t lbfgsparam;
     training_option_t opt;
 
-	/* Initialize the variables. */
-	memset(&lbfgsi, 0, sizeof(lbfgsi));
-	memset(&opt, 0, sizeof(opt));
+    /* Initialize the variables. */
+    memset(&lbfgsi, 0, sizeof(lbfgsi));
+    memset(&opt, 0, sizeof(opt));
     lbfgs_parameter_init(&lbfgsparam);
 
     /* Allocate an array that stores the current weights. As per the liblbfgs
      * documentation, this needs to be allocated with lbfgs_malloc. */
     w = lbfgs_malloc(K);
-    if (w == NULL) {
-		ret = CRFSUITEERR_OUTOFMEMORY;
-		goto error_exit;
+    if (w == NULL)
+    {
+        ret = CRFSUITEERR_OUTOFMEMORY;
+        goto error_exit;
     }
- 
-    /* Allocate an array that stores the best weights. */ 
-    lbfgsi.best_w = (floatval_t*)calloc(sizeof(floatval_t), K);
-    if (lbfgsi.best_w == NULL) {
-		ret = CRFSUITEERR_OUTOFMEMORY;
-		goto error_exit;
+
+    /* Allocate an array that stores the best weights. */
+    lbfgsi.best_w = (floatval_t *)calloc(sizeof(floatval_t), K);
+    if (lbfgsi.best_w == NULL)
+    {
+        ret = CRFSUITEERR_OUTOFMEMORY;
+        goto error_exit;
     }
 
     /* Read the L-BFGS parameters. */
@@ -274,20 +271,28 @@ int crfsuite_train_lbfgs(
     lbfgsparam.past = opt.stop;
     lbfgsparam.delta = opt.delta;
     lbfgsparam.max_iterations = opt.max_iterations;
-    if (strcmp(opt.linesearch, "Backtracking") == 0) {
+    if (strcmp(opt.linesearch, "Backtracking") == 0)
+    {
         lbfgsparam.linesearch = LBFGS_LINESEARCH_BACKTRACKING;
-    } else if (strcmp(opt.linesearch, "StrongBacktracking") == 0) {
+    }
+    else if (strcmp(opt.linesearch, "StrongBacktracking") == 0)
+    {
         lbfgsparam.linesearch = LBFGS_LINESEARCH_BACKTRACKING_STRONG_WOLFE;
-    } else {
+    }
+    else
+    {
         lbfgsparam.linesearch = LBFGS_LINESEARCH_MORETHUENTE;
     }
     lbfgsparam.max_linesearch = opt.linesearch_max_iterations;
 
     /* Set regularization parameters. */
-    if (0 < opt.c1) {
+    if (0 < opt.c1)
+    {
         lbfgsparam.orthantwise_c = opt.c1;
         lbfgsparam.linesearch = LBFGS_LINESEARCH_BACKTRACKING;
-    } else {
+    }
+    else
+    {
         lbfgsparam.orthantwise_c = 0;
     }
 
@@ -307,15 +312,21 @@ int crfsuite_train_lbfgs(
         lbfgs_evaluate,
         lbfgs_progress,
         &lbfgsi,
-        &lbfgsparam
-        );
-    if (lbret == LBFGS_CONVERGENCE) {
+        &lbfgsparam);
+    if (lbret == LBFGS_CONVERGENCE)
+    {
         logging(lg, "L-BFGS resulted in convergence\n");
-    } else if (lbret == LBFGS_STOP) {
+    }
+    else if (lbret == LBFGS_STOP)
+    {
         logging(lg, "L-BFGS terminated with the stopping criteria\n");
-    } else if (lbret == LBFGSERR_MAXIMUMITERATION) {
+    }
+    else if (lbret == LBFGSERR_MAXIMUMITERATION)
+    {
         logging(lg, "L-BFGS terminated with the maximum number of iterations\n");
-    } else {
+    }
+    else
+    {
         logging(lg, "L-BFGS terminated with error code (%d)\n", lbret);
     }
 
@@ -323,7 +334,7 @@ int crfsuite_train_lbfgs(
      * callee can safely `free`. */
     *ptr_w = lbfgsi.best_w;
 
-	/* Report the run-time for the training. */
+    /* Report the run-time for the training. */
     logging(lg, "Total seconds required for training: %.3f\n", (clock() - begin) / (double)CLOCKS_PER_SEC);
     logging(lg, "\n");
 
@@ -332,8 +343,8 @@ int crfsuite_train_lbfgs(
     return 0;
 
 error_exit:
-	free(lbfgsi.best_w);
-	lbfgs_free(w);
-	*ptr_w = NULL;
-	return ret;
+    free(lbfgsi.best_w);
+    lbfgs_free(w);
+    *ptr_w = NULL;
+    return ret;
 }

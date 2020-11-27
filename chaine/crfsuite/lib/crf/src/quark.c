@@ -36,47 +36,51 @@
 #include "rumavl.h"
 #include "quark.h"
 
-typedef struct {
+typedef struct
+{
     char *str;
     int qid;
 } record_t;
 
-struct tag_quark {
+struct tag_quark
+{
     int num;
     int max;
-    RUMAVL* string_to_id;
+    RUMAVL *string_to_id;
     char **id_to_string;
 };
 
 static int keycmp(const void *_x, const void *_y, size_t n, void *udata)
 {
-    const record_t* x = (const record_t*)_x;
-    const record_t* y = (const record_t*)_y;
+    const record_t *x = (const record_t *)_x;
+    const record_t *y = (const record_t *)_y;
     return strcmp(x->str, y->str);
 }
 
 static int owcb(RUMAVL *tree, RUMAVL_NODE *n, void *_x, const void *_y, void *udata)
 {
-    record_t* x = (record_t*)_x;
+    record_t *x = (record_t *)_x;
     free(x->str);
     return 0;
 }
 
 static int delcb(RUMAVL *tree, RUMAVL_NODE *n, void *_record, void *udata)
 {
-    record_t* record = (record_t*)_record;
+    record_t *record = (record_t *)_record;
     free(record->str);
     return 0;
 }
 
-quark_t* quark_new()
+quark_t *quark_new()
 {
-    quark_t* qrk = (quark_t*)malloc(sizeof(quark_t));
-    if (qrk != NULL) {
+    quark_t *qrk = (quark_t *)malloc(sizeof(quark_t));
+    if (qrk != NULL)
+    {
         qrk->num = 0;
         qrk->max = 0;
         qrk->string_to_id = rumavl_new(sizeof(record_t), keycmp, NULL, NULL);
-        if (qrk->string_to_id != NULL) {
+        if (qrk->string_to_id != NULL)
+        {
             *rumavl_delcb(qrk->string_to_id) = delcb;
             *rumavl_owcb(qrk->string_to_id) = owcb;
         }
@@ -85,28 +89,32 @@ quark_t* quark_new()
     return qrk;
 }
 
-void quark_delete(quark_t* qrk)
+void quark_delete(quark_t *qrk)
 {
-    if (qrk != NULL) {
+    if (qrk != NULL)
+    {
         rumavl_destroy(qrk->string_to_id);
         free(qrk->id_to_string);
         free(qrk);
     }
 }
 
-int quark_get(quark_t* qrk, const char *str)
+int quark_get(quark_t *qrk, const char *str)
 {
     record_t key, *record = NULL;
 
     key.str = (char *)str;
-    record = (record_t*)rumavl_find(qrk->string_to_id, &key);
-    if (record == NULL) {
-        char *newstr = (char*)malloc(strlen(str)+1);
-        if (newstr != NULL) {
+    record = (record_t *)rumavl_find(qrk->string_to_id, &key);
+    if (record == NULL)
+    {
+        char *newstr = (char *)malloc(strlen(str) + 1);
+        if (newstr != NULL)
+        {
             strcpy(newstr, str);
         }
 
-        if (qrk->max <= qrk->num) {
+        if (qrk->max <= qrk->num)
+        {
             qrk->max = (qrk->max + 1) * 2;
             qrk->id_to_string = (char **)realloc(qrk->id_to_string, sizeof(char *) * qrk->max);
         }
@@ -118,31 +126,31 @@ int quark_get(quark_t* qrk, const char *str)
 
         ++qrk->num;
         return key.qid;
-    } else {
+    }
+    else
+    {
         return record->qid;
-    }    
+    }
 }
 
-int quark_to_id(quark_t* qrk, const char *str)
+int quark_to_id(quark_t *qrk, const char *str)
 {
     record_t key, *record = NULL;
 
     key.str = (char *)str;
-    record = (record_t*)rumavl_find(qrk->string_to_id, &key);
+    record = (record_t *)rumavl_find(qrk->string_to_id, &key);
     return (record != NULL) ? record->qid : -1;
 }
 
-const char *quark_to_string(quark_t* qrk, int qid)
+const char *quark_to_string(quark_t *qrk, int qid)
 {
     return (qid < qrk->num) ? qrk->id_to_string[qid] : NULL;
 }
 
-int quark_num(quark_t* qrk)
+int quark_num(quark_t *qrk)
 {
     return qrk->num;
 }
-
-
 
 #if 0
 int main(int argc, char *argv[])

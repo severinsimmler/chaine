@@ -588,7 +588,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "packaging"
-version = "20.5"
+version = "20.6"
 description = "Core utilities for Python packages"
 category = "dev"
 optional = false
@@ -1317,8 +1317,8 @@ numpy = [
     {file = "numpy-1.19.4.zip", hash = "sha256:141ec3a3300ab89c7f2b0775289954d193cc8edb621ea05f99db9cb181530512"},
 ]
 packaging = [
-    {file = "packaging-20.5-py2.py3-none-any.whl", hash = "sha256:1a67848015ca7e7879eee30a7ae1053bc04d031e31eccbde6082820150f08621"},
-    {file = "packaging-20.5.tar.gz", hash = "sha256:5d21ed3d936beb102850195eadaa1371bfb4b93da6ad63d231410c6dca25a665"},
+    {file = "packaging-20.6-py2.py3-none-any.whl", hash = "sha256:518de9cf1a577c24d2d567033050bb2a8e3528dd48fa195350b59a8548270728"},
+    {file = "packaging-20.6.tar.gz", hash = "sha256:3f604d302b77be0ce21d38c75e2dc18ed3d466e3861baafd2cfa32735ec1bc85"},
 ]
 pandas = [
     {file = "pandas-1.1.4-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:e2b8557fe6d0a18db4d61c028c6af61bfed44ef90e419ed6fadbdc079eba141e"},

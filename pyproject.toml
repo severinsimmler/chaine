@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "chaine"
-version = "0.1.0"
-description = "A lightweight Linear-Chain Conditional Random Field"
+version = "0.2.0"
+description = "A Lightweight Conditional Random Field"
 authors = ["Severin Simmler <severin.simmler@posteo.de>"]
 readme = "README.md"
 exclude = ["chaine/crfsuite/**/*", "chaine/liblbfgs/**/*"]

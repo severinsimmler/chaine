@@ -37,13 +37,14 @@ def train(dataset: List[List[str]], labels: List[List[str]], **kwargs) -> CRF:
         Dataset consisting of sequences of tokens
     labels : List[List[str]]
         Labels corresponding to the dataset
-    
+
     Returns
     -------
     CRF
         A conditional random field fitted on the dataset
     """
     features = [featurize(sequence) for sequence in dataset]
+    labels = [[str(label) for label in sequence] for sequence in labels]
 
     trainer = Trainer("lbfgs", **kwargs)
     trainer.train(features, labels, "model.crf")

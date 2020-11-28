@@ -11,10 +11,19 @@ You can install the latest stable version from [PyPI](https://pypi.org/project/c
 $ pip install chaine
 ```
 
+
 ## Example
 
 ```python
 >>> import chaine
+>>> import datasets
+>>> data = datasets.load_dataset("germeval_14")
+>>> tokens = data["train"]["tokens"]
+>>> labels = data["train"]["ner_tags"]
+>>> crf = chaine.train(tokens, labels, max_iterations=100)
+>>> sequence = chaine.featurize(["todo", "todo", "todo"])
+>>> crf.predict(sequence)
+["O", "O", "B-PER"]
 ```
 
 

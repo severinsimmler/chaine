@@ -138,6 +138,9 @@ cdef class Trainer:
         self._c_trainer.select("lbfgs", "crf1d")
         self._c_trainer._init_trainer()
 
+    def __repr__(self):
+        return f"<Trainer: {self.params}>"
+
     cdef _on_message(self, string message):
         self._message(message)
 
@@ -193,6 +196,9 @@ cdef class CRF:
 
     def __init__(self, model_filepath):
         self._load(model_filepath)
+
+    def __repr__(self):
+        return f"<CRF: {self.labels}>"
 
     def _load(self, filepath):
         self._check_model(filepath)

@@ -69,43 +69,44 @@ class Sequence:
     def __repr__(self) -> str:
         return f"<Sequence: {self.tokens}>"
 
+    def __str__(self) -> str:
+        return " ".join(self.tokens)
 
-class Features:
-    _feature2index = {}
+    @property
+    def indices(self) -> List[int]:
+        return [token.index for token in self.tokens]
 
-    def index(self, name: str) -> int:
-        if name not in self._feature2index:
-            self._feature2index[name] = len(self._feature2index)
-        return self._feature2index[name]
+    def featurize(self) -> FeatureGenerator:
+        for token in self.tokens:
+            features = {
+                "bias=1.0",
+                f"token.lower()={token.lower()}",
+                f"token.is_upper()={token.is_upper}",
+                f"token.is_title()={token.is_title}",
+                f"token.is_digit()={token.is_digit}",
+            }
 
-    def vectorize(self, token: Token) -> List[int]:
-        return [
-            self.index(feature)
-            for feature in [
-                f"word.lower():{token.lower()}",
-                f"word.is_upper:{token.is_upper}",
-                f"word.is_title:{token.is_title}",
-                f"word.is_digit:{token.is_digit}",
-            ]
-        ]
+            if token.index > 0:
+                left_token = self.tokens[token.index - 1]
+                features.update(
+                    {
+                        f"-1:token.lower()={left_token.lower()}",
+                        f"-1:token.is_title()={left_token.is_title}",
+                        f"-1:token.is_upper()={left_token.is_upper}",
+                    }
+                )
+            else:
+                features.add("BOS=True")
 
-
-@dataclass
-class FeatureMatrix:
-    sequence: Sequence
-    features: Features
-
-    def __iter__(self) -> FeatureGenerator:
-        for token in self.sequence:
-            yield self.features.vectorize(token)
-
-    def __repr__(self) -> str:
-        return f"<FeatureMatrix: {len(self.sequence)} Tokens>"
-
-
-class Labels:
-    pass
-
-
-class Parameters:
-    pass
+            if token.index < max(self.indices):
+                right_token = self.tokens[token.index + 1]
+                features.update(
+                    {
+                        f"+1:token.lower()={right_token.lower()}",
+                        f"+1:token.is_title()={right_token.is_title}",
+                        f"+1:token.is_upper()={right_token.is_upper}",
+                    }
+                )
+            else:
+                features.add("EOS=True")
+            yield features

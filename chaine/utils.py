@@ -8,7 +8,7 @@ This module implements general helper functions
 import re
 
 
-class _LogMessage:
+class LogMessage:
     """CRFsuite log message
 
     Attributes
@@ -27,17 +27,17 @@ class _LogMessage:
         return f"Iteration: {self.iteration}\tLoss: {self.loss}"
 
 
-class _LogParser:
+class LogParser:
     """Parser for CRFsuite's logfile
 
     Attributes
     ----------
-    message : _LogMessage
+    message : LogMessage
         Log message with current iteration and loss
     """
 
     def __init__(self):
-        self.message = _LogMessage()
+        self.message = LogMessage()
 
     def parse(self, line: str) -> str:
         """Parse line of the logfile
@@ -57,5 +57,5 @@ class _LogParser:
         elif (m := re.match(r"Loss: (\d+\.\d+)", line)):
             self.message.loss = m.group(1)
             text = str(self.message)
-            self.message = _LogMessage()
+            self.message = LogMessage()
             return text

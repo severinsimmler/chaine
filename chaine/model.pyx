@@ -7,7 +7,7 @@ cimport crfsuite_api
 from libcpp.string cimport string
 import os
 
-from chaine.utils import _LogParser
+from chaine.utils import LogParser
 
 
 cdef crfsuite_api.Item to_item(sequence) except+:
@@ -127,7 +127,7 @@ cdef class Trainer:
             "variance": float,
             "gamma": float,
         }
-    _log_parser = _LogParser()
+    _log_parser = LogParser()
 
     def __init__(self, algorithm, **params):
         self._select_algorithm(algorithm)

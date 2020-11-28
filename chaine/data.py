@@ -79,7 +79,6 @@ class Sequence:
     def featurize(self) -> FeatureGenerator:
         for token in self.tokens:
             features = {
-                "bias=1.0",
                 f"token.lower()={token.lower()}",
                 f"token.is_upper()={token.is_upper}",
                 f"token.is_title()={token.is_title}",

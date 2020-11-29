@@ -129,7 +129,7 @@ cdef class Trainer:
         }
     _log_parser = LogParser()
 
-    def __init__(self, algorithm, **params):
+    def __init__(self, algorithm="lbfgs", **params):
         self._select_algorithm(algorithm)
         self._set_params(dict(params))
 

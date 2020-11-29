@@ -7,46 +7,31 @@ This module implements the high-level API
 
 from chaine.model import Trainer, CRF
 from chaine.data import Token, Sequence
-from chaine.typing import FeatureGenerator, List
+from chaine.typing import Iterable, Labels
 
 
-def featurize(tokens: List[str]) -> FeatureGenerator:
-    """Featurize a sequence of tokens
-
-    Parameters
-    ----------
-    tokens : List[str]
-        Sequence of tokens to generate features for
-
-    Returns
-    -------
-    FeatureGenerator
-        One feature set at a time
-    """
-    tokens = [Token(index, token) for index, token in enumerate(tokens)]
-    for features in Sequence(tokens).featurize():
-        yield features
-
-
-def train(dataset: List[List[str]], labels: List[List[str]], **kwargs) -> CRF:
-    """Train a linear-chain conditional random field
+def train(dataset: Iterable[Sequence], labels: Iterable[Labels], **kwargs) -> CRF:
+    """Train a conditional random field
 
     Parameters
     ----------
-    dataset : List[List[str]]
+    dataset : Iterable[Sequence]
         Dataset consisting of sequences of tokens
-    labels : List[List[str]]
+    labels : Iterable[Labels]
         Labels corresponding to the dataset
+
 
     Returns
     -------
     CRF
         A conditional random field fitted on the dataset
     """
-    features = [featurize(sequence) for sequence in dataset]
-    labels = [[str(label) for label in sequence] for sequence in labels]
+    # generator expression to extract features
+    features = (sequence.featurize() for sequence in dataset)
 
-    trainer = Trainer("lbfgs", **kwargs)
+    # start training
+    trainer = Trainer(**kwargs)
     trainer.train(features, labels, "model.crf")
 
+    # load and return the trained model
     return CRF("model.crf")

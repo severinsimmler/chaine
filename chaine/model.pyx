@@ -321,6 +321,8 @@ cdef class Trainer:
             LOGGER.info(event)
 
     def _append(self, sequence, labels, int group=0):
+        if not isinstance(sequence, list):
+            sequence = [item for item in sequence]
         self._c_trainer.append(to_seq(sequence), labels, group)
 
     def _select_algorithm(self, algorithm):

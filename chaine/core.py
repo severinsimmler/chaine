@@ -6,7 +6,7 @@ This module implements the high-level API
 """
 
 from chaine.model import Trainer, CRF
-from chaine.data import Token, TokenSequence
+from chaine.data import LabelSequence, Token, TokenSequence
 from chaine.typing import Iterable, Labels
 
 
@@ -35,3 +35,20 @@ def train(dataset: Iterable[TokenSequence], labels: Iterable[Labels], **kwargs) 
 
     # load and return the trained model
     return CRF("model.crf")
+
+
+def token_sequences(dataset: Iterable[Iterable[str]]):
+    # TODO: merge this and the other function in a dataset function?
+    # TODO: unit test
+    # TODO: docstring
+    # TODO: remove token initialization when bug is fixed in sequence class
+    return (
+        TokenSequence([Token(index, text) for index, text in enumerate(tokens)])
+        for tokens in dataset
+    )
+
+
+def label_sequences(dataset: Iterable[Iterable[str]]):
+    # TODO: unit test
+    # TODO: docstring
+    return (LabelSequence(labels) for labels in dataset)

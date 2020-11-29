@@ -56,6 +56,12 @@ def test_token_sequence():
         },
     ]
 
+    strings = ["Foo", "Bar"]
+    sequence = data.TokenSequence(strings)
+    assert isinstance(sequence[0], Token)
+    assert sequence[0].index == 0
+    assert sequence[1].index == 1
+
 
 def test_label_sequence():
     labels = ["B-PER", "I-PER", "O"]

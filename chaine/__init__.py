@@ -1,2 +1,1 @@
-from chaine.model import Trainer, CRF
-from chaine.core import train
+from chaine.core import train, token_sequences, label_sequences

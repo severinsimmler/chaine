@@ -7,6 +7,7 @@ This module provides basic data structures
 
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
+import enum
 
 from chaine.typing import FeatureGenerator, List, Iterable, Any, Generator
 
@@ -82,6 +83,12 @@ class _Sequence(ABC):
 
 
 class TokenSequence(_Sequence):
+    def __post_init__(self):
+        # TODO: this is not triggered. why???
+        # make sure all items are token objects
+        if not all(isinstance(item, Token) for item in self.items):
+            self.items = [Token(index, text) for index, text in enumerate(self.items)]
+
     def __repr__(self) -> str:
         """Representation of the sequence"""
         return f"<TokenSequence: {self.items}>"

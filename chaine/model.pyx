@@ -8,6 +8,9 @@ from libcpp.string cimport string
 import os
 
 from chaine.utils import LogParser
+from chaine.logging import Logger
+
+LOGGER = Logger(__name__)
 
 
 cdef crfsuite_api.Item to_item(sequence) except+:
@@ -95,13 +98,31 @@ def intbool(value):
 
 
 cdef class Trainer:
+    """Model trainer
+
+    Parameters
+    ----------
+    algorithm : str
+        One of the following training algorithms:
+            - lbfgs: L-BFGS with L1/L2 regularization
+            - l2sgd: SGD with L2 regularization
+            - ap: Averaged perceptron
+            - pa: Passive aggressive
+            - arow: Adaptive regularization of weights
+
+
+    """
     cdef crfsuite_api.Trainer _c_trainer
 
     _algorithm_aliases = {
-            "ap": "averaged-perceptron",
-            "pa": "passive-aggressive",
-            "lbfgs": "lbfgs"
-        }
+        "lbfgs": "lbfgs",
+        "l2sgd": "l2sgd",
+        "ap": "averaged-perceptron",
+        "averaged-perceptron": "averaged-perceptron",
+        "pa": "passive-aggressive",
+        "passive-aggressive": "passive-aggressive",
+        "arow": "arow"
+    }
     _parameter_types = {
             "feature.minfreq": float,
             "feature.possible_states": intbool,
@@ -147,8 +168,7 @@ cdef class Trainer:
     def _message(self, message):
         event = self._log_parser.parse(message)
         if event:
-            # TODO replace with proper logging
-            print(event)
+            LOGGER.info(event)
 
     def _append(self, sequence, labels, int group=0):
         self._c_trainer.append(to_seq(sequence), labels, group)
@@ -159,15 +179,13 @@ cdef class Trainer:
             raise ValueError(f"Bad arguments: algorithm={algorithm}")
 
     def train(self, X, y, model_filepath, int holdout=-1):
-        # TODO replace with proper logging
-        print("Loading data")
+        LOGGER.info("Loading data")
         for sequence, labels in zip(X, y):
             self._append(sequence, labels)
-        print("Start training")
+        LOGGER.info("Start training")
         status_code = self._c_trainer.train(model_filepath, holdout)
         if status_code != crfsuite_api.CRFSUITE_SUCCESS:
-            # TODO replace with proper error handling
-            print(status_code)
+            LOGGER.error(f"An error ({status_code}) occured")
 
     @property
     def params(self):

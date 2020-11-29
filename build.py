@@ -17,7 +17,7 @@ sources += glob.glob("chaine/liblbfgs/lib/*.c")
 sources = sorted(sources)
 
 
-includes = [
+include_dirs = [
     "chaine/crfsuite/include/",
     "chaine/crfsuite/lib/cqdb/include",
     "chaine/liblbfgs/include",
@@ -39,7 +39,9 @@ class build_ext(_build_ext):
 
 
 ext_modules = [
-    Extension("chaine.model", include_dirs=includes, language="c++", sources=sources)
+    Extension(
+        "chaine.model", include_dirs=include_dirs, language="c++", sources=sources
+    )
 ]
 
 

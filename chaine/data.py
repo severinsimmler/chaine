@@ -6,8 +6,9 @@ This module provides basic data structures
 """
 
 from dataclasses import dataclass
+from os import stat
 
-from chaine.typing import FeatureGenerator, List, TokenGenerator
+from chaine.typing import FeatureGenerator, List, TokenGenerator, Iterable
 
 
 @dataclass
@@ -70,16 +71,17 @@ class Sequence:
         return f"<Sequence: {self.tokens}>"
 
     def __str__(self) -> str:
-        return " ".join(self.tokens)
+        # TODO Overwrite for detokenization
+        return " ".join(token.text for token in self.tokens)
 
     @property
     def indices(self) -> List[int]:
         return [token.index for token in self.tokens]
 
     def featurize(self) -> FeatureGenerator:
+        # TODO Overwrite for proper feature extraction
         for token in self.tokens:
-            features = {
-                f"token.lower()={token.lower()}",
+            features = {f"token.lower()={token.lower()}",
                 f"token.is_upper()={token.is_upper}",
                 f"token.is_title()={token.is_title}",
                 f"token.is_digit()={token.is_digit}",

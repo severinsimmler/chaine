@@ -14259,10 +14259,7 @@ a.anchor-link {
 
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Named-entity-recognition-with-chaine">Named entity recognition with <code>chaine</code><a class="anchor-link" href="#Named-entity-recognition-with-chaine">&#182;</a></h1><p>Make sure you have installed the additional dependencies for this tutorial:</p>
-
-<pre><code>$ pip install datasets seqeval</code></pre>
-
+<h1 id="Named-entity-recognition-with-chaine">Named entity recognition with <code>chaine</code><a class="anchor-link" href="#Named-entity-recognition-with-chaine">&#182;</a></h1>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
@@ -14272,7 +14269,6 @@ a.anchor-link {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">chaine</span>
 <span class="kn">import</span> <span class="nn">datasets</span>
-<span class="kn">import</span> <span class="nn">seqeval</span>
 </pre></div>
 
      </div>
@@ -14284,6 +14280,11 @@ a.anchor-link {
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Loading-a-dataset">Loading a dataset<a class="anchor-link" href="#Loading-a-dataset">&#182;</a></h2>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h4 id="Raw-data">Raw data<a class="anchor-link" href="#Raw-data">&#182;</a></h4>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
@@ -14305,8 +14306,8 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sequence: </span><span class="si">{</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;tokens&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Labels: </span><span class="si">{</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;ner_tags&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sequence: </span><span class="si">{</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;tokens&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Labels: </span><span class="si">{</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;ner_tags&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14326,10 +14327,104 @@ a.anchor-link {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Sequence: [&#39;Schartau&#39;, &#39;sagte&#39;, &#39;dem&#39;, &#39;&#34;&#39;, &#39;Tagesspiegel&#39;, &#39;&#34;&#39;, &#39;vom&#39;, &#39;Freitag&#39;, &#39;,&#39;, &#39;Fischer&#39;]
-Labels: [19, 0, 0, 0, 7, 0, 0, 0, 0, 19]
+<pre>Sequence: [&#39;Schartau&#39;, &#39;sagte&#39;, &#39;dem&#39;, &#39;&#34;&#39;, &#39;Tagesspiegel&#39;, &#39;&#34;&#39;, &#39;vom&#39;, &#39;Freitag&#39;, &#39;,&#39;, &#39;Fischer&#39;, &#39;sei&#39;, &#39;&#34;&#39;, &#39;in&#39;, &#39;einer&#39;, &#39;Weise&#39;, &#39;aufgetreten&#39;, &#39;,&#39;, &#39;die&#39;, &#39;alles&#39;, &#39;andere&#39;, &#39;als&#39;, &#39;überzeugend&#39;, &#39;war&#39;, &#39;&#34;&#39;, &#39;.&#39;]
+Labels: [19, 0, 0, 0, 7, 0, 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 </pre>
 </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h4 id="Transform-to-proper-sequences">Transform to proper sequences<a class="anchor-link" href="#Transform-to-proper-sequences">&#182;</a></h4>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">token_sequences</span> <span class="o">=</span> <span class="n">chaine</span><span class="o">.</span><span class="n">token_sequences</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;tokens&quot;</span><span class="p">])</span>
+<span class="n">label_sequences</span> <span class="o">=</span> <span class="n">chaine</span><span class="o">.</span><span class="n">label_sequences</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;ner_tags&quot;</span><span class="p">])</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">next</span><span class="p">(</span><span class="n">token_sequences</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&lt;TokenSequence: [&lt;Token 0: Schartau&gt;, &lt;Token 1: sagte&gt;, &lt;Token 2: dem&gt;, &lt;Token 3: &#34;&gt;, &lt;Token 4: Tagesspiegel&gt;, &lt;Token 5: &#34;&gt;, &lt;Token 6: vom&gt;, &lt;Token 7: Freitag&gt;, &lt;Token 8: ,&gt;, &lt;Token 9: Fischer&gt;, &lt;Token 10: sei&gt;, &lt;Token 11: &#34;&gt;, &lt;Token 12: in&gt;, &lt;Token 13: einer&gt;, &lt;Token 14: Weise&gt;, &lt;Token 15: aufgetreten&gt;, &lt;Token 16: ,&gt;, &lt;Token 17: die&gt;, &lt;Token 18: alles&gt;, &lt;Token 19: andere&gt;, &lt;Token 20: als&gt;, &lt;Token 21: überzeugend&gt;, &lt;Token 22: war&gt;, &lt;Token 23: &#34;&gt;, &lt;Token 24: .&gt;]&gt;</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">next</span><span class="p">(</span><span class="n">label_sequences</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&lt;LabelSequence: [&#39;19&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;7&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;19&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;]&gt;</pre>
+</div>
+
 </div>
 
 </div>
@@ -14344,10 +14439,10 @@ Labels: [19, 0, 0, 0, 7, 0, 0, 0, 0, 19]
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">crf</span> <span class="o">=</span> <span class="n">chaine</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;tokens&quot;</span><span class="p">],</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;ner_tags&quot;</span><span class="p">],</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">crf</span> <span class="o">=</span> <span class="n">chaine</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">token_sequences</span><span class="p">,</span> <span class="n">label_sequences</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14367,18 +14462,18 @@ Labels: [19, 0, 0, 0, 7, 0, 0, 0, 0, 19]
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Loading data
-Start training
-Iteration: 1	Loss: 502695.489924
-Iteration: 2	Loss: 333000.346260
-Iteration: 3	Loss: 263302.155887
-Iteration: 4	Loss: 245102.656124
-Iteration: 5	Loss: 235361.327211
-Iteration: 6	Loss: 221099.251163
-Iteration: 7	Loss: 202193.305190
-Iteration: 8	Loss: 188116.470032
-Iteration: 9	Loss: 178454.639568
-Iteration: 10	Loss: 175687.765839
+<pre>[2020-11-29 22:48:56,977] [INFO] Loading data
+[2020-11-29 22:49:05,301] [INFO] Start training
+[2020-11-29 22:49:08,678] [INFO] Iteration: 1	Loss: 549913.612197
+[2020-11-29 22:49:09,796] [INFO] Iteration: 2	Loss: 377078.992349
+[2020-11-29 22:49:13,021] [INFO] Iteration: 3	Loss: 267322.682539
+[2020-11-29 22:49:15,353] [INFO] Iteration: 4	Loss: 248339.616374
+[2020-11-29 22:49:17,698] [INFO] Iteration: 5	Loss: 233494.412198
+[2020-11-29 22:49:18,755] [INFO] Iteration: 6	Loss: 223343.503914
+[2020-11-29 22:49:19,795] [INFO] Iteration: 7	Loss: 208772.524234
+[2020-11-29 22:49:20,923] [INFO] Iteration: 8	Loss: 190119.766701
+[2020-11-29 22:49:22,212] [INFO] Iteration: 9	Loss: 178851.893751
+[2020-11-29 22:49:23,356] [INFO] Iteration: 10	Loss: 170839.004304
 </pre>
 </div>
 </div>
@@ -14387,18 +14482,13 @@ Iteration: 10	Loss: 175687.765839
 
 </div>
 
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Evaluating-the-model">Evaluating the model<a class="anchor-link" href="#Evaluating-the-model">&#182;</a></h2>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">chaine</span><span class="o">.</span><span class="n">featurize</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="k">for</span> <span class="n">sequence</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">][</span><span class="s2">&quot;tokens&quot;</span><span class="p">]]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">token_sequence</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">chaine</span><span class="o">.</span><span class="n">token_sequences</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;tokens&quot;</span><span class="p">]))</span>
 </pre></div>
 
      </div>
@@ -14406,18 +14496,65 @@ Iteration: 10	Loss: 175687.765839
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="p">[</span><span class="n">crf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="k">for</span> <span class="n">sequence</span> <span class="ow">in</span> <span class="n">features</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">crf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">token_sequence</span><span class="o">.</span><span class="n">featurize</span><span class="p">())</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>[&#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;,
+ &#39;0&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>

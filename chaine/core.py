@@ -6,16 +6,16 @@ This module implements the high-level API
 """
 
 from chaine.model import Trainer, CRF
-from chaine.data import Token, Sequence
+from chaine.data import Token, TokenSequence
 from chaine.typing import Iterable, Labels
 
 
-def train(dataset: Iterable[Sequence], labels: Iterable[Labels], **kwargs) -> CRF:
+def train(dataset: Iterable[TokenSequence], labels: Iterable[Labels], **kwargs) -> CRF:
     """Train a conditional random field
 
     Parameters
     ----------
-    dataset : Iterable[Sequence]
+    dataset : Iterable[TokenSequence]
         Dataset consisting of sequences of tokens
     labels : Iterable[Labels]
         Labels corresponding to the dataset

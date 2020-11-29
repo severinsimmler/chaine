@@ -5,9 +5,10 @@ chaine.data
 This module provides basic data structures
 """
 
+from abc import abstractmethod, ABC
 from dataclasses import dataclass
 
-from chaine.typing import FeatureGenerator, List, TokenGenerator
+from chaine.typing import FeatureGenerator, List, Iterable, Any, Generator
 
 
 @dataclass
@@ -53,25 +54,37 @@ class Token:
 
 
 @dataclass
-class Sequence:
-    tokens: List[Token]
+class _Sequence(ABC):
+    items: Iterable[Any]
 
-    def __getitem__(self, index: int) -> Token:
-        """Get token of the sequence by index"""
-        return self.tokens[index]
+    def __getitem__(self, index: int):
+        """Get item of the sequence by index"""
+        return self.items[index]
 
-    def __iter__(self) -> TokenGenerator:
-        """Iterate ove the tokens of the sequence"""
-        for token in self.tokens:
-            yield token
+    def __iter__(self) -> Generator[Any, None, None]:
+        """Iterate over the items of the sequence"""
+        for item in self.items:
+            yield item
 
     def __len__(self) -> int:
-        """Number of tokens in the sequence"""
-        return len(self.tokens)
+        """Number of items in the sequence"""
+        return len(self.items)
 
+    @abstractmethod
     def __repr__(self) -> str:
         """Representation of the sequence"""
-        return f"<Sequence: {self.tokens}>"
+        pass
+
+    @abstractmethod
+    def __str__(self) -> str:
+        """String representation of the sequence"""
+        pass
+
+
+class TokenSequence(_Sequence):
+    def __repr__(self) -> str:
+        """Representation of the sequence"""
+        return f"<TokenSequence: {self.items}>"
 
     def __str__(self) -> str:
         """String representation of the sequence
@@ -80,12 +93,12 @@ class Sequence:
         ----
         Overwrite this method for custom detokenization
         """
-        return " ".join(token.text for token in self.tokens)
+        return " ".join(token.text for token in self.items)
 
     @property
     def indices(self) -> List[int]:
         """Indices of the token sequence"""
-        return [token.index for token in self.tokens]
+        return [token.index for token in self.items]
 
     def featurize(self) -> FeatureGenerator:
         """Extract features from tokens of the sequence
@@ -98,7 +111,7 @@ class Sequence:
         One token is represented as a set of strings, each string is a unique feature,
         e.g. the string representation of the current token.
         """
-        for token in self.tokens:
+        for token in self.items:
             features = {f"token.lower()={token.lower()}",
                 f"token.is_upper()={token.is_upper}",
                 f"token.is_title()={token.is_title}",
@@ -106,7 +119,7 @@ class Sequence:
             }
 
             if token.index > 0:
-                left_token = self.tokens[token.index - 1]
+                left_token = self.items[token.index - 1]
                 features.update(
                     {
                         f"-1:token.lower()={left_token.lower()}",
@@ -118,7 +131,7 @@ class Sequence:
                 features.add("BOS=True")
 
             if token.index < max(self.indices):
-                right_token = self.tokens[token.index + 1]
+                right_token = self.items[token.index + 1]
                 features.update(
                     {
                         f"+1:token.lower()={right_token.lower()}",
@@ -129,3 +142,27 @@ class Sequence:
             else:
                 features.add("EOS=True")
             yield features
+
+
+@dataclass
+class LabelSequence(_Sequence):
+    def __post_init__(self):
+        # each label must be a string
+        self.items = [str(item) for item in self.items]
+
+    def __repr__(self):
+        """Representation of a label sequence"""
+        return f"<LabelSequence: {self.items}>"
+
+    def __str__(self):
+        """String representation of a label sequence"""
+        return ", ".join(self.items)
+
+    def __eq__(self, other: "LabelSequence") -> bool:
+        """True if two label sequences are equal"""
+        return all(a == b for a, b in zip(self, other))
+
+    @property
+    def distinct(self):
+        """Distinct labels in the sequence"""
+        return set(self.items)

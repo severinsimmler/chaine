@@ -1,11 +1,11 @@
 from chaine import core
-from chaine.data import Sequence, Token
+from chaine.data import TokenSequence, Token
 from chaine.model import CRF
 
 
 def test_train():
     tokens = [Token(0, "Foo"), Token(1, "bar")]
-    sequence = Sequence(tokens)
+    sequence = TokenSequence(tokens)
 
     dataset = [sequence]
     labels = [["O", "O"]]

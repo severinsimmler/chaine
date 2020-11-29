@@ -326,19 +326,21 @@ cdef class Trainer:
     def _select_algorithm(self, algorithm):
         algorithm = self._algorithm_aliases[algorithm.lower()]
         if not self._c_trainer.select(algorithm, "crf1d"):
-            raise ValueError(f"Bad arguments: algorithm={algorithm}")
+            raise ValueError(f"{algorithm} is no available algorithm")
 
-    def train(self, X, y, model_filepath, int holdout=-1):
+    def train(self, dataset, labels, model_filepath, int holdout=-1):
         LOGGER.info("Loading data")
-        for sequence, labels in zip(X, y):
-            self._append(sequence, labels)
+        for sequence, labels_ in zip(dataset, labels):
+            self._append(sequence, labels_)
+
         LOGGER.info("Start training")
-        status_code = self._c_trainer.train(model_filepath, holdout)
+        status_code = self._c_trainer.train(str(model_filepath), holdout)
         if status_code != crfsuite_api.CRFSUITE_SUCCESS:
             LOGGER.error(f"An error ({status_code}) occured")
 
     @property
     def params(self):
+        """Training parameters"""
         return {name: self._get_param(name) for name in self._c_trainer.params()}
 
     def _set_params(self, params):
@@ -360,6 +362,13 @@ cdef class Trainer:
 
 
 cdef class CRF:
+    """Conditional random field
+
+    Parameters
+    ----------
+    model_filepath : str
+        Path to the trained model
+    """
     cdef crfsuite_api.Tagger c_tagger
 
     def __init__(self, model_filepath):
@@ -375,9 +384,11 @@ cdef class CRF:
 
     @property
     def labels(self):
+        """Labels the model is trained on"""
         return set(self.c_tagger.labels())
 
     def predict(self, sequence):
+        """Predict most likely labels for a given sequence of features"""
         self._set_sequence(sequence)
         return self.c_tagger.viterbi()
 
@@ -385,6 +396,10 @@ cdef class CRF:
         return self.c_tagger.marginal(label, index)
 
     def predict_marginals_single(self, sequence):
+        """Predict marginals for a single sequence
+
+        TODO: extend docstring and/or rename this method
+        """
         self._set_sequence(sequence)
         return [
             {label: self._marginal(label, index) for label in self.labels}
@@ -392,6 +407,10 @@ cdef class CRF:
         ]
 
     def predict_marginals(self, sequences):
+        """Predict marginals for multiple sequences
+
+        TODO: extend docstring and/or rename this method
+        """
         return [self.predict_marginals_single(sequence) for sequence in sequences]
 
     cpdef _set_sequence(self, sequence) except +:

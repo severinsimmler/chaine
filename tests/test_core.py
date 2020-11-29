@@ -1,5 +1,5 @@
 from chaine import core
-from chaine.data import Token, Sequence
+from chaine.data import Sequence, Token
 from chaine.model import CRF
 
 

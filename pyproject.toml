@@ -4,7 +4,6 @@ version = "0.2.0"
 description = "A Lightweight Conditional Random Field"
 authors = ["Severin Simmler <severin.simmler@posteo.de>"]
 readme = "README.md"
-exclude = ["chaine/crfsuite/**/*", "chaine/liblbfgs/**/*"]
 build = "build.py"
 
 [tool.poetry.dependencies]

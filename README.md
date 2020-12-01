@@ -19,11 +19,6 @@ If you are interested in the theoretical concepts behind conditional random fiel
 >>> labels = [["0", "1"]]
 >>> trainer = Trainer()
 >>> trainer.train(sequences, labels, model_filepath="model.crf", max_iterations=3)
-Loading data
-Start training
-Iteration: 1   Loss: 1.386294
-Iteration: 2   Loss: 1.386293
-Iteration: 3   Loss: 1.386292
 >>> model = Model("model.crf")
 >>> model.predict(sequences)
 [['0', '1']]

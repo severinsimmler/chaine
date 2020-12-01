@@ -124,5 +124,5 @@ venv.bak/
 
 .vscode
 
-chaine/model.cpp
+chaine/crf.cpp
 *.crf

@@ -5,12 +5,12 @@ chaine.core
 This module implements the high-level API
 """
 
-from chaine.model import Trainer, CRF
+from chaine.crf import Trainer, Model
 from chaine.data import LabelSequence, Token, TokenSequence
 from chaine.typing import Iterable, Labels
 
 
-def train(dataset: Iterable[TokenSequence], labels: Iterable[Labels], **kwargs) -> CRF:
+def train(dataset: Iterable[TokenSequence], labels: Iterable[Labels], **kwargs) -> Model:
     """Train a conditional random field
 
     Parameters
@@ -34,7 +34,7 @@ def train(dataset: Iterable[TokenSequence], labels: Iterable[Labels], **kwargs) 
     trainer.train(features, labels, "model.crf")
 
     # load and return the trained model
-    return CRF("model.crf")
+    return Model("model.crf")
 
 
 def token_sequences(dataset: Iterable[Iterable[str]]):

@@ -7,7 +7,6 @@ This module provides basic data structures
 
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
-import enum
 
 from chaine.typing import FeatureGenerator, List, Iterable, Any, Generator
 
@@ -83,12 +82,6 @@ class _Sequence(ABC):
 
 
 class TokenSequence(_Sequence):
-    def __post_init__(self):
-        # TODO: this is not triggered. why???
-        # make sure all items are token objects
-        if not all(isinstance(item, Token) for item in self.items):
-            self.items = [Token(index, text) for index, text in enumerate(self.items)]
-
     def __repr__(self) -> str:
         """Representation of the sequence"""
         return f"<TokenSequence: {self.items}>"
@@ -119,19 +112,19 @@ class TokenSequence(_Sequence):
         e.g. the string representation of the current token.
         """
         for token in self.items:
-            features = {f"token.lower()={token.lower()}",
-                f"token.is_upper()={token.is_upper}",
-                f"token.is_title()={token.is_title}",
-                f"token.is_digit()={token.is_digit}",
+            features = {f"token.lower={token.lower()}",
+                f"token.is_upper={token.is_upper}",
+                f"token.is_title={token.is_title}",
+                f"token.is_digit={token.is_digit}",
             }
 
             if token.index > 0:
                 left_token = self.items[token.index - 1]
                 features.update(
                     {
-                        f"-1:token.lower()={left_token.lower()}",
-                        f"-1:token.is_title()={left_token.is_title}",
-                        f"-1:token.is_upper()={left_token.is_upper}",
+                        f"-1:token.lower={left_token.lower()}",
+                        f"-1:token.is_title={left_token.is_title}",
+                        f"-1:token.is_upper={left_token.is_upper}",
                     }
                 )
             else:
@@ -141,9 +134,9 @@ class TokenSequence(_Sequence):
                 right_token = self.items[token.index + 1]
                 features.update(
                     {
-                        f"+1:token.lower()={right_token.lower()}",
-                        f"+1:token.is_title()={right_token.is_title}",
-                        f"+1:token.is_upper()={right_token.is_upper}",
+                        f"+1:token.lower={right_token.lower()}",
+                        f"+1:token.is_title={right_token.is_title}",
+                        f"+1:token.is_upper={right_token.is_upper}",
                     }
                 )
             else:

@@ -6,7 +6,7 @@ from setuptools import Extension
 
 
 sources = [
-    "chaine/model.cpp",
+    "chaine/crf.cpp",
     "chaine/trainer_wrapper.cpp",
     "chaine/crfsuite/lib/cqdb/src/cqdb.c",
     "chaine/crfsuite/lib/cqdb/src/lookup3.c",
@@ -39,15 +39,13 @@ class build_ext(_build_ext):
 
 
 ext_modules = [
-    Extension(
-        "chaine.model", include_dirs=include_dirs, language="c++", sources=sources
-    )
+    Extension("chaine.crf", include_dirs=include_dirs, language="c++", sources=sources)
 ]
 
 
 def build(setup_kwargs):
     # cythonize
-    command = ["cython", "chaine/model.pyx", "--cplus", "-2", "-I", "chaine"]
+    command = ["cython", "chaine/crf.pyx", "--cplus", "-2", "-I", "chaine"]
     subprocess.check_call(command)
 
     # update setup.py kwargs

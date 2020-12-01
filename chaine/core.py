@@ -33,6 +33,11 @@ def train(dataset: Dataset, labels: Labels, **kwargs) -> Model:
     return Model("model.crf")
 
 
+def featurize(dataset: Dataset):
+    for sequence in dataset:
+        yield sequence
+
+
 def token_sequences(dataset: Iterable[Iterable[str]]):
     # TODO: merge this and the other function in a dataset function?
     # TODO: unit test

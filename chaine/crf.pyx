@@ -13,8 +13,8 @@ from chaine.logging import Logger
 LOGGER = Logger(__name__)
 
 
-def _intbool(value):
-    """Helper function to cast a value to an integer and then to a boolean"""
+def _intbool(value: str) -> bool:
+    """Helper function to cast a string to an integer to a boolean"""
     return bool(int(value))
 
 
@@ -24,15 +24,15 @@ cdef class Trainer:
     Parameters
     ----------
     algorithm : str
-        One of the following training algorithms:
-            * lbfgs: L-BFGS with L1/L2 regularization
-            * l2sgd: SGD with L2 regularization
+        Following algorithms are available:
+            * lbfgs: Limited-memory BFGS with L1/L2 regularization
+            * l2sgd: Stochastic gradient descent with L2 regularization
             * ap: Averaged perceptron
             * pa: Passive aggressive
-            * arow: Adaptive regularization of weights (AROW)
+            * arow: Adaptive regularization of weights
 
-    L-BFGS Parameters
-    -----------------
+    Limited-memory BFGS Parameters
+    ------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data
 
@@ -186,7 +186,9 @@ cdef class Trainer:
 
     _algorithm_aliases = {
         "lbfgs": "lbfgs",
+        "limited-memory-bfgs": "lbfgs",
         "l2sgd": "l2sgd",
+        "stochastic-gradient-descent": "l2sgd",
         "ap": "averaged-perceptron",
         "averaged-perceptron": "averaged-perceptron",
         "pa": "passive-aggressive",
@@ -220,7 +222,7 @@ cdef class Trainer:
         }
     _log_parser = LogParser()
 
-    def __init__(self, algorithm="lbfgs", **params):
+    def __init__(self, algorithm="l2sgd", **params):
         self._select_algorithm(algorithm)
         self._set_params(dict(params))
 
@@ -242,6 +244,7 @@ cdef class Trainer:
 
     def _append(self, sequence, labels, int group=0):
         if not isinstance(sequence, list):
+            # no generators allowed
             sequence = [item for item in sequence]
         self._c_trainer.append(to_seq(sequence), labels, group)
 
@@ -252,7 +255,10 @@ cdef class Trainer:
 
     def train(self, dataset, labels, model_filepath, int holdout=-1):
         LOGGER.info("Loading data")
-        for sequence, labels_ in zip(dataset, labels):
+        count = 0
+        for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
+            if i > 0 and i % 10000 == 0:
+                LOGGER.info(f"Processed sequences: {i}")
             self._append(sequence, labels_)
 
         LOGGER.info("Start training")

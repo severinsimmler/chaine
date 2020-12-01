@@ -9,6 +9,7 @@ import os
 
 from chaine.utils import LogParser
 from chaine.logging import Logger
+from chaine.typing import Dataset, Dict, Iterable, Labels, List, Path, Sequence
 
 LOGGER = Logger(__name__)
 
@@ -232,7 +233,53 @@ cdef class Trainer:
         self._c_trainer._init_trainer()
 
     def __repr__(self):
+        """Representation of the trainer"""
         return f"<Trainer: {self.params}>"
+
+    def train(self, dataset: Dataset, labels: Labels, model_filepath: Path):
+        """Train a conditional random field
+
+        Parameters
+        ----------
+        dataset : Dataset
+            Training data set
+        labels : Labels
+            Corresponding true labels
+        model_filepath : Path
+            Path the trained model is written to
+
+        Note
+        ----
+        A dataset is three-dimensional:
+
+            [[['feature_a', 'feature_b'],
+              ['feature_c']]]
+
+        An instance of this dataset is two-dimensional:
+
+            [['feature_a', 'feature_b'],
+             ['feature_c']]
+
+        An item of this instance represents e.g. one word in a sentence by descriptive
+        features. One item consists only of the relevant features. Internally, the
+        string features are hash-mapped and a sparse matrix is constructed.
+        """
+        LOGGER.info("Loading data")
+        for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
+            # log progress every 10000 data points
+            if i > 0 and i % 10000 == 0:
+                LOGGER.info(f"Processed sequences: {i}")
+            self._append(sequence, labels_)
+
+        LOGGER.info("Start training")
+        status_code = self._c_trainer.train(str(model_filepath), -1)
+        if status_code != crfsuite_api.CRFSUITE_SUCCESS:
+            LOGGER.error(f"An error ({status_code}) occured")
+
+    @property
+    def params(self):
+        """Training parameters"""
+        return {name: self._get_param(name) for name in self._c_trainer.params()}
 
     cdef _on_message(self, string message):
         self._message(message)
@@ -252,24 +299,6 @@ cdef class Trainer:
         algorithm = self._algorithm_aliases[algorithm.lower()]
         if not self._c_trainer.select(algorithm, "crf1d"):
             raise ValueError(f"{algorithm} is no available algorithm")
-
-    def train(self, dataset, labels, model_filepath, int holdout=-1):
-        LOGGER.info("Loading data")
-        count = 0
-        for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
-            if i > 0 and i % 10000 == 0:
-                LOGGER.info(f"Processed sequences: {i}")
-            self._append(sequence, labels_)
-
-        LOGGER.info("Start training")
-        status_code = self._c_trainer.train(str(model_filepath), holdout)
-        if status_code != crfsuite_api.CRFSUITE_SUCCESS:
-            LOGGER.error(f"An error ({status_code}) occured")
-
-    @property
-    def params(self):
-        """Training parameters"""
-        return {name: self._get_param(name) for name in self._c_trainer.params()}
 
     def _set_params(self, params):
         for param, value in params.items():
@@ -303,30 +332,57 @@ cdef class Model:
         self._load(model_filepath)
 
     def __repr__(self):
+        """Representation of the model"""
         return f"<CRF: {self.labels}>"
-
-    def _load(self, filepath):
-        self._check_model(filepath)
-        if not self.c_tagger.open(filepath):
-            raise ValueError(f"Cannot load model file {filepath}")
 
     @property
     def labels(self):
         """Labels the model is trained on"""
         return set(self.c_tagger.labels())
 
-    def predict(self, sequence):
-        """Predict most likely labels for a given sequence of features"""
-        self._set_sequence(sequence)
+    def predict_single(self, sequence: Sequence) -> List[str]:
+        """Predict most likely labels for a given sequence of features
+
+        Parameters
+        ----------
+        sequence : Sequence
+            Sequence of features, e.g. [{"feature_a", "feature_b"}, {"feature_c"}]
+
+        Returns
+        -------
+        List[str]
+            Most likely label sequence
+        """
+        self._set_sequence(sequences)
         return self.c_tagger.viterbi()
 
-    def _marginal(self, label, index):
-        return self.c_tagger.marginal(label, index)
+    def predict(self, sequences: Iterable[Sequence]) -> List[List[str]]:
+        """Predict most likely labels for a batch of sequences
 
-    def predict_marginals_single(self, sequence):
-        """Predict marginals for a single sequence
+        Parameters
+        ----------
+        sequences : Iterable[Sequence]
+            Batch of sequences
 
-        TODO: extend docstring and/or rename this method
+        Returns
+        -------
+        List[List[str]]
+            Most likely label sequences
+        """
+        return [self.predict(sequence) for sequence in sequences]
+
+    def predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:
+        """Predict probabilities over all labels for each token in a sequence
+
+        Parameters
+        ----------
+        sequence : Sequence
+            Sequence of features, e.g. [{"feature_a", "feature_b"}, {"feature_c"}]
+
+        Returns
+        -------
+        List[Dict[str, float]]
+            Probability distributions over all labels for each token
         """
         self._set_sequence(sequence)
         return [
@@ -334,12 +390,29 @@ cdef class Model:
             for index in range(len(sequence))
         ]
 
-    def predict_marginals(self, sequences):
-        """Predict marginals for multiple sequences
+    def predict_proba(self, sequences: Iterable[Sequence]) -> List[List[Dict[str, float]]]:
+        """Predict probabilities over all labels for each token in a batch of sequences
 
-        TODO: extend docstring and/or rename this method
+        Parameters
+        ----------
+        sequences : Sequence
+            Batch of sequences
+
+        Returns
+        -------
+        List[Dict[str, float]]
+            Probability distributions over all labels for each token in the sequences
         """
-        return [self.predict_marginals_single(sequence) for sequence in sequences]
+        return [self.predict_proba_single(sequence) for sequence in sequences]
+
+
+    def _load(self, filepath):
+        self._check_model(filepath)
+        if not self.c_tagger.open(filepath):
+            raise ValueError(f"Cannot load model file {filepath}")
+
+    def _marginal(self, label, index):
+        return self.c_tagger.marginal(label, index)
 
     cpdef _set_sequence(self, sequence) except +:
         self.c_tagger.set(to_seq(sequence))
@@ -353,7 +426,6 @@ cdef class Model:
             model.seek(0, os.SEEK_END)
             if model.tell() <= 48:
                 raise ValueError(f"Model file {filepath} does not have a complete header")
-
 
 
 cdef crfsuite_api.Item to_item(sequence) except+:
@@ -410,7 +482,6 @@ cdef crfsuite_api.ItemSequence to_seq(sequence) except+:
 
 
 cdef class _ItemSequence:
-    """Features for items in a sequence"""
     cdef crfsuite_api.ItemSequence c_sequence
 
     def __init__(self, sequence):

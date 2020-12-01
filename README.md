@@ -14,12 +14,10 @@ If you are interested in the theoretical concepts behind conditional random fiel
 ## Example
 
 ```python
->>> from chaine import Trainer, Model
+>>> import chaine
 >>> sequences = [[["a", "a"], ["b", "b"]]]
 >>> labels = [["0", "1"]]
->>> trainer = Trainer()
->>> trainer.train(sequences, labels, model_filepath="model.crf", max_iterations=3)
->>> model = Model("model.crf")
+>>> model = chaine.train(sequences, labels)
 >>> model.predict(sequences)
 [['0', '1']]
 ```

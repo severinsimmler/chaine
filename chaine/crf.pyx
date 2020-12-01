@@ -353,7 +353,7 @@ cdef class Model:
         List[str]
             Most likely label sequence
         """
-        self._set_sequence(sequences)
+        self._set_sequence(sequence)
         return self.c_tagger.viterbi()
 
     def predict(self, sequences: Iterable[Sequence]) -> List[List[str]]:
@@ -369,7 +369,7 @@ cdef class Model:
         List[List[str]]
             Most likely label sequences
         """
-        return [self.predict(sequence) for sequence in sequences]
+        return [self.predict_single(sequence) for sequence in sequences]
 
     def predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:
         """Predict probabilities over all labels for each token in a sequence

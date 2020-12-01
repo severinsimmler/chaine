@@ -290,9 +290,13 @@ cdef class Trainer:
             LOGGER.info(event)
 
     def _append(self, sequence, labels, int group=0):
+        # no generators allowed
         if not isinstance(sequence, list):
-            # no generators allowed
             sequence = [item for item in sequence]
+        if not isinstance(labels, list):
+            labels = [label for label in labels]
+        # labels must be strings
+        labels = [str(label) for label in labels]
         self._c_trainer.append(to_seq(sequence), labels, group)
 
     def _select_algorithm(self, algorithm):

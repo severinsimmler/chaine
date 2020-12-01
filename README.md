@@ -32,7 +32,7 @@ Iteration: 3   Loss: 1.386292
 Check out the introducing [Jupyter notebook](https://github.com/severinsimmler/chaine/blob/master/notebooks/tutorial.ipynb).
 
 
-## Disclaimer
+## Credits
 
 This library makes use of and is partially based on:
 

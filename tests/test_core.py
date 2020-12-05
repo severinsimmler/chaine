@@ -1,6 +1,6 @@
 from chaine import core
 from chaine.data import TokenSequence, Token
-from chaine.model import CRF
+from chaine.crf import Model
 
 
 def test_train():
@@ -12,6 +12,6 @@ def test_train():
 
     crf = core.train(dataset, labels)
 
-    assert isinstance(crf, CRF)
+    assert isinstance(crf, Model)
     assert crf.labels == {"O"}
     assert crf.predict(sequence.featurize()) == ["O", "O"]

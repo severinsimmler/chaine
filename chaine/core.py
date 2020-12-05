@@ -7,7 +7,7 @@ This module implements the high-level API
 
 from chaine.crf import Trainer, Model
 from chaine.data import LabelSequence, Token, TokenSequence
-from chaine.typing import Labels, Dataset
+from chaine.typing import Labels, Dataset, Iterable
 
 
 def train(dataset: Dataset, labels: Labels, **kwargs) -> Model:

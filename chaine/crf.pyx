@@ -7,8 +7,7 @@ cimport crfsuite_api
 from libcpp.string cimport string
 import os
 
-from chaine.utils import LogParser
-from chaine.logging import Logger
+from chaine.logging import Logger, LogParser
 from chaine.typing import Dataset, Dict, Iterable, Labels, List, Path, Sequence
 
 LOGGER = Logger(__name__)
@@ -196,6 +195,28 @@ cdef class Trainer:
         "passive-aggressive": "passive-aggressive",
         "arow": "arow"
     }
+    _param2kwarg = {
+        "feature.minfreq": "min_freq",
+        "feature.possible_states": "all_possible_states",
+        "feature.possible_transitions": "all_possible_transitions",
+        "calibration.eta": "calibration_eta",
+        "calibration.rate": "calibration_rate",
+        "calibration.samples": "calibration_samples",
+        "calibration.candidates": "calibration_candidates",
+        "calibration.max_trials": "calibration_max_trials",
+        "type": "pa_type",
+    }
+    _kwarg2param = {
+        "min_freq": "feature.minfreq",
+        "all_possible_states": "feature.possible_states",
+        "all_possible_transitions": "feature.possible_transitions",
+        "calibration_eta": "calibration.eta",
+        "calibration_rate": "calibration.rate",
+        "calibration_samples": "calibration.samples",
+        "calibration_candidates": "calibration.candidates",
+        "calibration_max_trials": "calibration.max_trials",
+        "pa_type": "type",
+    }
     _parameter_types = {
             "feature.minfreq": float,
             "feature.possible_states": _intbool,
@@ -223,9 +244,10 @@ cdef class Trainer:
         }
     _log_parser = LogParser()
 
-    def __init__(self, algorithm="l2sgd", **params):
+    def __init__(self, algorithm="l2sgd", **kwargs):
         self._select_algorithm(algorithm)
-        self._set_params(dict(params))
+        params = self._translate_params(kwargs)
+        self._set_params(params)
 
     def __cinit__(self):
         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
@@ -279,7 +301,10 @@ cdef class Trainer:
     @property
     def params(self):
         """Training parameters"""
-        return {name: self._get_param(name) for name in self._c_trainer.params()}
+        return {
+            self._param2kwarg.get(name, name): self._get_param(name)
+            for name in self._c_trainer.params()
+        }
 
     cdef _on_message(self, string message):
         self._message(message)
@@ -298,6 +323,12 @@ cdef class Trainer:
         # labels must be strings
         labels = [str(label) for label in labels]
         self._c_trainer.append(to_seq(sequence), labels, group)
+
+    def _translate_params(self, kwargs):
+        return {
+            self._kwarg2param.get(kwarg, kwarg): value
+            for kwarg, value in kwargs.items()
+        }
 
     def _select_algorithm(self, algorithm):
         algorithm = self._algorithm_aliases[algorithm.lower()]
@@ -411,6 +442,7 @@ cdef class Model:
 
 
     def _load(self, filepath):
+        filepath = str(filepath)
         self._check_model(filepath)
         if not self.c_tagger.open(filepath):
             raise ValueError(f"Cannot load model file {filepath}")
@@ -477,15 +509,15 @@ cdef crfsuite_api.Item to_item(sequence) except+:
 cdef crfsuite_api.ItemSequence to_seq(sequence) except+:
     cdef crfsuite_api.ItemSequence c_sequence
 
-    if isinstance(sequence, _ItemSequence):
-        c_sequence = (<_ItemSequence>sequence).c_sequence
+    if isinstance(sequence, ItemSequence):
+        c_sequence = (<ItemSequence>sequence).c_sequence
     else:
-        for x in sequence:
-            c_sequence.push_back(to_item(x))
+        for s in sequence:
+            c_sequence.push_back(to_item(s))
     return c_sequence
 
 
-cdef class _ItemSequence:
+cdef class ItemSequence:
     cdef crfsuite_api.ItemSequence c_sequence
 
     def __init__(self, sequence):
@@ -509,4 +541,4 @@ cdef class _ItemSequence:
         return self.c_sequence.size()
 
     def __repr__(self):
-        return f"<_ItemSequence ({len(self)})>"
+        return f"<ItemSequence ({len(self)})>"

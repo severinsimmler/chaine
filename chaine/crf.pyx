@@ -509,15 +509,15 @@ cdef crfsuite_api.Item to_item(sequence) except+:
 cdef crfsuite_api.ItemSequence to_seq(sequence) except+:
     cdef crfsuite_api.ItemSequence c_sequence
 
-    if isinstance(sequence, ItemSequence):
-        c_sequence = (<ItemSequence>sequence).c_sequence
+    if isinstance(sequence, _ItemSequence):
+        c_sequence = (<_ItemSequence>sequence).c_sequence
     else:
         for s in sequence:
             c_sequence.push_back(to_item(s))
     return c_sequence
 
 
-cdef class ItemSequence:
+cdef class _ItemSequence:
     cdef crfsuite_api.ItemSequence c_sequence
 
     def __init__(self, sequence):
@@ -541,4 +541,4 @@ cdef class ItemSequence:
         return self.c_sequence.size()
 
     def __repr__(self):
-        return f"<ItemSequence ({len(self)})>"
+        return f"<_ItemSequence ({len(self)})>"

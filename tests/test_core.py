@@ -4,7 +4,7 @@ from chaine.crf import Model
 
 
 def test_train():
-    tokens = [Token(0, "Foo"), Token(1, "bar")]
+    tokens = [["Foo"], ["Bar"]]
     sequence = TokenSequence(tokens)
 
     dataset = [sequence]
@@ -14,4 +14,3 @@ def test_train():
 
     assert isinstance(crf, Model)
     assert crf.labels == {"O"}
-    assert crf.predict(sequence.featurize()) == ["O", "O"]

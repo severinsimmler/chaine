@@ -32,35 +32,9 @@ def test_token_sequence():
     assert str(sequence) == "Foo Bar"
     assert sequence.indices == [0, 1]
 
-    assert list(sequence.featurize()) == [
-        {
-            "token.is_title()=True",
-            "+1:token.is_upper()=False",
-            "token.is_digit()=False",
-            "token.is_upper()=False",
-            "token.lower()=foo",
-            "+1:token.lower()=bar",
-            "+1:token.is_title()=True",
-            "BOS=True",
-        },
-        {
-            "EOS=True",
-            "token.is_title()=True",
-            "token.is_digit()=False",
-            "token.is_upper()=False",
-            "-1:token.is_upper()=False",
-            "-1:token.is_title()=True",
-            "-1:token.lower()=foo",
-            "token.lower()=bar",
-        },
-    ]
-
     strings = ["Foo", "Bar"]
     sequence = data.TokenSequence(strings)
-    assert isinstance(sequence[0], Token)
-    assert sequence[0].index == 0
-    assert sequence[1].index == 1
-
+    assert isinstance(sequence[0], str)
 
 def test_label_sequence():
     labels = ["B-PER", "I-PER", "O"]

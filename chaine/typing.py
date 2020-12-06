@@ -6,7 +6,7 @@ A collection of type hints
 """
 
 from pathlib import Path as _Path
-from typing import List, Optional, Generator, Iterable, Union, Any, Set, Dict
+from typing import Any, Dict, Generator, Iterable, List, Optional, Set, Union
 
 FeatureGenerator = Generator[List[str], None, None]
 TokenGenerator = Generator["Token", None, None]

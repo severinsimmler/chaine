@@ -5,9 +5,9 @@ chaine.core
 This module implements the high-level API
 """
 
-from chaine.crf import Trainer, Model
+from chaine.crf import Model, Trainer
 from chaine.data import LabelSequence, Token, TokenSequence
-from chaine.typing import Labels, Dataset, Iterable
+from chaine.typing import Dataset, Iterable, Labels
 
 
 def train(dataset: Dataset, labels: Labels, **kwargs) -> Model:

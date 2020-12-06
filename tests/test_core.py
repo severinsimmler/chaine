@@ -1,6 +1,6 @@
 from chaine import core
-from chaine.data import TokenSequence, Token
 from chaine.crf import Model
+from chaine.data import Token, TokenSequence
 
 
 def test_train():

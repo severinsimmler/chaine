@@ -3,7 +3,7 @@ from logging import Formatter
 from chaine import logging
 
 
-def test_logger(caplog):
+def test_logger():
     logger = logging.Logger("test")
 
     assert logger.name == "test"

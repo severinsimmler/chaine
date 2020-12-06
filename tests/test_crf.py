@@ -1,5 +1,7 @@
 from pathlib import Path
+
 import pytest
+
 from chaine import crf
 
 
@@ -165,7 +167,7 @@ def test_pa_params():
         assert param in trainer.params.keys()
 
 
-def test_pa_params():
+def test_arow_params():
     trainer = crf.Trainer("arow")
     for param in {
         "min_freq",
@@ -179,7 +181,7 @@ def test_pa_params():
         assert param in trainer.params.keys()
 
 
-def test_log_parser(capfd):
+def test_trainer_log_parser():
     trainer = crf.Trainer()
     assert hasattr(trainer, "_log_parser")
 
@@ -195,7 +197,6 @@ def test_training(tmpdir, dataset):
 
 def test_model_deserialization(serialized_model):
     model = crf.Model(serialized_model)
-
     assert model.labels == {"O"}
 
 
@@ -203,7 +204,6 @@ def test_model_predict_single(model, dataset):
     for sequence in dataset["sequences"]:
         predicted = model.predict_single(sequence)
         expected = ["O", "O"]
-
         assert predicted == expected
 
     with pytest.raises(SystemError):
@@ -213,7 +213,6 @@ def test_model_predict_single(model, dataset):
 def test_model_predict(model, dataset):
     predicted = model.predict(dataset["sequences"])
     expected = dataset["labels"]
-
     assert predicted == expected
 
 
@@ -221,7 +220,6 @@ def test_model_predict_proba_single(model, dataset):
     for sequence in dataset["sequences"]:
         predicted = model.predict_proba_single(sequence)
         expected = [{"O": 1.0}, {"O": 1.0}]
-
         assert predicted == expected
 
     with pytest.raises(TypeError):
@@ -231,5 +229,64 @@ def test_model_predict_proba_single(model, dataset):
 def test_model_predict_proba(model, dataset):
     predicted = model.predict_proba(dataset["sequences"])
     expected = [[{"O": 1.0}, {"O": 1.0}] for _ in dataset["labels"]]
-
     assert predicted == expected
+
+
+def test_empty_item_sequence():
+    sequence = crf._ItemSequence([])
+    assert len(sequence) == 0
+    assert sequence.items() == []
+
+
+def test_list_item_sequence():
+    sequence = crf._ItemSequence([["foo", "bar"], ["bar", "baz"]])
+    assert len(sequence) == 2
+    assert sequence.items() == [{"foo": 1.0, "bar": 1.0}, {"bar": 1.0, "baz": 1.0}]
+    assert crf._ItemSequence(sequence.items()).items() == sequence.items()
+
+
+def test_dict_item_sequence():
+    sequence = crf._ItemSequence([{"foo": True, "bar": {"foo": -1, "baz": False}}])
+    assert len(sequence) == 1
+    assert sequence.items() == [{"foo": 1.0, "bar:foo": -1, "bar:baz": 0.0}]
+
+
+def test_unicode_item_sequence():
+    sequence = crf._ItemSequence([{"foo": "привет", "ключ": 1.0, "привет": "мир"}])
+    assert sequence.items() == [{"foo:привет": 1.0, "ключ": 1.0, "привет:мир": 1.0}]
+
+
+def test_nested_item_sequence():
+    sequence = crf._ItemSequence(
+        [
+            {
+                "foo": {
+                    "bar": "baz",
+                    "spam": 0.5,
+                    "egg": ["x", "y"],
+                    "ham": {"x": -0.5, "y": -0.1},
+                },
+            },
+            {
+                "foo": {"bar": "ham", "spam": -0.5, "ham": set(["x", "y"])},
+            },
+        ]
+    )
+    assert len(sequence) == 2
+    assert sequence.items() == [
+        {
+            "foo:bar:baz": 1.0,
+            "foo:spam": 0.5,
+            "foo:egg:x": 1.0,
+            "foo:egg:y": 1.0,
+            "foo:ham:x": -0.5,
+            "foo:ham:y": -0.1,
+        },
+        {
+            "foo:bar:ham": 1.0,
+            "foo:spam": -0.5,
+            "foo:ham:x": 1.0,
+            "foo:ham:y": 1.0,
+        },
+    ]
+    assert crf._ItemSequence(sequence.items()).items() == sequence.items()

@@ -36,6 +36,7 @@ def test_token_sequence():
     sequence = data.TokenSequence(strings)
     assert isinstance(sequence[0], str)
 
+
 def test_label_sequence():
     labels = ["B-PER", "I-PER", "O"]
     sequence = data.LabelSequence(labels)

@@ -5,10 +5,10 @@ chaine.data
 This module provides basic data structures
 """
 
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from chaine.typing import FeatureGenerator, List, Iterable, Any, Generator
+from chaine.typing import Any, FeatureGenerator, Generator, Iterable, List
 
 
 @dataclass
@@ -112,7 +112,8 @@ class TokenSequence(_Sequence):
         e.g. the string representation of the current token.
         """
         for token in self.items:
-            features = {f"token.lower={token.lower()}",
+            features = {
+                f"token.lower={token.lower()}",
                 f"token.is_upper={token.is_upper}",
                 f"token.is_title={token.is_title}",
                 f"token.is_digit={token.is_digit}",

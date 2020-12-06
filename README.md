@@ -1,9 +1,6 @@
-# A lightweight Linear-Chain Conditional Random Field
+# A Lightweight Conditional Random Field
 
-This is a modern, fast and no-dependency Python library implementing a linear-chain conditional random field for natural language processing tasks like named entity recognition or part-of-speech tagging.
-
-
-## Installation
+This is a modern Python library without any third-party dependencies and a backend written in C implementing conditional random fields for natural language processing tasks like named entity recognition or part-of-speech tagging.
 
 You can install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 
@@ -11,23 +8,24 @@ You can install the latest stable version from [PyPI](https://pypi.org/project/c
 $ pip install chaine
 ```
 
+If you are interested in the theoretical concepts behind conditional random fields, I can recommend the introducing paper by [Lafferty et al](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers).
+
 
 ## Example
 
 ```python
 >>> import chaine
->>> import datasets
->>> data = datasets.load_dataset("germeval_14")
->>> tokens = data["train"]["tokens"]
->>> labels = data["train"]["ner_tags"]
->>> crf = chaine.train(tokens, labels, max_iterations=100)
->>> sequence = chaine.featurize(["todo", "todo", "todo"])
->>> crf.predict(sequence)
-["O", "O", "B-PER"]
+>>> sequences = [[["a", "a"], ["b", "b"]]]
+>>> labels = [["0", "1"]]
+>>> model = chaine.train(sequences, labels)
+>>> model.predict(sequences)
+[['0', '1']]
 ```
 
+Check out the introducing [Jupyter notebook](https://github.com/severinsimmler/chaine/blob/master/notebooks/tutorial.ipynb).
 
-## Disclaimer
+
+## Credits
 
 This library makes use of and is partially based on:
 

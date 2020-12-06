@@ -7,8 +7,6 @@ This module provides basic data structures
 
 from dataclasses import dataclass
 
-from chaine.typing import Any, FeatureGenerator, Generator, Iterable, List
-
 
 @dataclass
 class Token:

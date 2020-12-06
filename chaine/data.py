@@ -5,7 +5,10 @@ chaine.data
 This module provides basic data structures
 """
 
+import re
 from dataclasses import dataclass
+
+from chaine.typing import Iterable
 
 
 @dataclass
@@ -30,6 +33,12 @@ class Token:
         return self.text.lower()
 
     @property
+    def shape(self) -> str:
+        text = re.sub("[A-Z]", "X", self.text)
+        text = re.sub("[a-z]", "x", text)
+        return re.sub("[0-9]", "d", text)
+
+    @property
     def is_digit(self) -> bool:
         """True if token is a digit, False otherwise"""
         return self.text.isdigit()
@@ -48,3 +57,14 @@ class Token:
     def is_upper(self) -> bool:
         """True if token is upper case, False otherwise"""
         return self.text.isupper()
+
+
+class TokenSequence:
+    def __init__(self, tokens):
+        if not all(isinstance(token, Token) for token in tokens):
+            tokens = [Token(index, text) for index, text in enumerate(tokens)]
+        self.tokens = tokens
+
+    def __iter__(self):
+        for token in self.tokens:
+            yield token

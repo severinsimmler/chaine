@@ -19,7 +19,7 @@ If you are interested in the theoretical concepts behind conditional random fiel
 
 ## How it works
 
-```python
+```
 >>> import chaine
 >>> tokens = [["John", "Lennon", "was", "rhythm", "guitarist" "of", "The", "Beatles"]]
 >>> labels = [["B-PER", "I-PER", "O", "O", "O", "O", "B-ORG", "I-ORG"]]

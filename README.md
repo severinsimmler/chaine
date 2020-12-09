@@ -1,6 +1,6 @@
 # Chaine
 
-A lightweight and fast linear-chain conditional random field implementation.
+A linear-chain conditional random field implementation.
 
 Chaine is a modern Python library without any third-party dependencies and a backend written in C implementing conditional random fields for natural language processing tasks like named entity recognition or part-of-speech tagging.
 

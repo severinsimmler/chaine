@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chaine"
-version = "0.2.0"
+version = "0.2.1"
 description = "A Lightweight Conditional Random Field"
 authors = ["Severin Simmler <severin.simmler@posteo.de>"]
 readme = "README.md"

@@ -8,8 +8,6 @@ This module provides basic data structures
 import re
 from dataclasses import dataclass
 
-from chaine.typing import Iterable
-
 
 @dataclass
 class Token:

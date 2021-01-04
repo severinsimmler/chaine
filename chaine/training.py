@@ -1,8 +1,8 @@
 """
-chaine.core
-~~~~~~~~~~~
+chaine.training
+~~~~~~~~~~~~~~~
 
-This module implements the high-level API
+This module implements the high-level API to train a CRF
 """
 
 from chaine.crf import Model, Trainer

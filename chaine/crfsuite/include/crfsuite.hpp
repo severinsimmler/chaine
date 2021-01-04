@@ -364,13 +364,13 @@ namespace CRFSuite
 
         if (model == NULL)
         {
-            throw std::invalid_argument("The tagger is not opened");
+            throw std::invalid_argument("The tagger is not opened.");
         }
 
         // Obtain the dictionary interface representing the labels in the model.
         if ((ret = model->get_labels(model, &labels)))
         {
-            throw std::runtime_error("Failed to obtain the dictionary interface for labels");
+            throw std::runtime_error("Failed to obtain the dictionary interface for labels.");
         }
 
         // Collect all label strings to lseq.
@@ -405,13 +405,13 @@ namespace CRFSuite
 
         if (model == NULL || tagger == NULL)
         {
-            throw std::invalid_argument("The tagger is not opened");
+            throw std::invalid_argument("The tagger is not opened.");
         }
 
         // Obtain the dictionary interface representing the attributes in the model.
         if ((ret = model->get_attrs(model, &attrs)))
         {
-            throw std::runtime_error("Failed to obtain the dictionary interface for attributes");
+            throw std::runtime_error("Failed to obtain the dictionary interface for attributes.");
         }
 
         // Build an instance.
@@ -468,7 +468,7 @@ namespace CRFSuite
         // Obtain the dictionary interface representing the labels in the model.
         if ((ret = model->get_labels(model, &labels)))
         {
-            throw std::runtime_error("Failed to obtain the dictionary interface for labels");
+            throw std::runtime_error("Failed to obtain the dictionary interface for labels.");
         }
 
         // Run the Viterbi algorithm.

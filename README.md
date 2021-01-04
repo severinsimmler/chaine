@@ -1,12 +1,12 @@
 # Chaine
 
-A linear-chain conditional random field implementation.
+Linear-chain conditional random fields for natural language processing.
 
-Chaine is a modern Python library without any third-party dependencies and a backend written in C implementing conditional random fields for natural language processing tasks like named entity recognition or part-of-speech tagging.
+Chaine is a modern Python library without third-party dependencies and a backend written in C. You can train conditional random fields for natural language processing tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition) or [part-of-speech tagging](https://en.wikipedia.org/wiki/Part-of-speech_tagging).
 
-- **Lightweight:** explain
-- **Fast:** explain
-- **Easy to use:** explain
+- **Lightweight**: No use of bloated third-party libraries.
+- **Fast**: Performance critical parts are written in C and thus [blazingly fast](http://www.chokkan.org/software/crfsuite/benchmark.html).
+- **Easy to use**: Designed with special focus on usability and a beautiful high-level API.
 
 You can install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 
@@ -14,25 +14,18 @@ You can install the latest stable version from [PyPI](https://pypi.org/project/c
 $ pip install chaine
 ```
 
-If you are interested in the theoretical concepts behind conditional random fields, refer to the introducing paper by [Lafferty et al](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers).
+If you are interested in the theoretical concepts behind conditional random fields, please refer to the introducing paper by [Lafferty et al](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers).
 
 
-## How it works
+## Example
 
-```
+```python
 >>> import chaine
->>> tokens = [["John", "Lennon", "was", "rhythm", "guitarist" "of", "The", "Beatles"]]
->>> labels = [["B-PER", "I-PER", "O", "O", "O", "O", "B-ORG", "I-ORG"]]
+>>> tokens = [["John", "Lennon", "was", "born", "in" "Liverpool"]]
+>>> labels = [["B-PER", "I-PER", "O", "O", "O", "B-LOC"]]
 >>> model = chaine.train(tokens, labels, max_iterations=5)
-Loading data
-Start training
-Iteration 1, train loss: 14.334076
-Iteration 2, train loss: 14.334064
-Iteration 3, train loss: 14.334053
-Iteration 4, train loss: 14.334041
-Iteration 5, train loss: 14.334029
 >>> model.predict(tokens)
-[['B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']]
+[['B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC']]
 ```
 
 Check out the introducing [Jupyter notebook](https://github.com/severinsimmler/chaine/blob/master/notebooks/tutorial.ipynb).

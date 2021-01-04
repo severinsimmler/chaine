@@ -132,7 +132,7 @@ class LogMessage:
         self.loss = None
 
     def __str__(self) -> str:
-        return f"Iteration: {self.iteration}\tLoss: {self.loss}"
+        return f"Iteration {self.iteration}, train loss: {self.loss}"
 
 
 class LogParser:

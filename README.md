@@ -2,11 +2,11 @@
 
 Linear-chain conditional random fields for natural language processing.
 
-Chaine is a modern Python library without any third-party dependencies and a backend written in C. You can train conditional random fields for natural language processing tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition) or [part-of-speech tagging](https://en.wikipedia.org/wiki/Part-of-speech_tagging).
+Chaine is a modern Python library without third-party dependencies and a backend written in C. You can train conditional random fields for natural language processing tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition) or [part-of-speech tagging](https://en.wikipedia.org/wiki/Part-of-speech_tagging).
 
-- **Lightweight**: Chaine  explain
-- **Fast:** explain
-- **Easy to use:** explain
+- **Lightweight**: No use of bloated third-party libraries — only pure Python and C.
+- **Fast**: Performance critical parts are written in C and thus [blazingly fast](http://www.chokkan.org/software/crfsuite/benchmark.html).
+- **Easy to use**: Designed with special focus on usability and a beautiful high-level API.
 
 You can install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 
@@ -25,7 +25,7 @@ If you are interested in the theoretical concepts behind conditional random fiel
 >>> labels = [["B-PER", "I-PER", "O", "O", "O", "B-LOC"]]
 >>> model = chaine.train(tokens, labels, max_iterations=5)
 >>> model.predict(tokens)
-[["B-PER", "I-PER", "O", "O", "O", "B-LOC"]]
+[['B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC']]
 ```
 
 Check out the introducing [Jupyter notebook](https://github.com/severinsimmler/chaine/blob/master/notebooks/tutorial.ipynb).

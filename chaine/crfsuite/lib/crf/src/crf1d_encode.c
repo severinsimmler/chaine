@@ -477,11 +477,7 @@ crf1de_set_data(
     }
 
     /* Feature generation. */
-    logging(lg, "Feature generation\n");
-    logging(lg, "type: CRF1d\n");
-    logging(lg, "feature.minfreq: %f\n", opt->feature_minfreq);
-    logging(lg, "feature.possible_states: %d\n", opt->feature_possible_states);
-    logging(lg, "feature.possible_transitions: %d\n", opt->feature_possible_transitions);
+    logging(lg, "Processing training data");
     begin = clock();
     crf1de->features = crf1df_generate(
         &crf1de->num_features,
@@ -498,9 +494,6 @@ crf1de_set_data(
         ret = CRFSUITEERR_OUTOFMEMORY;
         goto error_exit;
     }
-    logging(lg, "Number of features: %d\n", crf1de->num_features);
-    logging(lg, "Seconds required: %.3f\n", (clock() - begin) / (double)CLOCKS_PER_SEC);
-    logging(lg, "\n");
 
     /* Initialize the feature references. */
     crf1df_init_references(
@@ -544,7 +537,7 @@ crf1de_save_model(
     int J = 0, B = 0;
 
     /* Start storing the model. */
-    logging(lg, "Storing the model\n");
+    logging(lg, "Saving model");
     begin = clock();
 
     /* Allocate and initialize the feature mapping. */
@@ -641,12 +634,7 @@ crf1de_save_model(
         goto error_exit;
     }
 
-    logging(lg, "Number of active features: %d (%d)\n", J, K);
-    logging(lg, "Number of active attributes: %d (%d)\n", B, A);
-    logging(lg, "Number of active labels: %d (%d)\n", L, L);
-
     /* Write labels. */
-    logging(lg, "Writing labels\n", L);
     if (ret = crf1dmw_open_labels(writer, L))
     {
         goto error_exit;
@@ -670,7 +658,6 @@ crf1de_save_model(
     }
 
     /* Write attributes. */
-    logging(lg, "Writing attributes\n");
     if (ret = crf1dmw_open_attrs(writer, B))
     {
         goto error_exit;
@@ -697,7 +684,6 @@ crf1de_save_model(
     }
 
     /* Write label feature references. */
-    logging(lg, "Writing feature references for transitions\n");
     if (ret = crf1dmw_open_labelrefs(writer, L + 2))
     {
         goto error_exit;
@@ -716,7 +702,6 @@ crf1de_save_model(
     }
 
     /* Write attribute feature references. */
-    logging(lg, "Writing feature references for attributes\n");
     if (ret = crf1dmw_open_attrrefs(writer, B))
     {
         goto error_exit;
@@ -739,8 +724,6 @@ crf1de_save_model(
 
     /* Close the writer. */
     crf1dmw_close(writer);
-    logging(lg, "Seconds required: %.3f\n", (clock() - begin) / (double)CLOCKS_PER_SEC);
-    logging(lg, "\n");
 
     free(amap);
     free(fmap);

@@ -150,8 +150,6 @@ static int crfsuite_train_train(
     if (0 <= holdout)
     {
         dataset_init_testset(&testset, (crfsuite_data_t *)data, holdout);
-        logging(lg, "Holdout group: %d\n", holdout + 1);
-        logging(lg, "\n");
     }
 
     /* Set the training set to the CRF, and generate features. */

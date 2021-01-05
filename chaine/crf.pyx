@@ -7,7 +7,7 @@ cimport crfsuite_api
 from libcpp.string cimport string
 import os
 
-from chaine.logging import Logger, LogParser
+from chaine.logging import Logger
 from chaine.typing import Dataset, Dict, Iterable, Labels, List, Path, Sequence
 
 LOGGER = Logger(__name__)
@@ -202,7 +202,6 @@ cdef class Trainer:
             "variance": float,
             "gamma": float,
         }
-    _log_parser = LogParser()
 
     def __init__(self, algorithm="l2sgd", **kwargs):
         self._select_algorithm(algorithm)
@@ -246,14 +245,13 @@ cdef class Trainer:
         features. One item consists only of the relevant features. Internally, the
         string features are hash-mapped and a sparse matrix is constructed.
         """
-        LOGGER.info("Loading data")
+        LOGGER.info("Loading training data (this may take a while)")
         for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
-            # log progress every 10000 data points
-            if i > 0 and i % 10000 == 0:
-                LOGGER.info(f"Processed sequences: {i}")
+            # log progress every 100 data points
+            if i > 0 and i % 100 == 0:
+                LOGGER.debug(f"{i} processed data points")
             self._append(sequence, labels_)
 
-        LOGGER.info("Start training")
         status_code = self._c_trainer.train(str(model_filepath), -1)
         if status_code != crfsuite_api.CRFSUITE_SUCCESS:
             LOGGER.error(f"An error ({status_code}) occured")
@@ -270,9 +268,7 @@ cdef class Trainer:
         self._message(message)
 
     def _message(self, message):
-        event = self._log_parser.parse(message)
-        if event:
-            LOGGER.info(event)
+        LOGGER.info(message)
 
     def _append(self, sequence, labels, int group=0):
         # no generators allowed
@@ -399,7 +395,6 @@ cdef class Model:
             Probability distributions over all labels for each token in the sequences
         """
         return [self.predict_proba_single(sequence) for sequence in sequences]
-
 
     def _load(self, filepath):
         filepath = str(filepath)

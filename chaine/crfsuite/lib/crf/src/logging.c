@@ -64,12 +64,6 @@ void logging_timestamp(logging_t *lg, const char *format)
     logging(lg, format, timestamp);
 }
 
-void logging_progress_start(logging_t *lg)
-{
-    lg->percent = 0;
-    logging(lg, "0");
-}
-
 void logging_progress(logging_t *lg, int percent)
 {
     while (lg->percent < percent)
@@ -79,11 +73,7 @@ void logging_progress(logging_t *lg, int percent)
         {
             if (lg->percent % 10 == 0)
             {
-                logging(lg, "%d", lg->percent / 10);
-            }
-            else
-            {
-                logging(lg, ".");
+                logging(lg, "Processed %d%% of the training data", lg->percent);
             }
         }
     }
@@ -92,5 +82,4 @@ void logging_progress(logging_t *lg, int percent)
 void logging_progress_end(logging_t *lg)
 {
     logging_progress(lg, 100);
-    logging(lg, "\n");
 }

@@ -17,7 +17,7 @@ $ pip install chaine
 If you are interested in the theoretical concepts behind conditional random fields, please refer to the introducing paper by [Lafferty et al](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers).
 
 
-## Example
+## Minimal working example
 
 ```python
 >>> import chaine
@@ -29,6 +29,11 @@ If you are interested in the theoretical concepts behind conditional random fiel
 ```
 
 Check out the introducing [Jupyter notebook](https://github.com/severinsimmler/chaine/blob/master/notebooks/tutorial.ipynb).
+
+
+## How it works
+
+
 
 
 ## Credits

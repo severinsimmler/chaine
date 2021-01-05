@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "chaine"
-version = "0.2.2"
-description = "A Lightweight Conditional Random Field"
+version = "0.3.0"
+description = "Linear-chain conditional random fields for natural language processing"
 authors = ["Severin Simmler <severin.simmler@posteo.de>"]
 readme = "README.md"
 build = "build.py"

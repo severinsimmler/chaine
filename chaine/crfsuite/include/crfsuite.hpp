@@ -125,7 +125,7 @@ namespace CRFSuite
         if (xseq.size() != yseq.size())
         {
             std::stringstream ss;
-            ss << "The numbers of items and labels differ: |x| = " << xseq.size() << ", |y| = " << yseq.size();
+            ss << "The number of items and labels differ: |x| = " << xseq.size() << ", |y| = " << yseq.size();
             throw std::invalid_argument(ss.str());
         }
 

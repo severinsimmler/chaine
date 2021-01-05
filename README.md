@@ -21,7 +21,7 @@ If you are interested in the theoretical concepts behind conditional random fiel
 
 ```python
 >>> import chaine
->>> tokens = [["John", "Lennon", "was", "born", "in" "Liverpool"]]
+>>> tokens = [["John", "Lennon", "was", "born", "in", "Liverpool"]]
 >>> labels = [["B-PER", "I-PER", "O", "O", "O", "B-LOC"]]
 >>> model = chaine.train(tokens, labels, max_iterations=5)
 >>> model.predict(tokens)

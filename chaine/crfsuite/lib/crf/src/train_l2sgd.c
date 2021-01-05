@@ -239,10 +239,6 @@ static int l2sgd(
             pf[(epoch - 1) % period] = sum_loss;
 
             logging(lg, "Epoch %d, learning rate: %f, training loss: %f", epoch, eta, sum_loss);
-            if (period < epoch)
-            {
-                logging(lg, "Improvement ratio: %f", improvement);
-            }
 
             /* Check for the stopping criterion. */
             if (improvement < epsilon)

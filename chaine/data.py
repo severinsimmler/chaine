@@ -56,13 +56,12 @@ class Token:
         """True if token is upper case, False otherwise"""
         return self.text.isupper()
 
-
-class TokenSequence:
-    def __init__(self, tokens):
-        if not all(isinstance(token, Token) for token in tokens):
-            tokens = [Token(index, text) for index, text in enumerate(tokens)]
-        self.tokens = tokens
-
-    def __iter__(self):
-        for token in self.tokens:
-            yield token
+    @property
+    def features(self):
+        return {"num_characters": len(self),
+        "text": self.lower(),
+        "shape": self.shape,
+        "is_digit": self.is_digit,
+        "is_lower": self.is_lower,
+        "is_title": self.is_title,
+        "is_upper": self.is_upper}

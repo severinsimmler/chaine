@@ -2,14 +2,11 @@
 chaine.logging
 ~~~~~~~~~~~~~~
 
-This module implements a basic logger and a parser for CRFsuite
+This module implements a basic logger
 """
 
 import logging
-import re
 import sys
-
-from chaine.typing import Optional
 
 
 class Logger(logging.Logger):
@@ -81,7 +78,7 @@ class Logger(logging.Logger):
 
     @property
     def log_level(self) -> int:
-        """Log level.
+        """Log level
 
         Returns
         -------
@@ -114,57 +111,3 @@ class Logger(logging.Logger):
 
     def __repr__(self):
         return f"<Logger: {self.name}>"
-
-
-class LogMessage:
-    """CRFsuite log message
-
-    Attributes
-    ----------
-    iteration : Optional[str]
-        Current number of iterations
-    loss : Optional[str]
-        Current loss score
-    """
-
-    def __init__(self):
-        self.iteration = None
-        self.loss = None
-
-    def __str__(self) -> str:
-        return f"Iteration {self.iteration}, train loss: {self.loss}"
-
-
-class LogParser:
-    """Parser for CRFsuite's logfile
-
-    Attributes
-    ----------
-    message : LogMessage
-        Log message with current iteration and loss
-    """
-
-    def __init__(self):
-        self.message = LogMessage()
-
-    def parse(self, line: str) -> Optional[str]:
-        """Parse one line of the logs
-
-        Parameters
-        ----------
-        line : str
-            One line of CRFsuite's logs
-
-        Returns
-        -------
-        str
-            Formatted log message with latest iteration and loss
-        """
-        if (m := re.match(r"\*{5} (?:Iteration|Epoch) #(\d+) \*{5}\n", line)) :
-            self.message.iteration = m.group(1)
-        elif (m := re.match(r"Loss: (\d+\.\d+)", line)) :
-            self.message.loss = m.group(1)
-            if self.message.iteration:
-                text = str(self.message)
-                self.message = LogMessage()
-                return text

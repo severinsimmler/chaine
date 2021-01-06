@@ -143,22 +143,13 @@ static int lbfgs_progress(
     }
 
     /* Report the progress. */
-    logging(lg, "***** Iteration #%d *****\n", k);
-    logging(lg, "Loss: %f\n", fx);
-    logging(lg, "Feature norm: %f\n", xnorm);
-    logging(lg, "Error norm: %f\n", gnorm);
-    logging(lg, "Active features: %d\n", num_active_features);
-    logging(lg, "Line search trials: %d\n", ls);
-    logging(lg, "Line search step: %f\n", step);
-    logging(lg, "Seconds required for this iteration: %.3f\n", duration / (double)CLOCKS_PER_SEC);
+    logging(lg, "Iteration %d, training loss: %f", k, fx);
 
     /* Send the tagger with the current parameters. */
     if (testset != NULL)
     {
         holdout_evaluation(gm, testset, x, lg);
     }
-
-    logging(lg, "\n");
 
     /* Continue. */
     return 0;
@@ -253,17 +244,7 @@ int crfsuite_train_lbfgs(
 
     /* Read the L-BFGS parameters. */
     exchange_options(params, &opt, -1);
-    logging(lg, "L-BFGS optimization\n");
-    logging(lg, "c1: %f\n", opt.c1);
-    logging(lg, "c2: %f\n", opt.c2);
-    logging(lg, "num_memories: %d\n", opt.memory);
-    logging(lg, "max_iterations: %d\n", opt.max_iterations);
-    logging(lg, "epsilon: %f\n", opt.epsilon);
-    logging(lg, "stop: %d\n", opt.stop);
-    logging(lg, "delta: %f\n", opt.delta);
-    logging(lg, "linesearch: %s\n", opt.linesearch);
-    logging(lg, "linesearch.max_iterations: %d\n", opt.linesearch_max_iterations);
-    logging(lg, "\n");
+    logging(lg, "Start training with L-BFGS");
 
     /* Set parameters for L-BFGS. */
     lbfgsparam.m = opt.memory;
@@ -315,28 +296,20 @@ int crfsuite_train_lbfgs(
         &lbfgsparam);
     if (lbret == LBFGS_CONVERGENCE)
     {
-        logging(lg, "L-BFGS resulted in convergence\n");
+        logging(lg, "Loss has converged, terminating training");
     }
     else if (lbret == LBFGS_STOP)
     {
-        logging(lg, "L-BFGS terminated with the stopping criteria\n");
+        logging(lg, "Terminated with the stopping criteria");
     }
     else if (lbret == LBFGSERR_MAXIMUMITERATION)
     {
-        logging(lg, "L-BFGS terminated with the maximum number of iterations\n");
-    }
-    else
-    {
-        logging(lg, "L-BFGS terminated with error code (%d)\n", lbret);
+        logging(lg, "Reached maximum number of iterations. terminating training");
     }
 
     /* Set the best_w array (allocated by us) as the result array, which the
      * callee can safely `free`. */
     *ptr_w = lbfgsi.best_w;
-
-    /* Report the run-time for the training. */
-    logging(lg, "Total seconds required for training: %.3f\n", (clock() - begin) / (double)CLOCKS_PER_SEC);
-    logging(lg, "\n");
 
     /* Exit with success. */
     lbfgs_free(w);

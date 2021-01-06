@@ -5,12 +5,10 @@ chaine.typing
 A collection of type hints
 """
 
-from pathlib import Path as _Path
+from pathlib import Path
 from typing import Any, Dict, Generator, Iterable, List, Optional, Set, Union
 
-FeatureGenerator = Generator[List[str], None, None]
-TokenGenerator = Generator["Token", None, None]
-Labels = Iterable[str]
+Labels = Iterable[Iterable[str]]
 Dataset = Iterable[Iterable[str]]
-Path = Union[_Path, str]
-Sequence = List[Set[str]]
+Filepath = Union[Path, str]
+Sequence = List[Union[Set[str], Dict[str, Union[int, float, str, bool]]]]

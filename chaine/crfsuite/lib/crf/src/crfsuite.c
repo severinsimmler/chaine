@@ -477,8 +477,6 @@ void crfsuite_evaluation_output(crfsuite_evaluation_t *eval, crfsuite_dictionary
     lg.func = cbm;
     lg.instance = instance;
 
-    logging(&lg, "Performance by label (#match, #model, #ref) (precision, recall, F1):\n");
-
     for (i = 0; i < eval->num_labels; ++i)
     {
         const crfsuite_label_evaluation_t *lev = &eval->tbl[i];
@@ -487,25 +485,8 @@ void crfsuite_evaluation_output(crfsuite_evaluation_t *eval, crfsuite_dictionary
         if (lstr == NULL)
             lstr = "[UNKNOWN]";
 
-        if (lev->num_observation == 0)
-        {
-            logging(&lg, "    %s: (%d, %d, %d) (******, ******, ******)\n",
-                    lstr, lev->num_correct, lev->num_model, lev->num_observation);
-        }
-        else
-        {
-            logging(&lg, "    %s: (%d, %d, %d) (%1.4f, %1.4f, %1.4f)\n",
-                    lstr, lev->num_correct, lev->num_model, lev->num_observation,
-                    lev->precision, lev->recall, lev->fmeasure);
-        }
         labels->free(labels, lstr);
     }
-    logging(&lg, "Macro-average precision, recall, F1: (%f, %f, %f)\n",
-            eval->macro_precision, eval->macro_recall, eval->macro_fmeasure);
-    logging(&lg, "Item accuracy: %d / %d (%1.4f)\n",
-            eval->item_total_correct, eval->item_total_num, eval->item_accuracy);
-    logging(&lg, "Instance accuracy: %d / %d (%1.4f)\n",
-            eval->inst_total_correct, eval->inst_total_num, eval->inst_accuracy);
 }
 
 int crfsuite_interlocked_increment(int *count)

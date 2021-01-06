@@ -44,7 +44,7 @@
     written by Léon Bottou.
 
     The objective function to minimize is:
-        
+
         f(w) = (lambda/2) * ||w||^2 + (1/N) * \sum_i^N log P^i(y|x)
         lambda = 2 * C / N
 
@@ -172,7 +172,6 @@ static int l2sgd(
 
         if (!calibration)
         {
-            logging(lg, "***** Epoch #%d *****\n", epoch);
             /* Shuffle the training instances. */
             dataset_shuffle(trainset);
         }
@@ -200,7 +199,7 @@ static int l2sgd(
         /* Terminate when the loss is abnormal (NaN, -Inf, +Inf). */
         if (!isfinite(loss))
         {
-            logging(lg, "ERROR: overflow loss\n");
+            logging(lg, "Loss is abnormal");
             ret = CRFSUITEERR_OVERFLOW;
             sum_loss = loss;
             goto error_exit;
@@ -239,22 +238,7 @@ static int l2sgd(
             /* Store the current value of the objective function. */
             pf[(epoch - 1) % period] = sum_loss;
 
-            logging(lg, "Loss: %f\n", sum_loss);
-            if (period < epoch)
-            {
-                logging(lg, "Improvement ratio: %f\n", improvement);
-            }
-            logging(lg, "Feature L2-norm: %f\n", sqrt(norm2));
-            logging(lg, "Learning rate (eta): %f\n", eta);
-            logging(lg, "Total number of feature updates: %.0f\n", t);
-            logging(lg, "Seconds required for this iteration: %.3f\n", (clock() - clk_prev) / (double)CLOCKS_PER_SEC);
-
-            /* Holdout evaluation if necessary. */
-            if (testset != NULL)
-            {
-                holdout_evaluation(gm, testset, w, lg);
-            }
-            logging(lg, "\n");
+            logging(lg, "Epoch %d, learning rate: %f, training loss: %f", epoch, eta, sum_loss);
 
             /* Check for the stopping criterion. */
             if (improvement < epsilon)
@@ -272,16 +256,12 @@ static int l2sgd(
         {
             if (epoch < num_epochs)
             {
-                logging(lg, "SGD terminated with the stopping criteria\n");
+                logging(lg, "Loss has converged, terminating training");
             }
             else
             {
-                logging(lg, "SGD terminated with the maximum number of iterations\n");
+                logging(lg, "Reached maximum number of iterations, terminating training");
             }
-        }
-        else
-        {
-            logging(lg, "SGD terminated with error code (%d)\n", ret);
         }
     }
 
@@ -326,12 +306,7 @@ l2sgd_calibration(
     const floatval_t rate = opt->calibration_rate;
     const floatval_t lambda = opt->lambda;
 
-    logging(lg, "Calibrating the learning rate (eta)\n");
-    logging(lg, "calibration.eta: %f\n", eta);
-    logging(lg, "calibration.rate: %f\n", rate);
-    logging(lg, "calibration.samples: %d\n", S);
-    logging(lg, "calibration.candidates: %d\n", num);
-    logging(lg, "calibration.max_trials: %d\n", opt->calibration_max_trials);
+    logging(lg, "Calibrating learning rate");
 
     /* Initialize a permutation that shuffles the instances. */
     dataset_shuffle(ds);
@@ -353,12 +328,10 @@ l2sgd_calibration(
         init_loss += score;
     }
     init_loss += 0.5 * lambda * vecdot(w, w, K) * N;
-    logging(lg, "Initial loss: %f\n", init_loss);
+    logging(lg, "Initial training loss: %f", init_loss);
 
     while (num > 0 || !dec)
     {
-        logging(lg, "Trial #%d (eta = %f): ", trials, eta);
-
         /* Perform SGD for one epoch. */
         l2sgd(
             gm,
@@ -370,14 +343,12 @@ l2sgd_calibration(
 
         /* Make sure that the learning rate decreases the log-likelihood. */
         ok = isfinite(loss) && (loss < init_loss);
+
+        logging(lg, "Trial %d, learning rate %f, training loss: %f", trials, eta, loss);
+
         if (ok)
         {
-            logging(lg, "%f\n", loss);
             --num;
-        }
-        else
-        {
-            logging(lg, "%f (worse)\n", loss);
         }
 
         if (isfinite(loss) && loss < best_loss)
@@ -412,9 +383,7 @@ l2sgd_calibration(
     }
 
     eta = best_eta;
-    logging(lg, "Best learning rate (eta): %f\n", eta);
-    logging(lg, "Seconds required: %.3f\n", (clock() - clk_begin) / (double)CLOCKS_PER_SEC);
-    logging(lg, "\n");
+    logging(lg, "Best learning rate: %f", eta);
 
     return 1.0 / (lambda * eta);
 }
@@ -491,12 +460,7 @@ int crfsuite_train_l2sgd(
 
     opt.lambda = 2. * opt.c2 / N;
 
-    logging(lg, "Stochastic Gradient Descent (SGD)\n");
-    logging(lg, "c2: %f\n", opt.c2);
-    logging(lg, "max_iterations: %d\n", opt.max_iterations);
-    logging(lg, "period: %d\n", opt.period);
-    logging(lg, "delta: %f\n", opt.delta);
-    logging(lg, "\n");
+    logging(lg, "Start training with SGD");
     clk_begin = clock();
 
     /* Calibrate the training rate (eta). */
@@ -517,10 +481,6 @@ int crfsuite_train_l2sgd(
         opt.period,
         opt.delta,
         &loss);
-
-    logging(lg, "Loss: %f\n", loss);
-    logging(lg, "Total seconds required for training: %.3f\n", (clock() - clk_begin) / (double)CLOCKS_PER_SEC);
-    logging(lg, "\n");
 
     *ptr_w = w;
     return ret;

@@ -25,19 +25,6 @@ def model(serialized_model):
     return crf.Model(serialized_model)
 
 
-def test_intbool():
-    value = crf._intbool("0")
-    assert isinstance(value, bool)
-    assert value == False
-
-    value = crf._intbool("1")
-    assert isinstance(value, bool)
-    assert value == True
-
-    with pytest.raises(ValueError):
-        crf._intbool("foo")
-
-
 def test_trainer_algorithm_selection():
     for algorithm in {
         "lbfgs",
@@ -179,11 +166,6 @@ def test_arow_params():
         "gamma",
     }:
         assert param in trainer.params.keys()
-
-
-def test_trainer_log_parser():
-    trainer = crf.Trainer()
-    assert hasattr(trainer, "_log_parser")
 
 
 def test_training(tmpdir, dataset):

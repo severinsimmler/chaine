@@ -282,14 +282,7 @@ int crfsuite_train_arow(
     /* Initialize the covariance vector (diagnal matrix). */
     vecset(cov, opt.variance, K);
 
-    /* Show the parameters. */
-    logging(lg, "Adaptive Regularization of Weights (AROW)\n");
-    logging(lg, "variance: %f\n", opt.variance);
-    logging(lg, "gamma: %f\n", opt.gamma);
-    logging(lg, "max_iterations: %d\n", opt.max_iterations);
-    logging(lg, "epsilon: %f\n", opt.epsilon);
-    logging(lg, "\n");
-
+    logging(lg, "Start training with AROW");
     beta = 1.0 / opt.gamma;
 
     /* Loop for epoch. */
@@ -381,10 +374,7 @@ int crfsuite_train_arow(
         }
 
         /* Output the progress. */
-        logging(lg, "***** Iteration #%d *****\n", i + 1);
-        logging(lg, "Loss: %f\n", sum_loss);
-        logging(lg, "Feature norm: %f\n", sqrt(vecdot(mean, mean, K)));
-        logging(lg, "Seconds required for this iteration: %.3f\n", (clock() - iteration_begin) / (double)CLOCKS_PER_SEC);
+        logging(lg, "Iteration %d, training loss: %f", i + 1, sum_loss);
 
         /* Holdout evaluation if necessary. */
         if (testset != NULL)
@@ -392,19 +382,13 @@ int crfsuite_train_arow(
             holdout_evaluation(gm, testset, mean, lg);
         }
 
-        logging(lg, "\n");
-
         /* Convergence test. */
         if (sum_loss / N <= opt.epsilon)
         {
-            logging(lg, "Terminated with the stopping criterion\n");
-            logging(lg, "\n");
+            logging(lg, "Loss has converged, terminating training");
             break;
         }
     }
-
-    logging(lg, "Total seconds required for training: %.3f\n", (clock() - begin) / (double)CLOCKS_PER_SEC);
-    logging(lg, "\n");
 
     free(viterbi);
     free(prod);

@@ -7,15 +7,10 @@ cimport crfsuite_api
 from libcpp.string cimport string
 import os
 
-from chaine.logging import Logger, LogParser
-from chaine.typing import Dataset, Dict, Iterable, Labels, List, Path, Sequence
+from chaine.logging import Logger
+from chaine.typing import Dataset, Dict, Iterable, Labels, List, Filepath, Sequence
 
 LOGGER = Logger(__name__)
-
-
-def _intbool(value: str) -> bool:
-    """Helper function to cast a string to an integer to a boolean"""
-    return bool(int(value))
 
 
 cdef class Trainer:
@@ -35,40 +30,29 @@ cdef class Trainer:
     ------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data
-
     all_possible_states : bool, optional (default=False)
         Generate state features that do not even occur in the training data
-
     all_possible_transitions : bool, optional (default=False)
         Generate transition features that do not even occur in the training data
-
     max_iterations : int, optional (default=None)
         Maximum number of iterations (unlimited by default)
-
     num_memories : int, optional (default=6)
         Number of limited memories for approximating the inverse hessian matrix
-
     c1 : float, optional (default=0)
         Coefficient for L1 regularization
-
     c2 : float, optional (default=1.0)
         Coefficient for L2 regularization
-
     epsilon : float, optional (default=1e-5)
         Parameter that determines the condition of convergence
-
     period : int, optional (default=10)
         Threshold value for iterations to test the stopping criterion
-
     delta : float, optional (default=1e-5)
         Top iteration when log likelihood is not greater than this
-
     linesearch : str, optional (default="MoreThuente")
         Line search algorithm used in updates:
             * MoreThuente: More and Thuente's method
             * Backtracking: Backtracking method with regular Wolfe condition
             * StrongBacktracking: Backtracking method with strong Wolfe condition
-
     max_linesearch : int, optional (default=20)
         Maximum number of trials for the line search algorithm
 
@@ -76,37 +60,26 @@ cdef class Trainer:
     ----------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data
-
     all_possible_states : bool, optional (default=False)
         Generate state features that do not even occur in the training data
-
     all_possible_transitions : bool, optional (default=False)
         Generate transition features that do not even occur in the training data
-
     max_iterations : int, optional (default=None)
         Maximum number of iterations (1000 by default)
-
     c2 : float, optional (default=1.0)
         Coefficient for L2 regularization
-
     period : int, optional (default=10)
         Threshold value for iterations to test the stopping criterion
-
     delta : float, optional (default=1e-5)
         Top iteration when log likelihood is not greater than this
-
     calibration_eta : float, optional (default=0.1)
         Initial value of learning rate (eta) used for calibration
-
     calibration_rate : float, optional (default=2.0)
         Rate of increase/decrease of learning rate for calibration
-
     calibration_samples : int, optional (default=1000)
         Number of instances used for calibration
-
     calibration_candidates : int, optional (default=10)
         Number of candidates of learning rate
-
     calibration_max_trials : int, optional (default=20)
         Maximum number of trials of learning rates for calibration
 
@@ -114,16 +87,12 @@ cdef class Trainer:
     ------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data
-
     all_possible_states : bool, optional (default=False)
         Generate state features that do not even occur in the training data
-
     all_possible_transitions : bool, optional (default=False)
         Generate transition features that do not even occur in the training data
-
     max_iterations : int, optional (default=None)
         Maximum number of iterations (100 by default)
-
     epsilon : float, optional (default=1e-5)
         Parameter that determines the condition of convergence
 
@@ -131,31 +100,23 @@ cdef class Trainer:
     -----------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data
-
     all_possible_states : bool, optional (default=False)
         Generate state features that do not even occur in the training data
-
     all_possible_transitions : bool, optional (default=False)
         Generate transition features that do not even occur in the training data
-
     max_iterations : int, optional (default=None)
         Maximum number of iterations (100 by default)
-
     epsilon : float, optional (default=1e-5)
         Parameter that determines the condition of convergence
-
     pa_type : int, optional (default=1)
         Strategy for updating feature weights:
             * 0: PA without slack variables
             * 1: PA type I
             * 2: PA type II
-
     c : float, optional (default=1)
         Aggressiveness parameter (used only for PA-I and PA-II)
-
     error_sensitive : bool, optional (default=True)
         Include square root of predicted incorrect labels into optimization routine
-
     averaging : bool, optional (default=True)
         Compute average of feature weights at all updates
 
@@ -163,22 +124,16 @@ cdef class Trainer:
     ----------------------------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data
-
     all_possible_states : bool, optional (default=False)
         Generate state features that do not even occur in the training data
-
     all_possible_transitions : bool, optional (default=False)
         Generate transition features that do not even occur in the training data
-
     max_iterations : int, optional (default=None)
         Maximum number of iterations (100 by default)
-
     epsilon : float, optional (default=1e-5)
         Parameter that determines the condition of convergence
-
     variance : float, optional (default=1)
         Initial variance of every feature weight
-
     gamma : float, optional (default=1)
         Trade-off between loss function and changes of feature weights
     """
@@ -188,6 +143,7 @@ cdef class Trainer:
         "lbfgs": "lbfgs",
         "limited-memory-bfgs": "lbfgs",
         "l2sgd": "l2sgd",
+        "sgd": "l2sgd",
         "stochastic-gradient-descent": "l2sgd",
         "ap": "averaged-perceptron",
         "averaged-perceptron": "averaged-perceptron",
@@ -219,8 +175,8 @@ cdef class Trainer:
     }
     _parameter_types = {
             "feature.minfreq": float,
-            "feature.possible_states": _intbool,
-            "feature.possible_transitions": _intbool,
+            "feature.possible_states": lambda value: bool(int(value)),
+            "feature.possible_transitions": lambda value: bool(int(value)),
             "c1": float,
             "c2": float,
             "max_iterations": int,
@@ -237,12 +193,11 @@ cdef class Trainer:
             "calibration.max_trials": int,
             "type": int,
             "c": float,
-            "error_sensitive": _intbool,
-            "averaging": _intbool,
+            "error_sensitive": lambda value: bool(int(value)),
+            "averaging": lambda value: bool(int(value)),
             "variance": float,
             "gamma": float,
         }
-    _log_parser = LogParser()
 
     def __init__(self, algorithm="l2sgd", **kwargs):
         self._select_algorithm(algorithm)
@@ -251,14 +206,14 @@ cdef class Trainer:
 
     def __cinit__(self):
         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
-        self._c_trainer.select("lbfgs", "crf1d")
+        self._c_trainer.select("l2sgd", "crf1d")
         self._c_trainer._init_trainer()
 
     def __repr__(self):
         """Representation of the trainer"""
         return f"<Trainer: {self.params}>"
 
-    def train(self, dataset: Dataset, labels: Labels, model_filepath: Path):
+    def train(self, dataset: Dataset, labels: Labels, model_filepath: Filepath):
         """Train a conditional random field
 
         Parameters
@@ -267,7 +222,7 @@ cdef class Trainer:
             Training data set
         labels : Labels
             Corresponding true labels
-        model_filepath : Path
+        model_filepath : Filepath
             Path the trained model is written to
 
         Note
@@ -286,14 +241,13 @@ cdef class Trainer:
         features. One item consists only of the relevant features. Internally, the
         string features are hash-mapped and a sparse matrix is constructed.
         """
-        LOGGER.info("Loading data")
+        LOGGER.info("Loading training data (this may take a while)")
         for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
-            # log progress every 10000 data points
-            if i > 0 and i % 10000 == 0:
-                LOGGER.info(f"Processed sequences: {i}")
+            # log progress every 100 data points
+            if i > 0 and i % 100 == 0:
+                LOGGER.debug(f"{i} processed data points")
             self._append(sequence, labels_)
 
-        LOGGER.info("Start training")
         status_code = self._c_trainer.train(str(model_filepath), -1)
         if status_code != crfsuite_api.CRFSUITE_SUCCESS:
             LOGGER.error(f"An error ({status_code}) occured")
@@ -310,9 +264,7 @@ cdef class Trainer:
         self._message(message)
 
     def _message(self, message):
-        event = self._log_parser.parse(message)
-        if event:
-            LOGGER.info(event)
+        LOGGER.info(message)
 
     def _append(self, sequence, labels, int group=0):
         # no generators allowed
@@ -354,17 +306,17 @@ cdef class Trainer:
 
 
 cdef class Model:
-    """Conditional random field
+    """Linear-chain conditional random field
 
     Parameters
     ----------
-    model_filepath : str
+    model_filepath : Filepath
         Path to the trained model
     """
     cdef crfsuite_api.Tagger c_tagger
 
-    def __init__(self, model_filepath):
-        self._load(model_filepath)
+    def __init__(self, model_filepath: Filepath):
+        self._load(str(model_filepath))
 
     def __repr__(self):
         """Representation of the model"""
@@ -439,7 +391,6 @@ cdef class Model:
             Probability distributions over all labels for each token in the sequences
         """
         return [self.predict_proba_single(sequence) for sequence in sequences]
-
 
     def _load(self, filepath):
         filepath = str(filepath)

@@ -190,8 +190,6 @@ crf1df_feature_t *crf1df_generate(
     set = featureset_new();
 
     /* Loop over the sequences in the training data. */
-    logging_progress_start(&lg);
-
     for (s = 0; s < N; ++s)
     {
         int prev = L, cur = 0;

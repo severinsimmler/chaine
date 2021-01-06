@@ -143,10 +143,7 @@ int crfsuite_train_averaged_perceptron(
     }
 
     /* Show the parameters. */
-    logging(lg, "Averaged perceptron\n");
-    logging(lg, "max_iterations: %d\n", opt.max_iterations);
-    logging(lg, "epsilon: %f\n", opt.epsilon);
-    logging(lg, "\n");
+    logging(lg, "Start training with AP");
 
     c = 1;
     ud.w = w;
@@ -207,10 +204,7 @@ int crfsuite_train_averaged_perceptron(
         vecasub(wa, 1. / c, ws, K);
 
         /* Output the progress. */
-        logging(lg, "***** Iteration #%d *****\n", i + 1);
-        logging(lg, "Loss: %f\n", loss);
-        logging(lg, "Feature norm: %f\n", sqrt(vecdot(wa, wa, K)));
-        logging(lg, "Seconds required for this iteration: %.3f\n", (clock() - iteration_begin) / (double)CLOCKS_PER_SEC);
+        logging(lg, "Iteration %d, training loss: %f", i + 1, loss);
 
         /* Holdout evaluation if necessary. */
         if (testset != NULL)
@@ -218,19 +212,13 @@ int crfsuite_train_averaged_perceptron(
             holdout_evaluation(gm, testset, wa, lg);
         }
 
-        logging(lg, "\n");
-
         /* Convergence test. */
         if (loss / N < opt.epsilon)
         {
-            logging(lg, "Terminated with the stopping criterion\n");
-            logging(lg, "\n");
+            logging(lg, "Loss has converged, terminating training");
             break;
         }
     }
-
-    logging(lg, "Total seconds required for training: %.3f\n", (clock() - begin) / (double)CLOCKS_PER_SEC);
-    logging(lg, "\n");
 
     free(viterbi);
     free(ws);

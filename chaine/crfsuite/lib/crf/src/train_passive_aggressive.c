@@ -317,14 +317,7 @@ int crfsuite_train_passive_aggressive(
     }
 
     /* Show the parameters. */
-    logging(lg, "Passive Aggressive\n");
-    logging(lg, "type: %d\n", opt.type);
-    logging(lg, "c: %f\n", opt.c);
-    logging(lg, "error_sensitive: %d\n", opt.error_sensitive);
-    logging(lg, "averaging: %d\n", opt.averaging);
-    logging(lg, "max_iterations: %d\n", opt.max_iterations);
-    logging(lg, "epsilon: %f\n", opt.epsilon);
-    logging(lg, "\n");
+    logging(lg, "Start training with PA");
 
     u = 1;
 
@@ -414,10 +407,7 @@ int crfsuite_train_passive_aggressive(
         }
 
         /* Output the progress. */
-        logging(lg, "***** Iteration #%d *****\n", i + 1);
-        logging(lg, "Loss: %f\n", sum_loss);
-        logging(lg, "Feature norm: %f\n", sqrt(vecdot(w, w, K)));
-        logging(lg, "Seconds required for this iteration: %.3f\n", (clock() - iteration_begin) / (double)CLOCKS_PER_SEC);
+        logging(lg, "Iteration %d, training loss: %f", i + 1, sum_loss);
 
         /* Holdout evaluation if necessary. */
         if (testset != NULL)
@@ -425,19 +415,13 @@ int crfsuite_train_passive_aggressive(
             holdout_evaluation(gm, testset, wa, lg);
         }
 
-        logging(lg, "\n");
-
         /* Convergence test. */
         if (sum_loss / N < opt.epsilon)
         {
-            logging(lg, "Terminated with the stopping criterion\n");
-            logging(lg, "\n");
+            logging(lg, "Loss has converged, terminating training");
             break;
         }
     }
-
-    logging(lg, "Total seconds required for training: %.3f\n", (clock() - begin) / (double)CLOCKS_PER_SEC);
-    logging(lg, "\n");
 
     free(viterbi);
     free(ws);

@@ -1,23 +1,21 @@
 # Train a conditional random field for named entity recognition
 
-Introduction
+TODO: Introduction
 
 
 ## Setup
 
+Make sure you have installed `chaine` and some additional dependencies (to load a dataset and evaluate the model):
 
 ```
 $ pip install datasets seqeval
 ```
 
-If you have cloned this repository, simply run:
-
-```
-$ poetry install
-```
-
 
 ## How it works
+
+TODO: refer to Jurafsky and Martin
+
 
 ```
 ["John", "Lennon"]

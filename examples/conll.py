@@ -144,7 +144,6 @@ if __name__ == "__main__":
     sentences = featurize_dataset(dataset["train"])
     labels = preprocess_labels(dataset["train"])
 
-    # chaine gets the featurized sentences and the labels as input for training
     model = chaine.train(
         sentences,
         labels,

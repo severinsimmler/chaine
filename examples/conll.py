@@ -145,7 +145,23 @@ if __name__ == "__main__":
     labels = preprocess_labels(dataset["train"])
 
     # chaine gets the featurized sentences and the labels as input for training
-    model = chaine.train(sentences, labels)
+    model = chaine.train(
+        sentences,
+        labels,
+        algorithm="l2sgd",  # optimization algorithm: stochastic gradient descent
+        min_freq=0,  # threshold value for minimum frequency of a feature
+        all_possible_states=False,  # allow states not occuring in the data
+        all_possible_transitions=False,  # allow transitions not occuring in the data
+        max_iterations=100,  # number of iterations
+        c2=1.0,  # coefficient for L2 regularization
+        period=10,  # threshold value for iterations to test the stopping criterion
+        delta=1e-5,  # top iteration when log likelihood is not greater than this
+        calibration_eta=0.1,  # initial value of learning rate
+        calibration_rate=2.0,  # rate of increase/decrease of learning rate
+        calibration_samples=1000,  # number of instances used for calibration
+        calibration_candidates=10,  # number of candidates of learning rate
+        calibration_max_trials=20,  # number of trials of learning rates for calibration
+    )
 
     LOGGER.info("Extracting features from dataset for evaluation")
     sentences = featurize_dataset(dataset["test"])
@@ -154,5 +170,4 @@ if __name__ == "__main__":
     LOGGER.info("Evaluating the trained model")
     predictions = model.predict(sentences)
 
-    print("\nEvaluation:")
-    print(classification_report(labels, predictions))
+    print("\n", classification_report(labels, predictions))

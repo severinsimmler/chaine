@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
-    <title>A Lightweight Conditional Random Field</title>
+    <title>Chaine – Linear-chain conditional random fields</title>
 </head>
 
 <body>
@@ -15,7 +15,6 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    <a class="nav-link" href="usage.html">Usage</a>
                     <a class="nav-link" href="https://github.com/severinsimmler/chaine">GitHub</a>
                 </div>
             </div>
@@ -25,18 +24,27 @@
         <div class="row first-row">
             <div class="col"></div>
             <div class="col-9">
-                <h1>A Lightweight Conditional Random Field</h1>
+                <h1>Chaine</h1>
                 <hr>
-                <p>This is a modern Python library without any third-party dependencies and a backend written in C
-                    implementing conditional random fields for natural language processing tasks like named entity
-                    recognition or part-of-speech tagging.</p>
+                <p>Linear-chain conditional random fields for natural language processing.</p>
+                <p>Chaine is a modern Python library without third-party dependencies and a backend written in C. You
+                    can train conditional random fields for natural language processing tasks like <a
+                        href="https://en.wikipedia.org/wiki/Named-entity_recognition">named entity recognition</a>.</p>
+                <p>
+                <ul>
+                    <li><b>Lightweight</b>: No use of bloated third-party libraries.</li>
+                    <li><b>Fast</b>: Performance critical parts are written in C and thus <a
+                            href="http://www.chokkan.org/software/crfsuite/benchmark.html">blazingly fast</a>.</li>
+                    <li><b>Easy to use</b>: Designed with special focus on usability and a beautiful high-level API.
+                    </li>
+                </ul>
+                </p>
                 <p>You can install the latest stable version from <a href="https://pypi.org/project/chaine">PyPI</a>:
                 <pre class="code-block">$ pip install chaine</pre>
                 </p>
-                <p>If you are interested in the theoretical concepts behind conditional random fields, I can recommend
-                    the introducing paper by <a
+                <p>Please refer to the introducing paper by <a
                         href="https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers">Lafferty
-                        et al.</a></p>
+                        et al.</a> for the theoretical concepts behind conditional random fields.</p>
             </div>
             <div class="col"></div>
         </div>

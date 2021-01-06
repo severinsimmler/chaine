@@ -14,7 +14,7 @@ You can install the latest stable version from [PyPI](https://pypi.org/project/c
 $ pip install chaine
 ```
 
-If you are interested in the theoretical concepts behind conditional random fields, please refer to the introducing paper by [Lafferty et al](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers).
+Please refer to the introducing paper by [Lafferty et al](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers) for the theoretical concepts behind conditional random fields.
 
 
 ## Minimal working example

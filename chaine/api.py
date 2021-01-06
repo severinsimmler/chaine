@@ -1,8 +1,8 @@
 """
-chaine.training
-~~~~~~~~~~~~~~~
+chaine.api
+~~~~~~~~~~
 
-This module implements the high-level API to train a CRF
+This module implements the high-level API to train a conditional random field
 """
 
 from chaine.crf import Model, Trainer

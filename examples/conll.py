@@ -6,11 +6,13 @@ from seqeval.metrics import classification_report
 import chaine
 from chaine.logging import Logger
 
+# type hints
 Sentence = List[str]
 Tags = List[str]
 Features = Dict[str, Union[float, int, str, bool]]
 Dataset = Dict[str, Dict[str, Any]]
 
+# consistent logging
 LOGGER = Logger(__name__)
 
 
@@ -20,22 +22,21 @@ def featurize_token(token_index: int, sentence: Sentence, pos_tags: Tags) -> Fea
     Parameters
     ----------
     token_index : int
-        todo
+        Index of the token to featurize in the sentence
     sentence : Sentence
-        todo
+        Sequence of tokens
     pos_tags : Tags
-        todo
+        Sequence of part-of-speech tags corresponding to the tokens in the sentence
 
     Returns
     -------
     Features
-        todo
+        Features representing the token
     """
     token = sentence[token_index]
     pos_tag = pos_tags[token_index]
 
     features = {
-        "bias": 1.0,
         "token.lower()": token.lower(),
         "token[-3:]": token[-3:],
         "token[-2:]": token[-2:],
@@ -81,14 +82,14 @@ def featurize_sentence(sentence: List[str], pos_tags: List[str]) -> List[Feature
     Parameters
     ----------
     sentence : Sentence
-        todo
+        Sequence of tokens
     pos_tags : Tags
-        todo
+        Sequence of part-of-speech tags corresponding to the tokens in the sentence
 
     Returns
     -------
     List[Features]
-        todo
+        List of features representing tokens of a sentence
     """
     return [
         featurize_token(token_index, sentence, pos_tags)
@@ -97,24 +98,37 @@ def featurize_sentence(sentence: List[str], pos_tags: List[str]) -> List[Feature
 
 
 def featurize_dataset(dataset: Dataset) -> List[List[Features]]:
-    """Extract features from tokens in a sentence
+    """Extract features from sentences in a dataset
 
     Parameters
     ----------
     dataset : Dataset
-        todo
+        Dataset to featurize
 
     Returns
     -------
     List[List[Features]]
-        todo
+        Featurized dataset
     """
     return [
         featurize_sentence(sentence, pos_tags)
         for sentence, pos_tags in zip(dataset["tokens"], dataset["pos_tags"])
     ]
 
+
 def preprocess_labels(dataset: Dataset) -> List[List[str]]:
+    """Translate raw labels (i.e. integers) to the respective string labels
+
+    Parameters
+    ----------
+    dataset : Dataset
+        Dataset to preprocess labels
+
+    Returns
+    -------
+    List[List[Features]]
+        Preprocessed labels
+    """
     labels = dataset.features["ner_tags"].feature.names
     return [[labels[index] for index in indices] for indices in dataset["ner_tags"]]
 
@@ -123,17 +137,21 @@ if __name__ == "__main__":
     LOGGER.info("Loading raw dataset")
     dataset = datasets.load_dataset("conll2003")
 
+    LOGGER.info(f"Number of sentences for training: {len(dataset['train']['tokens'])}")
+    LOGGER.info(f"Number of sentences for evaluation: {len(dataset['test']['tokens'])}")
+
     LOGGER.info("Extracting features from dataset for training")
     sentences = featurize_dataset(dataset["train"])
     labels = preprocess_labels(dataset["train"])
 
+    # chaine gets the featurized sentences and the labels as input for training
     model = chaine.train(sentences, labels)
 
     LOGGER.info("Extracting features from dataset for evaluation")
     sentences = featurize_dataset(dataset["test"])
     labels = preprocess_labels(dataset["test"])
 
-    LOGGER.info("Evaluating the model")
+    LOGGER.info("Evaluating the trained model")
     predictions = model.predict(sentences)
 
     print("\nEvaluation:")

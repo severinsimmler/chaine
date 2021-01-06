@@ -1,10 +1,23 @@
-datasets
-seqeval
+# Train a conditional random field for named entity recognition
+
+Introduction
+
+
+## Setup
+
+
+```
+$ pip install datasets seqeval
+```
+
+If you have cloned this repository, simply run:
+
+```
+$ poetry install
+```
 
 
 ## How it works
-
-
 
 ```
 ["John", "Lennon"]

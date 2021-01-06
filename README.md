@@ -28,7 +28,7 @@ Please refer to the introducing paper by [Lafferty et al.](https://repository.up
 [['B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC']]
 ```
 
-Check out the [examples](https://github.com/severinsimmler/chaine/blob/master/examples).
+Check out the [examples](https://github.com/severinsimmler/chaine/blob/master/examples) for a more real-world use case.
 
 
 ## Credits

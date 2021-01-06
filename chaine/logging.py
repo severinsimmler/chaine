@@ -2,14 +2,11 @@
 chaine.logging
 ~~~~~~~~~~~~~~
 
-This module implements a basic logger and a parser for CRFsuite
+This module implements a basic logger
 """
 
 import logging
-import re
 import sys
-
-from chaine.typing import Optional
 
 
 class Logger(logging.Logger):
@@ -81,7 +78,7 @@ class Logger(logging.Logger):
 
     @property
     def log_level(self) -> int:
-        """Log level.
+        """Log level
 
         Returns
         -------

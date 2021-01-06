@@ -8,14 +8,9 @@ from libcpp.string cimport string
 import os
 
 from chaine.logging import Logger
-from chaine.typing import Dataset, Dict, Iterable, Labels, List, Path, Sequence
+from chaine.typing import Dataset, Dict, Iterable, Labels, List, Filepath, Sequence
 
 LOGGER = Logger(__name__)
-
-
-def _intbool(value: str) -> bool:
-    """Helper function to cast a string to an integer to a boolean"""
-    return bool(int(value))
 
 
 cdef class Trainer:
@@ -148,6 +143,7 @@ cdef class Trainer:
         "lbfgs": "lbfgs",
         "limited-memory-bfgs": "lbfgs",
         "l2sgd": "l2sgd",
+        "sgd": "l2sgd",
         "stochastic-gradient-descent": "l2sgd",
         "ap": "averaged-perceptron",
         "averaged-perceptron": "averaged-perceptron",
@@ -179,8 +175,8 @@ cdef class Trainer:
     }
     _parameter_types = {
             "feature.minfreq": float,
-            "feature.possible_states": _intbool,
-            "feature.possible_transitions": _intbool,
+            "feature.possible_states": lambda value: bool(int(value)),
+            "feature.possible_transitions": lambda value: bool(int(value)),
             "c1": float,
             "c2": float,
             "max_iterations": int,
@@ -197,8 +193,8 @@ cdef class Trainer:
             "calibration.max_trials": int,
             "type": int,
             "c": float,
-            "error_sensitive": _intbool,
-            "averaging": _intbool,
+            "error_sensitive": lambda value: bool(int(value)),
+            "averaging": lambda value: bool(int(value)),
             "variance": float,
             "gamma": float,
         }
@@ -210,14 +206,14 @@ cdef class Trainer:
 
     def __cinit__(self):
         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
-        self._c_trainer.select("lbfgs", "crf1d")
+        self._c_trainer.select("l2sgd", "crf1d")
         self._c_trainer._init_trainer()
 
     def __repr__(self):
         """Representation of the trainer"""
         return f"<Trainer: {self.params}>"
 
-    def train(self, dataset: Dataset, labels: Labels, model_filepath: Path):
+    def train(self, dataset: Dataset, labels: Labels, model_filepath: Filepath):
         """Train a conditional random field
 
         Parameters
@@ -226,7 +222,7 @@ cdef class Trainer:
             Training data set
         labels : Labels
             Corresponding true labels
-        model_filepath : Path
+        model_filepath : Filepath
             Path the trained model is written to
 
         Note
@@ -310,17 +306,17 @@ cdef class Trainer:
 
 
 cdef class Model:
-    """Conditional random field
+    """Linear-chain conditional random field
 
     Parameters
     ----------
-    model_filepath : str
+    model_filepath : Filepath
         Path to the trained model
     """
     cdef crfsuite_api.Tagger c_tagger
 
-    def __init__(self, model_filepath):
-        self._load(model_filepath)
+    def __init__(self, model_filepath: Filepath):
+        self._load(str(model_filepath))
 
     def __repr__(self):
         """Representation of the model"""

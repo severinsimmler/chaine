@@ -15,7 +15,7 @@ def train(dataset: Dataset, labels: Labels, **kwargs) -> Model:
     Parameters
     ----------
     dataset : Dataset
-        Dataset consisting of sequences of features
+        Dataset consisting of sequences of feature sets
     labels : Labels
         Labels corresponding to each instance in the dataset
     algorithm : str

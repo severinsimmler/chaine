@@ -1,2 +1,2 @@
-from chaine.training import train
-from chaine.crf import Model, Trainer
+from chaine.api import train
+from chaine import crf

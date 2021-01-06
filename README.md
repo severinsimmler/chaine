@@ -28,17 +28,12 @@ If you are interested in the theoretical concepts behind conditional random fiel
 [['B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC']]
 ```
 
-Check out the introducing [Jupyter notebook](https://github.com/severinsimmler/chaine/blob/master/notebooks/tutorial.ipynb).
-
-
-## How it works
-
-
+Check out the [examples](https://github.com/severinsimmler/chaine/blob/master/examples).
 
 
 ## Credits
 
-This library makes use of and is partially based on:
+This project makes use of and is partially based on:
 
 - [CRFsuite](https://github.com/chokkan/crfsuite)
 - [libLBFGS](https://github.com/chokkan/liblbfgs)

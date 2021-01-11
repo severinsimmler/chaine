@@ -23,6 +23,9 @@ jobs:
           pip install --upgrade pip poetry
           poetry config virtualenvs.create false
 
+      - name: Install dependencies
+        run: poetry install
+
       - name: Build wheels
         run: poetry build
 

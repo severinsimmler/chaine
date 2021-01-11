@@ -1,9 +1,12 @@
+import os
 import glob
 import subprocess
 from distutils.command.build_ext import build_ext as _build_ext
 
 from setuptools import Extension
 
+
+os.environ["CFLAGS"] = "-include glibc.h"
 
 sources = [
     "chaine/crf.cpp",

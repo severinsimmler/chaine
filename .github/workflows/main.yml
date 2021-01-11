@@ -1,7 +1,9 @@
-name: CI
+name: CI & CD
 
 on:
-  push
+  push:
+    branches:
+      - master
 
 jobs:
   build:

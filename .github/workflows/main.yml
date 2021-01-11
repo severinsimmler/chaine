@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      PYPI_USER: ${{ secrets.PYPI_USER }}
+      PYPI_PW: ${{ secrets.PYPI_PW }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python tools
+        run: |
+          pip install --upgrade pip poetry
+          poetry config virtualenvs.create false
+
+      - name: Build wheels
+        run: poetry build
+
+      - name: Deploy wheels
+        run: poetry publish --username $PYPI_USER --password $PYPI_PW

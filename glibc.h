@@ -1,1 +1,1 @@
-__asm__(".symver memcpy,memcpy@GLIBC_2.28")
+__asm__(".symver memcpy,memcpy@GLIBC_2.2.5");

@@ -1,9 +1,20 @@
-datasets
-seqeval
+# Train a conditional random field for named entity recognition
+
+TODO: Introduction
+
+
+## Setup
+
+Make sure you have installed `chaine` and some additional dependencies (to load a dataset and evaluate the model):
+
+```
+$ pip install datasets seqeval
+```
 
 
 ## How it works
 
+TODO: refer to Jurafsky and Martin
 
 
 ```

@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      - name: Run unit tests
+        run: pytest
+
       - name: Build wheels
         run: poetry build
 

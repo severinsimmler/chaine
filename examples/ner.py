@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Union
 
 import datasets
+import tqdm
 from seqeval.metrics import classification_report
 
 import chaine
@@ -35,7 +36,6 @@ def featurize_token(token_index: int, sentence: Sentence, pos_tags: Tags) -> Fea
     """
     token = sentence[token_index]
     pos_tag = pos_tags[token_index]
-
     features = {
         "token.lower()": token.lower(),
         "token[-3:]": token[-3:],
@@ -58,7 +58,6 @@ def featurize_token(token_index: int, sentence: Sentence, pos_tags: Tags) -> Fea
         )
     else:
         features["BOS"] = True
-
     if token_index < len(sentence) - 1:
         next_token = sentence[token_index + 1]
         next_pos_tag = pos_tags[token_index + 1]
@@ -72,11 +71,10 @@ def featurize_token(token_index: int, sentence: Sentence, pos_tags: Tags) -> Fea
         )
     else:
         features["EOS"] = True
-
     return features
 
 
-def featurize_sentence(sentence: List[str], pos_tags: List[str]) -> List[Features]:
+def featurize_sentence(sentence: Sentence, pos_tags: Tags) -> List[Features]:
     """Extract features from tokens in a sentence
 
     Parameters

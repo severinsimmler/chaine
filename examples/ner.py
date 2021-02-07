@@ -1,7 +1,6 @@
 from typing import Any, Dict, List, Union
 
 import datasets
-import tqdm
 from seqeval.metrics import classification_report
 
 import chaine

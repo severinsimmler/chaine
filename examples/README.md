@@ -4,13 +4,13 @@ Named entity recognition (NER) seeks to locate and classify named entities menti
 
 This can be considered as a sequence labeling problem. Given a sequence of tokens:
 
-```
+```python
 ["John", "Lennon", "was", "born", "in", "Liverpool"]
 ```
 
 the goal is to find the most likely sequence of named entity labels:
 
-```
+```python
 ["B-PER", "I-PER", "O", "O", "O", "B-LOC"]
 ```
 
@@ -30,7 +30,7 @@ $ pip install datasets seqeval
 You can train and evaluate a CRF with the English [CoNLL 2003](https://www.clips.uantwerpen.be/conll2003/ner/) data set:
 
 ```sh
-python ner.py
+$ python ner.py
 ```
 
 This should only take a few minutes, serializes the trained model and outputs a classification report with precision, recall and f1 scores.
@@ -52,4 +52,4 @@ Features for a token are represented with `chaine` as dictionary. For example, f
 
 They key of a feature dictionary must be a string, values may be strings, booleans, integers or floats.
 
-Including certain features from the preceding or following tokens can have quite a positive effect. In [`featurize_token()`](), we explicitly model whether a token is at the beginning or end of a sequence and which tokens occur before or after it.
+Including certain features from the preceding or following tokens can have quite a positive effect. In [`featurize_token()`](ner.py), we explicitly model whether a token is at the beginning or end of a sequence and which tokens occur before or after it.

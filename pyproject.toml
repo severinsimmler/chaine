@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chaine"
-version = "1.1.1"
+version = "1.1.2"
 description = "Linear-chain conditional random fields for natural language processing"
 authors = ["Severin Simmler <severin.simmler@posteo.de>"]
 readme = "README.md"

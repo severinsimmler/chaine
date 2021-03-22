@@ -11,12 +11,12 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.8", "3.9"]
+        python-version: ["3.8"]
 
     env:
       PYPI_USER: ${{ secrets.PYPI_USER }}
       PYPI_PW: ${{ secrets.PYPI_PW }}
-      CIBW_BUILD: cp${{ matrix.python }}-manylinux_x86_64
+      CIBW_BUILD: cp3.8-manylinux_x86_64
       CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
 
     steps:

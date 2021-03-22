@@ -16,8 +16,6 @@ jobs:
           - sudo: required
             services:
               - docker
-            env: DOCKER_IMAGE=quay.io/pypa/manylinux2014_x86_64
-              PLAT=manylinux2014_x86_64
 
     env:
       PYPI_USER: ${{ secrets.PYPI_USER }}
@@ -42,7 +40,9 @@ jobs:
         run: pytest
 
       - name: Build wheels
-        run: docker pull $DOCKER_IMAGE && docker run --rm -e PLAT=$PLAT -v `pwd`:/io $DOCKER_IMAGE $PRE_CMD poetry build --format wheel
+        run: |
+          docker pull quay.io/pypa/manylinux2014_x86_64
+          docker run --rm -e PLAT=manylinux2014_x86_64 -v `pwd`:/io $DOCKER_IMAGE $PRE_CMD poetry build --format wheel
 
       #- name: Deploy wheels
       #  run: poetry publish --username $PYPI_USER --password $PYPI_PW

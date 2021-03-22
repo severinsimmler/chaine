@@ -36,7 +36,10 @@ jobs:
         run: pytest
 
       - name: Build wheels
-        uses: joerick/cibuildwheel@v1.10.0
+        run: |
+          pip install cibuildwheel
+          cibuildwheel --output-dir wheelhouse
+          ls wheelhouse
 
       #- name: Deploy wheels
       #  run: poetry publish --username $PYPI_USER --password $PYPI_PW

@@ -5,6 +5,7 @@
 
 cimport crfsuite_api
 from libcpp.string cimport string
+import json
 import os
 
 from chaine.logging import Logger
@@ -246,7 +247,12 @@ cdef class Trainer:
             # log progress every 100 data points
             if i > 0 and i % 100 == 0:
                 LOGGER.debug(f"{i} processed data points")
-            self._append(sequence, labels_)
+            try:
+                self._append(sequence, labels_)
+            except Exception as message:
+                LOGGER.error(message)
+                LOGGER.debug(f"Sequence: {json.dumps(sequence)}")
+                LOGGER.debug(f"Labels: {json.dumps(labels_)}")
 
         status_code = self._c_trainer.train(str(model_filepath), -1)
         if status_code != crfsuite_api.CRFSUITE_SUCCESS:

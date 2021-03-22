@@ -3,11 +3,11 @@ name: CI & CD
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -26,8 +26,7 @@ jobs:
 
       - name: Set up Python tools
         run: |
-          pip install pip==20.3.1
-          pip install poetry==1.1.4
+          pip install --upgrade pip poetry
           poetry config virtualenvs.create false
 
       - name: Install dependencies

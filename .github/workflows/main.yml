@@ -16,7 +16,8 @@ jobs:
     env:
       PYPI_USER: ${{ secrets.PYPI_USER }}
       PYPI_PW: ${{ secrets.PYPI_PW }}
-      CIBW_BUILD: cp38-manylinux_x86_64
+      CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+      CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64
 
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +28,7 @@ jobs:
 
       - name: Set up Python tools
         run: |
-          pip install --upgrade pip poetry
+          pip install --upgrade pip poetry cibuildwheel
           poetry config virtualenvs.create false
 
       - name: Install dependencies
@@ -38,9 +39,8 @@ jobs:
 
       - name: Build wheels
         run: |
-          pip install cibuildwheel
-          cibuildwheel --output-dir wheelhouse
-          ls wheelhouse
+          cibuildwheel --output-dir dist
+          ls dist
 
       #- name: Deploy wheels
       #  run: poetry publish --username $PYPI_USER --password $PYPI_PW

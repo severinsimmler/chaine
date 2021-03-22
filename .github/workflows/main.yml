@@ -37,7 +37,7 @@ jobs:
 
       - name: Build wheels
         run: |
-          docker run -i -t -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /bin/bash
+          docker run -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /bin/bash
           cd /io
           pip install poetry setuptools wheel cython
           poetry build --format wheel

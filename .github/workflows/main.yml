@@ -11,23 +11,13 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        python: [38, 39]
-        include:
-          - os: windows-latest
-            bitness: 64
-            platform_id: win_amd64
-          - os: ubuntu-latest
-            bitness: 64
-            platform_id: manylinux_x86_64
-          - os: macos-latest
-            bitness: 64
-            platform_id: macosx_x86_64
+        python-version: ["37", "38", "39"]
 
     env:
       PYPI_USER: ${{ secrets.PYPI_USER }}
       PYPI_PW: ${{ secrets.PYPI_PW }}
-      CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+      CIBW_BUILD: cp38-manylinux_x86_64
+      CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
 
     steps:
       - uses: actions/checkout@v2
@@ -39,7 +29,6 @@ jobs:
       - name: Set up Python tools
         run: |
           pip install poetry cibuildwheel
-          poetry config virtualenvs.create false
 
       - name: Install dependencies
         run: poetry install

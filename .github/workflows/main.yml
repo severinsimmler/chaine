@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9"]
+        python-version: ["3.8"]
 
     env:
       PYPI_USER: ${{ secrets.PYPI_USER }}
@@ -29,16 +29,16 @@ jobs:
       - name: Set up Python tools
         run: |
           pip install poetry cibuildwheel
+          poetry config virtualenvs.create false
 
       - name: Install dependencies
         run: poetry install
 
       - name: Run unit tests
-        run: poetry run pytest
+        run: pytest
 
       - name: Build wheels
-        run: |
-          cibuildwheel --output-dir dist
+        run: cibuildwheel --output-dir dist
 
       #- name: Deploy wheels
       #  run: poetry publish --username $PYPI_USER --password $PYPI_PW

@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     strategy:
       matrix:
@@ -26,7 +26,8 @@ jobs:
 
       - name: Set up Python tools
         run: |
-          pip install --upgrade pip poetry
+          pip install pip==20.3.1
+          pip install poetry==1.1.4
           poetry config virtualenvs.create false
 
       - name: Install dependencies
@@ -36,11 +37,7 @@ jobs:
         run: pytest
 
       - name: Build wheels
-        run: |
-          docker run -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /bin/bash
-          cd /io
-          pip install poetry setuptools wheel cython
-          poetry build --format wheel
+        run: poetry build --format wheel
 
       #- name: Deploy wheels
       #  run: poetry publish --username $PYPI_USER --password $PYPI_PW

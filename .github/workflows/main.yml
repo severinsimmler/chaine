@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     strategy:
       matrix:
@@ -38,5 +38,5 @@ jobs:
       - name: Build wheels
         run: poetry build --format wheel
 
-      - name: Deploy wheels
-        run: poetry publish --username $PYPI_USER --password $PYPI_PW
+      #- name: Deploy wheels
+      #  run: poetry publish --username $PYPI_USER --password $PYPI_PW

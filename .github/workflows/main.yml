@@ -17,7 +17,7 @@ jobs:
       PYPI_USER: ${{ secrets.PYPI_USER }}
       PYPI_PW: ${{ secrets.PYPI_PW }}
       CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
-      CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64
+      CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
 
     steps:
       - uses: actions/checkout@v2

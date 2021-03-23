@@ -11,12 +11,12 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.8"]
+        python-version: ["3.7", "3.8", "3.9"]
 
     env:
       PYPI_USER: ${{ secrets.PYPI_USER }}
       PYPI_PW: ${{ secrets.PYPI_PW }}
-      CIBW_BUILD: cp38-manylinux_x86_64
+      CIBW_BUILD: cp${{ matrix.python-version//[-._]/ }}-manylinux_x86_64
       CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
 
     steps:
@@ -28,11 +28,10 @@ jobs:
 
       - name: Set up Python tools
         run: |
-          pip install --upgrade pip poetry cibuildwheel
-          poetry config virtualenvs.create false
+          pip install cibuildwheel pytest poetry
 
       - name: Install dependencies
-        run: poetry install
+        run: pip install .
 
       - name: Run unit tests
         run: pytest
@@ -40,7 +39,6 @@ jobs:
       - name: Build wheels
         run: |
           cibuildwheel --output-dir dist
-          ls dist
 
       - name: Deploy wheels
         run: poetry publish --username $PYPI_USER --password $PYPI_PW

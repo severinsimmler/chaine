@@ -11,15 +11,14 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.8", "3.9"]
+        python-minor-version: ["8", "9"]
 
     env:
       PYPI_USER: ${{ secrets.PYPI_USER }}
       PYPI_PW: ${{ secrets.PYPI_PW }}
-      PYTHON_VERSION: ${{ matrix.python-version }}
       CIBW_TEST_EXTRAS: test
       CIBW_TEST_COMMAND: pytest tests
-      CIBW_BUILD: cp${{ PYTHON_VERSION//. }}-manylinux_x86_64
+      CIBW_BUILD: cp3${{ matrix.python-minor-version }}-manylinux_x86_64
       CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
 
     steps:
@@ -27,7 +26,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.${{ matrix.python-version }}
 
       - name: Set up Python tools
         run: pip install cibuildwheel poetry

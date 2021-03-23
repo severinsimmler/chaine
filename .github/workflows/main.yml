@@ -13,10 +13,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
-    env:
-      PYPI_USER: ${{ secrets.PYPI_USER }}
-      PYPI_PW: ${{ secrets.PYPI_PW }}
-
     steps:
       - uses: actions/checkout@v2
 
@@ -38,4 +34,4 @@ jobs:
           CIBW_TEST_COMMAND: pytest {project}/tests
 
       - name: Deploy wheels
-        run: poetry publish --username $PYPI_USER --password $PYPI_PW
+        run: poetry publish --username ${{ secrets.PYPI_USER }} --password ${{ secrets.PYPI_PW }}

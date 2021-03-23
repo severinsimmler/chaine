@@ -13,6 +13,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
+    env:
+      PYPI_USER: ${{ secrets.PYPI_USER }}
+      PYPI_PW: ${{ secrets.PYPI_PW }}
+
     steps:
       - uses: actions/checkout@v2
 

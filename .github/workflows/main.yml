@@ -7,36 +7,31 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [ '3.8', '3.9' ]
-
-    env:
-      PYPI_USER: ${{ secrets.PYPI_USER }}
-      PYPI_PW: ${{ secrets.PYPI_PW }}
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
+
+      - uses: actions/setup-python@v2
+        name: Install Python
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.9"
 
-      - name: Set up Python tools
-        run: |
-          pip install --upgrade pip poetry
-          poetry config virtualenvs.create false
-
-      - name: Install dependencies
-        run: poetry install
-
-      - name: Run unit tests
-        run: pytest
+      - name: Install Python tools
+        run: pip install poetry cibuildwheel
 
       - name: Build wheels
-        run: poetry build --format wheel
+        run: cibuildwheel --output-dir dist
+        env:
+          CIBW_BUILD: "cp38-* cp39-*"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
+          CIBW_MANYLINUX_I686_IMAGE: manylinux1
+          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_COMMAND: pytest {project}/tests
 
-      #- name: Deploy wheels
-      #  run: poetry publish --username $PYPI_USER --password $PYPI_PW
+      - name: Deploy wheels
+        run: poetry publish --username $PYPI_USER --password $PYPI_PW

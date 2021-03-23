@@ -9,12 +9,9 @@ jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    env:
-      min-numpy-version: "1.16.0"
-      min-numpy-hash: "04/b6/d7faa70a3e3eac39f943cc6a6a64ce378259677de516bd899dd9eb8f9b32"
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -33,7 +30,7 @@ jobs:
           CIBW_BUILD: "cp39-*"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: pytest tests
+          CIBW_TEST_COMMAND: pytest {project}/tests
 
       - name: Build wheels for CPython
         run: |

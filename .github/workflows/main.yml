@@ -13,10 +13,11 @@ jobs:
       matrix:
         python-version: ["3.7", "3.8", "3.9"]
 
+
     env:
       PYPI_USER: ${{ secrets.PYPI_USER }}
       PYPI_PW: ${{ secrets.PYPI_PW }}
-      CIBW_BUILD: cp${{ matrix.python-version }//[-._]/}-manylinux_x86_64
+      CIBW_BUILD: cp${{ matrix.python-version.replace('.', '') }}-manylinux_x86_64
       CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
 
     steps:

@@ -6,33 +6,40 @@ on:
       - dev
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      min-numpy-version: "1.16.0"
+      min-numpy-hash: "04/b6/d7faa70a3e3eac39f943cc6a6a64ce378259677de516bd899dd9eb8f9b32"
     strategy:
       matrix:
-        python-minor-version: ["8", "9"]
-
-    env:
-      PYPI_USER: ${{ secrets.PYPI_USER }}
-      PYPI_PW: ${{ secrets.PYPI_PW }}
-      CIBW_TEST_EXTRAS: test
-      CIBW_TEST_COMMAND: pytest tests
-      CIBW_BUILD: cp3${{ matrix.python-minor-version }}-manylinux_x86_64
-      CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
+
+      - uses: actions/setup-python@v2
+        name: Install Python
         with:
-          python-version: 3.${{ matrix.python-version }}
+          python-version: "3.9"
 
-      - name: Set up Python tools
-        run: pip install cibuildwheel poetry
+      - name: Install Python tools
+        run: pip install poetry cibuildwheel
 
-      - name: Build wheels
+      - name: Build wheels for CPython 3.9
         run: cibuildwheel --output-dir dist
+        env:
+          CIBW_BUILD: "cp39-*"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
+          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_COMMAND: pytest tests
 
-      #- name: Deploy wheels
-      #  run: poetry publish --username $PYPI_USER --password $PYPI_PW
+      - name: Build wheels for CPython
+        run: |
+          python -m cibuildwheel --output-dir dist
+        env:
+          CIBW_BUILD: "cp37-* cp38-*"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
+          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_COMMAND: pytest tests

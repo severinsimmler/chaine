@@ -3,7 +3,7 @@ name: CI & CD
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   build:
@@ -33,5 +33,5 @@ jobs:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: pytest {project}/tests
 
-      - name: Show output
-        run: ls dist
+      - name: Deploy wheels
+        run: poetry publish --username $PYPI_USER --password $PYPI_PW

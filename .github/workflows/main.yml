@@ -33,8 +33,5 @@ jobs:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: pytest {project}/tests
 
-      - name: Build sdist
-        run: poetry build --format sdist
-
       - name: Show output
         run: ls dist

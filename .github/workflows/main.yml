@@ -6,7 +6,7 @@ on:
       - dev
 
 jobs:
-  build_wheels:
+  build:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -24,27 +24,16 @@ jobs:
       - name: Install Python tools
         run: pip install poetry cibuildwheel
 
-      - name: Build wheels for CPython 3.9
+      - name: Build wheels
         run: cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: "cp39-*"
+          CIBW_BUILD: "cp38-* cp39-*"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: pytest {project}/tests
 
-      - name: Build wheels for CPython
-        run: |
-          python -m cibuildwheel --output-dir dist
-        env:
-          CIBW_BUILD: "cp38-*"
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
-          CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: pytest tests
+      - name: Build sdist
+        run: poetry build --format sdist
 
       - name: Show output
         run: ls dist
-        env:
-          CIBW_BUILD: "cp38-*"
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
-          CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: pytest tests

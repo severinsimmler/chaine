@@ -377,6 +377,8 @@ cdef class Model:
         List[Dict[str, float]]
             Probability distributions over all labels for each token
         """
+        if not isinstance(sequence, list):
+            sequence = list(sequence)
         self._set_sequence(sequence)
         return [
             {label: self._marginal(label, index) for label in self.labels}

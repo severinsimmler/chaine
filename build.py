@@ -1,6 +1,5 @@
 from distutils.command.build_ext import build_ext
 
-from Cython.Build import cythonize
 from setuptools import Extension
 
 SOURCES = [
@@ -53,9 +52,4 @@ class ExtensionBuilder(build_ext):
 
 
 def build(setup_kwargs: dict):
-    # compile source module into C++ files
-    cythonize("chaine/crf.pyx", force=True)
-
-    # update setup.py kwargs
-    kwargs = {"cmdclass": {"build_ext": ExtensionBuilder}, "ext_modules": [EXTENSION]}
-    setup_kwargs.update(kwargs)
+    setup_kwargs.update({"cmdclass": {"build_ext": ExtensionBuilder}, "ext_modules": [EXTENSION]})

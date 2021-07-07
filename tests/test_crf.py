@@ -198,6 +198,15 @@ def test_model_predict(model, dataset):
     assert predicted == expected
 
 
+def test_model_predict_generator(model, dataset):
+    generator = (
+        (features for features in sequence) for sequence in dataset["sequences"]
+    )
+    predicted = model.predict(generator)
+    expected = dataset["labels"]
+    assert predicted == expected
+
+
 def test_model_predict_proba_single(model, dataset):
     for sequence in dataset["sequences"]:
         predicted = model.predict_proba_single(sequence)

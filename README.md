@@ -32,7 +32,7 @@ Check out the [examples](https://github.com/severinsimmler/chaine/blob/master/ex
 
 ## Development
 
-If you have modified `chaine/crf.pyx`, you have to compile Cython to C++ first (which will update `chainie/crf.cpp`) and then build the extension like:
+If you have modified `chaine/crf.pyx`, you have to compile Cython to C++ first (which will update `chainie/crf.cpp`) and then build the extension:
 
 ```
 $ python cythonize && poetry install

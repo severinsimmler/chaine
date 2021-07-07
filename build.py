@@ -1,6 +1,7 @@
 import glob
 import subprocess
 from distutils.command.build_ext import build_ext as _build_ext
+from Cython.Build import cythonize
 
 from setuptools import Extension
 
@@ -44,6 +45,7 @@ ext_modules = [
 
 
 def build(setup_kwargs):
+    cythonize("chaine/crf.pyx")
     # cythonize
     command = ["cython", "chaine/crf.pyx", "--cplus", "-2", "-I", "chaine"]
     subprocess.check_call(command)

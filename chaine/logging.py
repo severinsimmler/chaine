@@ -6,8 +6,8 @@ This module implements a basic logger
 """
 
 import logging
-import os
 import sys
+from logging import Formatter, StreamHandler
 from typing import Union
 
 DEBUG = 10
@@ -16,8 +16,8 @@ WARNING = 30
 ERROR = 40
 LEVELS = {"DEBUG": DEBUG, "INFO": INFO, "WARNING": WARNING, "ERROR": ERROR}
 
-DEFAULT_FORMAT = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
-DEBUG_FORMAT = logging.Formatter("[%(asctime)s] %(name)s:%(lineno)d [%(levelname)s] %(message)s")
+DEFAULT_FORMAT = Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
+DEBUG_FORMAT = Formatter("[%(asctime)s] %(name)s:%(lineno)d [%(levelname)s] %(message)s")
 
 
 class Logger:
@@ -35,7 +35,7 @@ class Logger:
         self._logger = logging.getLogger(name)
 
         # stream handler to stdout
-        self._stream_handler = logging.StreamHandler(sys.stdout)
+        self._stream_handler = StreamHandler(sys.stdout)
         self._logger.addHandler(self._stream_handler)
 
         # set level of both the logger and the handler to INFO by default

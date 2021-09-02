@@ -9,5 +9,5 @@ def test_logger():
 
     logger.level = DEBUG
     assert logger.level == DEBUG
-    logger.level = WARNING
-    assert logger.level == WARNING
+    logger.set_level(WARNING)
+    assert logger == WARNING

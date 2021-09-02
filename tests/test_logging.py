@@ -11,4 +11,4 @@ def test_logger():
     assert logger.level == DEBUG
 
     logger.set_level(WARNING)
-    assert logger == WARNING
+    assert logger.level == WARNING

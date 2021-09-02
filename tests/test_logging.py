@@ -7,7 +7,8 @@ def test_logger():
 
     assert logger.name == "test"
 
-    logger.level = DEBUG
+    logger.set_level(DEBUG)
     assert logger.level == DEBUG
+
     logger.set_level(WARNING)
     assert logger == WARNING

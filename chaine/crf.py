@@ -1,5 +1,5 @@
 import json
-from chaine.typing import Dataset, Filepath, Labels, Sequence, List, Iterable
+from chaine.typing import Dataset, Filepath, Labels, Sequence, List, Iterable, Dict
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
 from chaine.logging import Logger
@@ -130,6 +130,9 @@ class Trainer(_Trainer):
     gamma : float, optional (default=1)
         Trade-off between loss function and changes of feature weights.
     """
+    def __init__(self, algorithm: str = "l2sgd", **kwargs):
+        super().__init__(algorithm, **kwargs)
+
     def __repr__(self):
         """Representation of the trainer"""
         return f"<Trainer: {self.params}>"

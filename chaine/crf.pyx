@@ -2,6 +2,8 @@
 # cython: c_string_type=str
 # cython: c_string_encoding=utf-8
 # cython: profile=False
+# cython: language_level=2
+# distutils: language=c++
 
 cimport crfsuite_api
 from libcpp.string cimport string

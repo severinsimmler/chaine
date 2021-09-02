@@ -223,6 +223,15 @@ def test_model_predict_proba(model, dataset):
     assert predicted == expected
 
 
+def test_model_predict_proba_generator(model, dataset):
+    generator = (
+        (features for features in sequence) for sequence in dataset["sequences"]
+    )
+    predicted = model.predict_proba(generator)
+    expected = [[{"O": 1.0}, {"O": 1.0}] for _ in dataset["labels"]]
+    assert predicted == expected
+
+
 def test_empty_item_sequence():
     sequence = crf._ItemSequence([])
     assert len(sequence) == 0

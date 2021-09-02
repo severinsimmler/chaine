@@ -1,31 +1,44 @@
-import glob
-import subprocess
-from distutils.command.build_ext import build_ext as _build_ext
+from distutils.command.build_ext import build_ext
 
 from setuptools import Extension
 
-
-sources = [
+SOURCES = [
     "chaine/crf.cpp",
-    "chaine/trainer_wrapper.cpp",
     "chaine/crfsuite/lib/cqdb/src/cqdb.c",
     "chaine/crfsuite/lib/cqdb/src/lookup3.c",
+    "chaine/crfsuite/lib/crf/src/crf1d_context.c",
+    "chaine/crfsuite/lib/crf/src/crf1d_encode.c",
+    "chaine/crfsuite/lib/crf/src/crf1d_feature.c",
+    "chaine/crfsuite/lib/crf/src/crf1d_model.c",
+    "chaine/crfsuite/lib/crf/src/crf1d_tag.c",
+    "chaine/crfsuite/lib/crf/src/crfsuite.c",
+    "chaine/crfsuite/lib/crf/src/crfsuite_train.c",
+    "chaine/crfsuite/lib/crf/src/dataset.c",
+    "chaine/crfsuite/lib/crf/src/dictionary.c",
+    "chaine/crfsuite/lib/crf/src/holdout.c",
+    "chaine/crfsuite/lib/crf/src/logging.c",
+    "chaine/crfsuite/lib/crf/src/params.c",
+    "chaine/crfsuite/lib/crf/src/quark.c",
+    "chaine/crfsuite/lib/crf/src/rumavl.c",
+    "chaine/crfsuite/lib/crf/src/train_arow.c",
+    "chaine/crfsuite/lib/crf/src/train_averaged_perceptron.c",
+    "chaine/crfsuite/lib/crf/src/train_l2sgd.c",
+    "chaine/crfsuite/lib/crf/src/train_lbfgs.c",
+    "chaine/crfsuite/lib/crf/src/train_passive_aggressive.c",
+    "chaine/crfsuite/swig/crfsuite.cpp",
+    "chaine/liblbfgs/lib/lbfgs.c",
+    "chaine/trainer_wrapper.cpp",
 ]
-sources += glob.glob("chaine/crfsuite/lib/crf/src/*.c")
-sources += glob.glob("chaine/crfsuite/swig/*.cpp")
-sources += glob.glob("chaine/liblbfgs/lib/*.c")
-sources = sorted(sources)
-
-
-include_dirs = [
+INCLUDE_DIRS = [
     "chaine/crfsuite/include/",
     "chaine/crfsuite/lib/cqdb/include",
     "chaine/liblbfgs/include",
     "chaine",
 ]
+EXTENSION = Extension("chaine.crf", language="c++", include_dirs=INCLUDE_DIRS, sources=SOURCES)
 
 
-class build_ext(_build_ext):
+class ExtensionBuilder(build_ext):
     def build_extensions(self):
         c = self.compiler
         _compile = c._compile
@@ -35,19 +48,8 @@ class build_ext(_build_ext):
             return _compile(obj, src, ext, cc_args, extra_postargs, pp_opts)
 
         c._compile = c_compile
-        _build_ext.build_extensions(self)
+        build_ext.build_extensions(self)
 
 
-ext_modules = [
-    Extension("chaine.crf", include_dirs=include_dirs, language="c++", sources=sources)
-]
-
-
-def build(setup_kwargs):
-    # cythonize
-    command = ["cython", "chaine/crf.pyx", "--cplus", "-2", "-I", "chaine"]
-    subprocess.check_call(command)
-
-    # update setup.py kwargs
-    kwargs = {"cmdclass": {"build_ext": build_ext}, "ext_modules": ext_modules}
-    setup_kwargs.update(kwargs)
+def build(setup_kwargs: dict):
+    setup_kwargs.update({"cmdclass": {"build_ext": ExtensionBuilder}, "ext_modules": [EXTENSION]})

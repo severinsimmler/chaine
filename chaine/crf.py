@@ -1,11 +1,19 @@
+"""
+chaine.crf
+~~~~~~~~~~
+
+This module implements the trainer and model.
+"""
+
 import json
-from chaine.typing import Filepath, Labels, Sequence, List, Iterable, Dict
+
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
 from chaine.logging import Logger
-
+from chaine.typing import Dict, Filepath, Iterable, Labels, List, Sequence
 
 LOGGER = Logger(__name__)
+
 
 class Trainer(_Trainer):
     """Trainer for conditional random fields.
@@ -131,6 +139,7 @@ class Trainer(_Trainer):
     gamma : float, optional (default=1)
         Trade-off between loss function and changes of feature weights.
     """
+
     def __init__(self, algorithm: str = "l2sgd", **kwargs):
         self.algorithm = algorithm
         super().__init__(algorithm, **kwargs)
@@ -138,7 +147,12 @@ class Trainer(_Trainer):
     def __repr__(self):
         return f"<Trainer ({self.algorithm}): {self.params}>"
 
-    def train(self, dataset: Iterable[Sequence], labels: Iterable[Labels], model_filepath: Filepath):
+    def train(
+        self,
+        dataset: Iterable[Sequence],
+        labels: Iterable[Labels],
+        model_filepath: Filepath,
+    ):
         LOGGER.info("Loading training data")
         for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
             # log progress every 100 data points
@@ -174,6 +188,7 @@ class Model(_Model):
     model_filepath : Filepath
         Path to the trained model.
     """
+
     def __repr__(self):
         """Representation of the model"""
         return f"<Model: {self.labels}>"
@@ -230,7 +245,9 @@ class Model(_Model):
             sequence = list(sequence)
         return self._predict_proba_single(sequence)
 
-    def predict_proba(self, sequences: Iterable[Sequence]) -> List[List[Dict[str, float]]]:
+    def predict_proba(
+        self, sequences: Iterable[Sequence]
+    ) -> List[List[Dict[str, float]]]:
         """Predict probabilities over all labels for each token in a batch of sequences
 
         Parameters

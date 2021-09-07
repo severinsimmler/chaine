@@ -2,7 +2,7 @@
 chaine.api
 ~~~~~~~~~~
 
-This module implements the high-level API to train a conditional random field
+This module implements the high-level API to train a conditional random field.
 """
 
 from chaine.crf import Model, Trainer

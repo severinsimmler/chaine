@@ -2,7 +2,7 @@
 chaine.typing
 ~~~~~~~~~~~~~
 
-A collection of type hints
+A collection of type hints.
 """
 
 from pathlib import Path

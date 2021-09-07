@@ -6,11 +6,11 @@ This module implements the high-level API to train a conditional random field
 """
 
 from chaine.crf import Model, Trainer
-from chaine.typing import Dataset, Filepath, Labels
+from chaine.typing import Filepath, Labels
 
 
 def train(
-    dataset: Dataset,
+    dataset: Labels,
     labels: Labels,
     model_filepath: Filepath = "model.crf",
     **kwargs,

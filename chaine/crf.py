@@ -1,8 +1,9 @@
 import json
-from chaine.typing import Dataset, Filepath, Labels, Sequence, List, Iterable, Dict
+from chaine.typing import Filepath, Labels, Sequence, List, Iterable, Dict
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
 from chaine.logging import Logger
+
 
 LOGGER = Logger(__name__)
 
@@ -19,8 +20,8 @@ class Trainer(_Trainer):
             * pa: Passive aggressive
             * arow: Adaptive regularization of weights
 
-    Limited-memory BFGS Parameters
-    ------------------------------
+    Limited-memory BFGS Parameters (lbfgs)
+    --------------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data.
     all_possible_states : bool, optional (default=False)
@@ -49,8 +50,8 @@ class Trainer(_Trainer):
     max_linesearch : int, optional (default=20)
         Maximum number of trials for the line search algorithm.
 
-    SGD with L2 Parameters
-    ----------------------
+    SGD with L2 Parameters (l2sgd)
+    ------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data.
     all_possible_states : bool, optional (default=False)
@@ -76,8 +77,8 @@ class Trainer(_Trainer):
     calibration_max_trials : int, optional (default=20)
         Maximum number of trials of learning rates for calibration.
 
-    Averaged Perceptron Parameters
-    ------------------------------
+    Averaged Perceptron Parameters (ap)
+    -----------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data.
     all_possible_states : bool, optional (default=False)
@@ -89,8 +90,8 @@ class Trainer(_Trainer):
     epsilon : float, optional (default=1e-5)
         Parameter that determines the condition of convergence.
 
-    Passive Aggressive Parameters
-    -----------------------------
+    Passive Aggressive Parameters (pa)
+    ----------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data.
     all_possible_states : bool, optional (default=False)
@@ -113,7 +114,7 @@ class Trainer(_Trainer):
     averaging : bool, optional (default=True)
         Compute average of feature weights at all updates.
 
-    Adaptive Regularization of Weights (AROW) Parameters
+    Adaptive Regularization of Weights Parameters (arow)
     ----------------------------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data.
@@ -131,45 +132,19 @@ class Trainer(_Trainer):
         Trade-off between loss function and changes of feature weights.
     """
     def __init__(self, algorithm: str = "l2sgd", **kwargs):
+        self.algorithm = algorithm
         super().__init__(algorithm, **kwargs)
 
     def __repr__(self):
-        """Representation of the trainer"""
-        return f"<Trainer: {self.params}>"
+        return f"<Trainer ({self.algorithm}): {self.params}>"
 
-    def train(self, dataset: Dataset, labels: Labels, model_filepath: Filepath):
-        """Train a conditional random field on the given data set and labels.
-
-        Parameters
-        ----------
-        dataset : Dataset
-            Training data set.
-        labels : Labels
-            Corresponding true labels.
-        model_filepath : Filepath
-            Path the trained model is written to.
-
-        Note
-        ----
-        A dataset is three-dimensional:
-
-            [[['feature_a', 'feature_b'],
-              ['feature_c']]]
-
-        An instance of this dataset is two-dimensional:
-
-            [['feature_a', 'feature_b'],
-             ['feature_c']]
-
-        An item of this instance represents e.g. one word in a sentence by descriptive
-        features. One item consists only of the relevant features. Internally, the
-        string features are hash-mapped and a sparse matrix is constructed.
-        """
-        LOGGER.info("Loading training data (this may take a while)")
+    def train(self, dataset: Iterable[Sequence], labels: Iterable[Labels], model_filepath: Filepath):
+        LOGGER.info("Loading training data")
         for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
             # log progress every 100 data points
             if i > 0 and i % 100 == 0:
                 LOGGER.debug(f"{i} processed data points")
+
             try:
                 self._append(sequence, labels_)
             except Exception as message:
@@ -177,36 +152,36 @@ class Trainer(_Trainer):
                 LOGGER.debug(f"Sequence: {json.dumps(sequence)}")
                 LOGGER.debug(f"Labels: {json.dumps(labels_)}")
 
-        self._c_trainer.train(str(model_filepath), -1)
+        # fire!
+        self._train(model_filepath)
 
     @property
     def params(self):
-        """Training parameters"""
         return {
             self._param2kwarg.get(name, name): self._get_param(name)
-            for name in self._c_trainer.params()
+            for name in self._params
         }
 
-    def _message(self, message):
+    def _log(self, message):
         LOGGER.info(message)
 
 
 class Model(_Model):
-    """Linear-chain conditional random field
+    """Linear-chain conditional random field.
 
     Parameters
     ----------
     model_filepath : Filepath
-        Path to the trained model
+        Path to the trained model.
     """
     def __repr__(self):
         """Representation of the model"""
-        return f"<Model: {self.params}>"
+        return f"<Model: {self.labels}>"
 
     @property
     def labels(self):
         """Labels the model is trained on"""
-        return set(self.c_tagger.labels())
+        return set(self._labels)
 
     def predict_single(self, sequence: Sequence) -> List[str]:
         """Predict most likely labels for a given sequence of features
@@ -221,8 +196,7 @@ class Model(_Model):
         List[str]
             Most likely label sequence
         """
-        self._set_sequence(sequence)
-        return self.c_tagger.viterbi()
+        return self._predict_single(sequence)
 
     def predict(self, sequences: Iterable[Sequence]) -> List[List[str]]:
         """Predict most likely labels for a batch of sequences
@@ -254,11 +228,7 @@ class Model(_Model):
         """
         if not isinstance(sequence, list):
             sequence = list(sequence)
-        self._set_sequence(sequence)
-        return [
-            {label: self._marginal(label, index) for label in self.labels}
-            for index in range(len(sequence))
-        ]
+        return self._predict_proba_single(sequence)
 
     def predict_proba(self, sequences: Iterable[Sequence]) -> List[List[Dict[str, float]]]:
         """Predict probabilities over all labels for each token in a batch of sequences
@@ -274,4 +244,3 @@ class Model(_Model):
             Probability distributions over all labels for each token in the sequences
         """
         return [self.predict_proba_single(sequence) for sequence in sequences]
-

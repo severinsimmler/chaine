@@ -35,7 +35,9 @@ INCLUDE_DIRS = [
     "chaine/core/liblbfgs/include",
     "chaine/core",
 ]
-EXTENSION = Extension("chaine.core.crf", language="c++", include_dirs=INCLUDE_DIRS, sources=SOURCES)
+EXTENSION = Extension(
+    "chaine.core.crf", language="c++", include_dirs=INCLUDE_DIRS, sources=SOURCES
+)
 
 
 class ExtensionBuilder(build_ext):
@@ -52,4 +54,6 @@ class ExtensionBuilder(build_ext):
 
 
 def build(setup_kwargs: dict):
-    setup_kwargs.update({"cmdclass": {"build_ext": ExtensionBuilder}, "ext_modules": [EXTENSION]})
+    setup_kwargs.update(
+        {"cmdclass": {"build_ext": ExtensionBuilder}, "ext_modules": [EXTENSION]}
+    )

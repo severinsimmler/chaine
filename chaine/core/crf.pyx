@@ -10,7 +10,7 @@ from libcpp.string cimport string
 import os
 
 from chaine.logging import Logger
-from chaine.typing import Dict, Iterable, List, Filepath, Sequence
+from chaine.typing import Dict, Filepath, Labels, List, Sequence, Union
 
 LOGGER = Logger(__name__)
 
@@ -18,18 +18,6 @@ LOGGER = Logger(__name__)
 cdef class Trainer:
     cdef crfsuite_api.Trainer _c_trainer
 
-    _algorithm_aliases = {
-        "lbfgs": "lbfgs",
-        "limited-memory-bfgs": "lbfgs",
-        "l2sgd": "l2sgd",
-        "sgd": "l2sgd",
-        "stochastic-gradient-descent": "l2sgd",
-        "ap": "averaged-perceptron",
-        "averaged-perceptron": "averaged-perceptron",
-        "pa": "passive-aggressive",
-        "passive-aggressive": "passive-aggressive",
-        "arow": "arow"
-    }
     _param2kwarg = {
         "feature.minfreq": "min_freq",
         "feature.possible_states": "all_possible_states",
@@ -78,10 +66,9 @@ cdef class Trainer:
             "gamma": float,
         }
 
-    def __init__(self, algorithm="l2sgd", **kwargs):
+    def __init__(self, algorithm: str = "l2sgd", **kwargs):
         self._select_algorithm(algorithm)
-        params = self._translate_params(kwargs)
-        self._set_params(params)
+        self._set_params(self._translate_params(kwargs))
 
     def __cinit__(self):
         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
@@ -101,42 +88,39 @@ cdef class Trainer:
     cdef _on_message(self, string message):
         self._log(message)
 
-    def _append(self, sequence, labels, int group=0):
+    def _append(self, sequence: Sequence, labels: Labels, int group=0):
         # no generators allowed
         if not isinstance(sequence, list):
             sequence = [item for item in sequence]
         if not isinstance(labels, list):
-            labels = [label for label in labels]
-
-        # labels must be strings
-        labels = [str(label) for label in labels]
+            # labels must be strings
+            labels = [str(label) for label in labels]
 
         self._c_trainer.append(to_seq(sequence), labels, group)
 
-    def _translate_params(self, kwargs):
+    def _translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):
         return {
             self._kwarg2param.get(kwarg, kwarg): value
             for kwarg, value in kwargs.items()
         }
 
-    def _select_algorithm(self, algorithm):
-        algorithm = self._algorithm_aliases[algorithm.lower()]
+    def _select_algorithm(self, algorithm: str):
         if not self._c_trainer.select(algorithm, "crf1d"):
             raise ValueError(f"{algorithm} is no available algorithm")
 
-    def _set_params(self, params):
+    def _set_params(self, params: dict[str, Union[str, int, float, bool]]):
         for param, value in params.items():
             self._set_param(param, value)
 
-    def _set_param(self, param, value):
+    def _set_param(self, param: str, value: Union[str, int, float, bool]):
         if isinstance(value, bool):
             value = int(value)
         self._c_trainer.set(param, str(value))
 
-    def _get_param(self, param):
+    def _get_param(self, param: str) -> str:
         return self._cast_parameter(param, self._c_trainer.get(param))
 
-    def _cast_parameter(self, param, value):
+    def _cast_parameter(self, param: str, value: Union[str, int, float, bool]):
         if param in self._parameter_types:
             return self._parameter_types[param](value)
         return value

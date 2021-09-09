@@ -10,7 +10,7 @@ import json
 from chaine.core.crf import Model as _Model
 from chaine.core.crf import Trainer as _Trainer
 from chaine.logging import Logger
-from chaine.typing import Dict, Filepath, Iterable, Labels, List, Sequence
+from chaine.typing import Dict, Filepath, Iterable, Labels, List, Sequence, Union
 
 LOGGER = Logger(__name__)
 
@@ -139,7 +139,6 @@ class Trainer(_Trainer):
     gamma : float, optional (default=1)
         Trade-off between loss function and changes of feature weights.
     """
-
     def __init__(self, algorithm: str = "l2sgd", **kwargs):
         self.algorithm = algorithm
         super().__init__(algorithm, **kwargs)
@@ -153,6 +152,17 @@ class Trainer(_Trainer):
         labels: Iterable[Labels],
         model_filepath: Filepath,
     ):
+        """Start training on the given data set.
+
+        Parameters
+        ----------
+        dataset : Iterable[Sequence]
+            Data set consisting of sequences of feature sets.
+        labels : Iterable[Labels]
+            Labels corresponding to each instance in the data set.
+        model_filepath : Filepath, optional (default=model.crf)
+            Path to model location.
+        """
         LOGGER.info("Loading training data")
         for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
             # log progress every 100 data points
@@ -170,13 +180,27 @@ class Trainer(_Trainer):
         self._train(model_filepath)
 
     @property
-    def params(self):
+    def params(self) -> dict[str, Union[str, int, float, bool]]:
+        """Set parameters of the trainer.
+
+        Returns
+        -------
+        dict[str, Union[str, int, float, bool]]
+            Parameters of the trainer.
+        """
         return {
             self._param2kwarg.get(name, name): self._get_param(name)
             for name in self._params
         }
 
-    def _log(self, message):
+    def _log(self, message: str):
+        """This method is used from the Cython class.
+
+        Parameters
+        ----------
+        message : str
+            Message to log.
+        """
         LOGGER.info(message)
 
 
@@ -190,56 +214,55 @@ class Model(_Model):
     """
 
     def __repr__(self):
-        """Representation of the model"""
         return f"<Model: {self.labels}>"
 
     @property
-    def labels(self):
-        """Labels the model is trained on"""
+    def labels(self) -> set[str]:
+        """Labels the model is trained on."""
         return set(self._labels)
 
     def predict_single(self, sequence: Sequence) -> List[str]:
-        """Predict most likely labels for a given sequence of features
+        """Predict most likely labels for a given sequence of tokens.
 
         Parameters
         ----------
         sequence : Sequence
-            Sequence of features, e.g. [{"feature_a", "feature_b"}, {"feature_c"}]
+            Sequence of tokens represented as feature dictionaries.
 
         Returns
         -------
         List[str]
-            Most likely label sequence
+            Most likely label sequence.
         """
         return self._predict_single(sequence)
 
     def predict(self, sequences: Iterable[Sequence]) -> List[List[str]]:
-        """Predict most likely labels for a batch of sequences
+        """Predict most likely labels for a batch of tokens
 
         Parameters
         ----------
         sequences : Iterable[Sequence]
-            Batch of sequences
+            Batch of sequences of tokens represented as feature dictionaries.
 
         Returns
         -------
         List[List[str]]
-            Most likely label sequences
+            Most likely label sequences.
         """
         return [self.predict_single(sequence) for sequence in sequences]
 
     def predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:
-        """Predict probabilities over all labels for each token in a sequence
+        """Predict probabilities over all labels for each token in a sequence.
 
         Parameters
         ----------
         sequence : Sequence
-            Sequence of features, e.g. [{"feature_a", "feature_b"}, {"feature_c"}]
+            Sequence of tokens represented as feature dictionaries.
 
         Returns
         -------
         List[Dict[str, float]]
-            Probability distributions over all labels for each token
+            Probability distributions over all labels for each token.
         """
         if not isinstance(sequence, list):
             sequence = list(sequence)
@@ -248,16 +271,16 @@ class Model(_Model):
     def predict_proba(
         self, sequences: Iterable[Sequence]
     ) -> List[List[Dict[str, float]]]:
-        """Predict probabilities over all labels for each token in a batch of sequences
+        """Predict probabilities over all labels for each token in a batch of sequences.
 
         Parameters
         ----------
         sequences : Sequence
-            Batch of sequences
+            Batch of sequences of tokens represented as feature dictionaries.
 
         Returns
         -------
         List[Dict[str, float]]
-            Probability distributions over all labels for each token in the sequences
+            Probability distributions over all labels for each token in the sequences.
         """
         return [self.predict_proba_single(sequence) for sequence in sequences]

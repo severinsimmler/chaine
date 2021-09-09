@@ -7,7 +7,7 @@
         "language": "c++",
         "name": "crf",
         "sources": [
-            "chaine/_core/crf.pyx"
+            "chaine/core/crf.pyx"
         ]
     },
     "module_name": "crf"
@@ -862,7 +862,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "chaine/_core/crf.pyx",
+  "chaine/core/crf.pyx",
   "stringsource",
 };
 
@@ -872,11 +872,11 @@ struct __pyx_obj_3crf_Model;
 struct __pyx_obj_3crf_ItemSequence;
 
 /* "crf.pyx":18
- * 
- * 
+ *
+ *
  * cdef class Trainer:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.Trainer _c_trainer
- * 
+ *
  */
 struct __pyx_obj_3crf_Trainer {
   PyObject_HEAD
@@ -886,11 +886,11 @@ struct __pyx_obj_3crf_Trainer {
 
 
 /* "crf.pyx":145
- * 
- * 
+ *
+ *
  * cdef class Model:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.Tagger c_tagger
- * 
+ *
  */
 struct __pyx_obj_3crf_Model {
   PyObject_HEAD
@@ -900,11 +900,11 @@ struct __pyx_obj_3crf_Model {
 
 
 /* "crf.pyx":242
- * 
- * 
+ *
+ *
  * cdef class ItemSequence:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.ItemSequence c_sequence
- * 
+ *
  */
 struct __pyx_obj_3crf_ItemSequence {
   PyObject_HEAD
@@ -914,11 +914,11 @@ struct __pyx_obj_3crf_ItemSequence {
 
 
 /* "crf.pyx":18
- * 
- * 
+ *
+ *
  * cdef class Trainer:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.Trainer _c_trainer
- * 
+ *
  */
 
 struct __pyx_vtabstruct_3crf_Trainer {
@@ -928,11 +928,11 @@ static struct __pyx_vtabstruct_3crf_Trainer *__pyx_vtabptr_3crf_Trainer;
 
 
 /* "crf.pyx":145
- * 
- * 
+ *
+ *
  * cdef class Model:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.Tagger c_tagger
- * 
+ *
  */
 
 struct __pyx_vtabstruct_3crf_Model {
@@ -1744,7 +1744,7 @@ static const char __pyx_k_all_possible_states[] = "all_possible_states";
 static const char __pyx_k_averaged_perceptron[] = "averaged-perceptron";
 static const char __pyx_k_calibration_samples[] = "calibration.samples";
 static const char __pyx_k_limited_memory_bfgs[] = "limited-memory-bfgs";
-static const char __pyx_k_chaine__core_crf_pyx[] = "chaine/_core/crf.pyx";
+static const char __pyx_k_chaine_core_crf_pyx[] = "chaine/core/crf.pyx";
 static const char __pyx_k_calibration_samples_2[] = "calibration_samples";
 static const char __pyx_k_Cannot_load_model_file[] = "Cannot load model file ";
 static const char __pyx_k_calibration_candidates[] = "calibration.candidates";
@@ -1805,7 +1805,7 @@ static PyObject *__pyx_n_s_calibration_rate_2;
 static PyObject *__pyx_kp_s_calibration_samples;
 static PyObject *__pyx_n_s_calibration_samples_2;
 static PyObject *__pyx_n_s_cast_parameter;
-static PyObject *__pyx_kp_s_chaine__core_crf_pyx;
+static PyObject *__pyx_kp_s_chaine_core_crf_pyx;
 static PyObject *__pyx_n_s_chaine_logging;
 static PyObject *__pyx_n_s_chaine_typing;
 static PyObject *__pyx_n_s_check_model;
@@ -2155,7 +2155,7 @@ static PyObject *__pyx_lambda_funcdef_3crf_7Trainer_lambda3(CYTHON_UNUSED PyObje
 
 /* "crf.pyx":81
  *         }
- * 
+ *
  *     def __init__(self, algorithm="l2sgd", **kwargs):             # <<<<<<<<<<<<<<
  *         self._select_algorithm(algorithm)
  *         params = self._translate_params(kwargs)
@@ -2238,7 +2238,7 @@ static int __pyx_pf_3crf_7Trainer___init__(struct __pyx_obj_3crf_Trainer *__pyx_
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "crf.pyx":82
- * 
+ *
  *     def __init__(self, algorithm="l2sgd", **kwargs):
  *         self._select_algorithm(algorithm)             # <<<<<<<<<<<<<<
  *         params = self._translate_params(kwargs)
@@ -2268,7 +2268,7 @@ static int __pyx_pf_3crf_7Trainer___init__(struct __pyx_obj_3crf_Trainer *__pyx_
  *         self._select_algorithm(algorithm)
  *         params = self._translate_params(kwargs)             # <<<<<<<<<<<<<<
  *         self._set_params(params)
- * 
+ *
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_translate_params); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -2294,7 +2294,7 @@ static int __pyx_pf_3crf_7Trainer___init__(struct __pyx_obj_3crf_Trainer *__pyx_
  *         self._select_algorithm(algorithm)
  *         params = self._translate_params(kwargs)
  *         self._set_params(params)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __cinit__(self):
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_set_params); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
@@ -2318,7 +2318,7 @@ static int __pyx_pf_3crf_7Trainer___init__(struct __pyx_obj_3crf_Trainer *__pyx_
 
   /* "crf.pyx":81
  *         }
- * 
+ *
  *     def __init__(self, algorithm="l2sgd", **kwargs):             # <<<<<<<<<<<<<<
  *         self._select_algorithm(algorithm)
  *         params = self._translate_params(kwargs)
@@ -2341,7 +2341,7 @@ static int __pyx_pf_3crf_7Trainer___init__(struct __pyx_obj_3crf_Trainer *__pyx_
 
 /* "crf.pyx":86
  *         self._set_params(params)
- * 
+ *
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
  *         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
  *         self._c_trainer.select("l2sgd", "crf1d")
@@ -2374,7 +2374,7 @@ static int __pyx_pf_3crf_7Trainer_2__cinit__(struct __pyx_obj_3crf_Trainer *__py
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
   /* "crf.pyx":87
- * 
+ *
  *     def __cinit__(self):
  *         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)             # <<<<<<<<<<<<<<
  *         self._c_trainer.select("l2sgd", "crf1d")
@@ -2392,7 +2392,7 @@ static int __pyx_pf_3crf_7Trainer_2__cinit__(struct __pyx_obj_3crf_Trainer *__py
  *         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
  *         self._c_trainer.select("l2sgd", "crf1d")             # <<<<<<<<<<<<<<
  *         self._c_trainer._init_trainer()
- * 
+ *
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_l2sgd); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_t_2 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_crf1d); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
@@ -2407,7 +2407,7 @@ static int __pyx_pf_3crf_7Trainer_2__cinit__(struct __pyx_obj_3crf_Trainer *__py
  *         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
  *         self._c_trainer.select("l2sgd", "crf1d")
  *         self._c_trainer._init_trainer()             # <<<<<<<<<<<<<<
- * 
+ *
  *     @property
  */
   try {
@@ -2419,7 +2419,7 @@ static int __pyx_pf_3crf_7Trainer_2__cinit__(struct __pyx_obj_3crf_Trainer *__py
 
   /* "crf.pyx":86
  *         self._set_params(params)
- * 
+ *
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
  *         self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
  *         self._c_trainer.select("l2sgd", "crf1d")
@@ -2437,11 +2437,11 @@ static int __pyx_pf_3crf_7Trainer_2__cinit__(struct __pyx_obj_3crf_Trainer *__py
 }
 
 /* "crf.pyx":92
- * 
+ *
  *     @property
  *     def _params(self):             # <<<<<<<<<<<<<<
  *         return self._c_trainer.params()
- * 
+ *
  */
 
 /* Python wrapper */
@@ -2471,7 +2471,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_7_params___get__(struct __pyx_obj_3crf_T
  *     @property
  *     def _params(self):
  *         return self._c_trainer.params()             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _train(self, model_filepath: Filepath):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -2488,11 +2488,11 @@ static PyObject *__pyx_pf_3crf_7Trainer_7_params___get__(struct __pyx_obj_3crf_T
   goto __pyx_L0;
 
   /* "crf.pyx":92
- * 
+ *
  *     @property
  *     def _params(self):             # <<<<<<<<<<<<<<
  *         return self._c_trainer.params()
- * 
+ *
  */
 
   /* function exit code */
@@ -2508,10 +2508,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_7_params___get__(struct __pyx_obj_3crf_T
 
 /* "crf.pyx":95
  *         return self._c_trainer.params()
- * 
+ *
  *     def _train(self, model_filepath: Filepath):             # <<<<<<<<<<<<<<
  *         self._c_trainer.train(str(model_filepath), -1)
- * 
+ *
  */
 
 /* Python wrapper */
@@ -2539,10 +2539,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_4_train(struct __pyx_obj_3crf_Trainer *_
   __Pyx_RefNannySetupContext("_train", 0);
 
   /* "crf.pyx":96
- * 
+ *
  *     def _train(self, model_filepath: Filepath):
  *         self._c_trainer.train(str(model_filepath), -1)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _log(self):
  */
   __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_model_filepath); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
@@ -2558,10 +2558,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_4_train(struct __pyx_obj_3crf_Trainer *_
 
   /* "crf.pyx":95
  *         return self._c_trainer.params()
- * 
+ *
  *     def _train(self, model_filepath: Filepath):             # <<<<<<<<<<<<<<
  *         self._c_trainer.train(str(model_filepath), -1)
- * 
+ *
  */
 
   /* function exit code */
@@ -2579,10 +2579,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_4_train(struct __pyx_obj_3crf_Trainer *_
 
 /* "crf.pyx":98
  *         self._c_trainer.train(str(model_filepath), -1)
- * 
+ *
  *     def _log(self):             # <<<<<<<<<<<<<<
  *         raise NotImplemented("You have to implement this method.")
- * 
+ *
  */
 
 /* Python wrapper */
@@ -2609,10 +2609,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_6_log(CYTHON_UNUSED struct __pyx_obj_3cr
   __Pyx_RefNannySetupContext("_log", 0);
 
   /* "crf.pyx":99
- * 
+ *
  *     def _log(self):
  *         raise NotImplemented("You have to implement this method.")             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef _on_message(self, string message):
  */
   __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplemented, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
@@ -2623,10 +2623,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_6_log(CYTHON_UNUSED struct __pyx_obj_3cr
 
   /* "crf.pyx":98
  *         self._c_trainer.train(str(model_filepath), -1)
- * 
+ *
  *     def _log(self):             # <<<<<<<<<<<<<<
  *         raise NotImplemented("You have to implement this method.")
- * 
+ *
  */
 
   /* function exit code */
@@ -2641,10 +2641,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_6_log(CYTHON_UNUSED struct __pyx_obj_3cr
 
 /* "crf.pyx":101
  *         raise NotImplemented("You have to implement this method.")
- * 
+ *
  *     cdef _on_message(self, string message):             # <<<<<<<<<<<<<<
  *         self._log(message)
- * 
+ *
  */
 
 static PyObject *__pyx_f_3crf_7Trainer__on_message(struct __pyx_obj_3crf_Trainer *__pyx_v_self, std::string __pyx_v_message) {
@@ -2660,10 +2660,10 @@ static PyObject *__pyx_f_3crf_7Trainer__on_message(struct __pyx_obj_3crf_Trainer
   __Pyx_RefNannySetupContext("_on_message", 0);
 
   /* "crf.pyx":102
- * 
+ *
  *     cdef _on_message(self, string message):
  *         self._log(message)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _append(self, sequence, labels, int group=0):
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_log); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L1_error)
@@ -2690,10 +2690,10 @@ static PyObject *__pyx_f_3crf_7Trainer__on_message(struct __pyx_obj_3crf_Trainer
 
   /* "crf.pyx":101
  *         raise NotImplemented("You have to implement this method.")
- * 
+ *
  *     cdef _on_message(self, string message):             # <<<<<<<<<<<<<<
  *         self._log(message)
- * 
+ *
  */
 
   /* function exit code */
@@ -2714,7 +2714,7 @@ static PyObject *__pyx_f_3crf_7Trainer__on_message(struct __pyx_obj_3crf_Trainer
 
 /* "crf.pyx":104
  *         self._log(message)
- * 
+ *
  *     def _append(self, sequence, labels, int group=0):             # <<<<<<<<<<<<<<
  *         # no generators allowed
  *         if not isinstance(sequence, list):
@@ -2831,7 +2831,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_8_append(struct __pyx_obj_3crf_Trainer *
  *             sequence = [item for item in sequence]
  *         if not isinstance(labels, list):
  */
-  __pyx_t_1 = PyList_Check(__pyx_v_sequence); 
+  __pyx_t_1 = PyList_Check(__pyx_v_sequence);
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
 
@@ -2905,9 +2905,9 @@ static PyObject *__pyx_pf_3crf_7Trainer_8_append(struct __pyx_obj_3crf_Trainer *
  *             sequence = [item for item in sequence]
  *         if not isinstance(labels, list):             # <<<<<<<<<<<<<<
  *             labels = [label for label in labels]
- * 
+ *
  */
-  __pyx_t_2 = PyList_Check(__pyx_v_labels); 
+  __pyx_t_2 = PyList_Check(__pyx_v_labels);
   __pyx_t_1 = ((!(__pyx_t_2 != 0)) != 0);
   if (__pyx_t_1) {
 
@@ -2915,7 +2915,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_8_append(struct __pyx_obj_3crf_Trainer *
  *             sequence = [item for item in sequence]
  *         if not isinstance(labels, list):
  *             labels = [label for label in labels]             # <<<<<<<<<<<<<<
- * 
+ *
  *         # labels must be strings
  */
     __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L1_error)
@@ -2972,15 +2972,15 @@ static PyObject *__pyx_pf_3crf_7Trainer_8_append(struct __pyx_obj_3crf_Trainer *
  *             sequence = [item for item in sequence]
  *         if not isinstance(labels, list):             # <<<<<<<<<<<<<<
  *             labels = [label for label in labels]
- * 
+ *
  */
   }
 
   /* "crf.pyx":112
- * 
+ *
  *         # labels must be strings
  *         labels = [str(label) for label in labels]             # <<<<<<<<<<<<<<
- * 
+ *
  *         self._c_trainer.append(to_seq(sequence), labels, group)
  */
   __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
@@ -3037,9 +3037,9 @@ static PyObject *__pyx_pf_3crf_7Trainer_8_append(struct __pyx_obj_3crf_Trainer *
 
   /* "crf.pyx":114
  *         labels = [str(label) for label in labels]
- * 
+ *
  *         self._c_trainer.append(to_seq(sequence), labels, group)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _translate_params(self, kwargs):
  */
   try {
@@ -3058,7 +3058,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_8_append(struct __pyx_obj_3crf_Trainer *
 
   /* "crf.pyx":104
  *         self._log(message)
- * 
+ *
  *     def _append(self, sequence, labels, int group=0):             # <<<<<<<<<<<<<<
  *         # no generators allowed
  *         if not isinstance(sequence, list):
@@ -3085,7 +3085,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_8_append(struct __pyx_obj_3crf_Trainer *
 
 /* "crf.pyx":116
  *         self._c_trainer.append(to_seq(sequence), labels, group)
- * 
+ *
  *     def _translate_params(self, kwargs):             # <<<<<<<<<<<<<<
  *         return {
  *             self._kwarg2param.get(kwarg, kwarg): value
@@ -3126,7 +3126,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_10_translate_params(struct __pyx_obj_3cr
   __Pyx_RefNannySetupContext("_translate_params", 0);
 
   /* "crf.pyx":117
- * 
+ *
  *     def _translate_params(self, kwargs):
  *         return {             # <<<<<<<<<<<<<<
  *             self._kwarg2param.get(kwarg, kwarg): value
@@ -3142,7 +3142,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_10_translate_params(struct __pyx_obj_3cr
  *             self._kwarg2param.get(kwarg, kwarg): value
  *             for kwarg, value in kwargs.items()             # <<<<<<<<<<<<<<
  *         }
- * 
+ *
  */
     __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_kwargs, __pyx_n_s_items); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -3211,11 +3211,11 @@ static PyObject *__pyx_pf_3crf_7Trainer_10_translate_params(struct __pyx_obj_3cr
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
-          __pyx_t_4 = PyTuple_GET_ITEM(sequence, 0); 
-          __pyx_t_7 = PyTuple_GET_ITEM(sequence, 1); 
+          __pyx_t_4 = PyTuple_GET_ITEM(sequence, 0);
+          __pyx_t_7 = PyTuple_GET_ITEM(sequence, 1);
         } else {
-          __pyx_t_4 = PyList_GET_ITEM(sequence, 0); 
-          __pyx_t_7 = PyList_GET_ITEM(sequence, 1); 
+          __pyx_t_4 = PyList_GET_ITEM(sequence, 0);
+          __pyx_t_7 = PyList_GET_ITEM(sequence, 1);
         }
         __Pyx_INCREF(__pyx_t_4);
         __Pyx_INCREF(__pyx_t_7);
@@ -3317,7 +3317,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_10_translate_params(struct __pyx_obj_3cr
  *             self._kwarg2param.get(kwarg, kwarg): value
  *             for kwarg, value in kwargs.items()             # <<<<<<<<<<<<<<
  *         }
- * 
+ *
  */
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3336,7 +3336,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_10_translate_params(struct __pyx_obj_3cr
 
   /* "crf.pyx":116
  *         self._c_trainer.append(to_seq(sequence), labels, group)
- * 
+ *
  *     def _translate_params(self, kwargs):             # <<<<<<<<<<<<<<
  *         return {
  *             self._kwarg2param.get(kwarg, kwarg): value
@@ -3362,7 +3362,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_10_translate_params(struct __pyx_obj_3cr
 
 /* "crf.pyx":122
  *         }
- * 
+ *
  *     def _select_algorithm(self, algorithm):             # <<<<<<<<<<<<<<
  *         algorithm = self._algorithm_aliases[algorithm.lower()]
  *         if not self._c_trainer.select(algorithm, "crf1d"):
@@ -3400,7 +3400,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_12_select_algorithm(struct __pyx_obj_3cr
   __Pyx_INCREF(__pyx_v_algorithm);
 
   /* "crf.pyx":123
- * 
+ *
  *     def _select_algorithm(self, algorithm):
  *         algorithm = self._algorithm_aliases[algorithm.lower()]             # <<<<<<<<<<<<<<
  *         if not self._c_trainer.select(algorithm, "crf1d"):
@@ -3437,7 +3437,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_12_select_algorithm(struct __pyx_obj_3cr
  *         algorithm = self._algorithm_aliases[algorithm.lower()]
  *         if not self._c_trainer.select(algorithm, "crf1d"):             # <<<<<<<<<<<<<<
  *             raise ValueError(f"{algorithm} is no available algorithm")
- * 
+ *
  */
   __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_algorithm); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L1_error)
   __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_crf1d); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L1_error)
@@ -3454,7 +3454,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_12_select_algorithm(struct __pyx_obj_3cr
  *         algorithm = self._algorithm_aliases[algorithm.lower()]
  *         if not self._c_trainer.select(algorithm, "crf1d"):
  *             raise ValueError(f"{algorithm} is no available algorithm")             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _set_params(self, params):
  */
     __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_algorithm, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
@@ -3474,13 +3474,13 @@ static PyObject *__pyx_pf_3crf_7Trainer_12_select_algorithm(struct __pyx_obj_3cr
  *         algorithm = self._algorithm_aliases[algorithm.lower()]
  *         if not self._c_trainer.select(algorithm, "crf1d"):             # <<<<<<<<<<<<<<
  *             raise ValueError(f"{algorithm} is no available algorithm")
- * 
+ *
  */
   }
 
   /* "crf.pyx":122
  *         }
- * 
+ *
  *     def _select_algorithm(self, algorithm):             # <<<<<<<<<<<<<<
  *         algorithm = self._algorithm_aliases[algorithm.lower()]
  *         if not self._c_trainer.select(algorithm, "crf1d"):
@@ -3505,7 +3505,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_12_select_algorithm(struct __pyx_obj_3cr
 
 /* "crf.pyx":127
  *             raise ValueError(f"{algorithm} is no available algorithm")
- * 
+ *
  *     def _set_params(self, params):             # <<<<<<<<<<<<<<
  *         for param, value in params.items():
  *             self._set_param(param, value)
@@ -3545,11 +3545,11 @@ static PyObject *__pyx_pf_3crf_7Trainer_14_set_params(struct __pyx_obj_3crf_Trai
   __Pyx_RefNannySetupContext("_set_params", 0);
 
   /* "crf.pyx":128
- * 
+ *
  *     def _set_params(self, params):
  *         for param, value in params.items():             # <<<<<<<<<<<<<<
  *             self._set_param(param, value)
- * 
+ *
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_params, __pyx_n_s_items); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -3618,11 +3618,11 @@ static PyObject *__pyx_pf_3crf_7Trainer_14_set_params(struct __pyx_obj_3crf_Trai
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
-        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0); 
-        __pyx_t_6 = PyTuple_GET_ITEM(sequence, 1); 
+        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0);
+        __pyx_t_6 = PyTuple_GET_ITEM(sequence, 1);
       } else {
-        __pyx_t_3 = PyList_GET_ITEM(sequence, 0); 
-        __pyx_t_6 = PyList_GET_ITEM(sequence, 1); 
+        __pyx_t_3 = PyList_GET_ITEM(sequence, 0);
+        __pyx_t_6 = PyList_GET_ITEM(sequence, 1);
       }
       __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_6);
@@ -3663,7 +3663,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_14_set_params(struct __pyx_obj_3crf_Trai
  *     def _set_params(self, params):
  *         for param, value in params.items():
  *             self._set_param(param, value)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _set_param(self, param, value):
  */
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_set_param); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 129, __pyx_L1_error)
@@ -3716,18 +3716,18 @@ static PyObject *__pyx_pf_3crf_7Trainer_14_set_params(struct __pyx_obj_3crf_Trai
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "crf.pyx":128
- * 
+ *
  *     def _set_params(self, params):
  *         for param, value in params.items():             # <<<<<<<<<<<<<<
  *             self._set_param(param, value)
- * 
+ *
  */
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "crf.pyx":127
  *             raise ValueError(f"{algorithm} is no available algorithm")
- * 
+ *
  *     def _set_params(self, params):             # <<<<<<<<<<<<<<
  *         for param, value in params.items():
  *             self._set_param(param, value)
@@ -3754,7 +3754,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_14_set_params(struct __pyx_obj_3crf_Trai
 
 /* "crf.pyx":131
  *             self._set_param(param, value)
- * 
+ *
  *     def _set_param(self, param, value):             # <<<<<<<<<<<<<<
  *         if isinstance(value, bool):
  *             value = int(value)
@@ -3840,7 +3840,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16_set_param(struct __pyx_obj_3crf_Train
   __Pyx_INCREF(__pyx_v_value);
 
   /* "crf.pyx":132
- * 
+ *
  *     def _set_param(self, param, value):
  *         if isinstance(value, bool):             # <<<<<<<<<<<<<<
  *             value = int(value)
@@ -3858,7 +3858,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16_set_param(struct __pyx_obj_3crf_Train
  *         if isinstance(value, bool):
  *             value = int(value)             # <<<<<<<<<<<<<<
  *         self._c_trainer.set(param, str(value))
- * 
+ *
  */
     __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -3866,7 +3866,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16_set_param(struct __pyx_obj_3crf_Train
     __pyx_t_1 = 0;
 
     /* "crf.pyx":132
- * 
+ *
  *     def _set_param(self, param, value):
  *         if isinstance(value, bool):             # <<<<<<<<<<<<<<
  *             value = int(value)
@@ -3878,7 +3878,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16_set_param(struct __pyx_obj_3crf_Train
  *         if isinstance(value, bool):
  *             value = int(value)
  *         self._c_trainer.set(param, str(value))             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _get_param(self, param):
  */
   __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_v_param); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 134, __pyx_L1_error)
@@ -3895,7 +3895,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16_set_param(struct __pyx_obj_3crf_Train
 
   /* "crf.pyx":131
  *             self._set_param(param, value)
- * 
+ *
  *     def _set_param(self, param, value):             # <<<<<<<<<<<<<<
  *         if isinstance(value, bool):
  *             value = int(value)
@@ -3917,10 +3917,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_16_set_param(struct __pyx_obj_3crf_Train
 
 /* "crf.pyx":136
  *         self._c_trainer.set(param, str(value))
- * 
+ *
  *     def _get_param(self, param):             # <<<<<<<<<<<<<<
  *         return self._cast_parameter(param, self._c_trainer.get(param))
- * 
+ *
  */
 
 /* Python wrapper */
@@ -3954,10 +3954,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_18_get_param(struct __pyx_obj_3crf_Train
   __Pyx_RefNannySetupContext("_get_param", 0);
 
   /* "crf.pyx":137
- * 
+ *
  *     def _get_param(self, param):
  *         return self._cast_parameter(param, self._c_trainer.get(param))             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _cast_parameter(self, param, value):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -4025,10 +4025,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_18_get_param(struct __pyx_obj_3crf_Train
 
   /* "crf.pyx":136
  *         self._c_trainer.set(param, str(value))
- * 
+ *
  *     def _get_param(self, param):             # <<<<<<<<<<<<<<
  *         return self._cast_parameter(param, self._c_trainer.get(param))
- * 
+ *
  */
 
   /* function exit code */
@@ -4048,7 +4048,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_18_get_param(struct __pyx_obj_3crf_Train
 
 /* "crf.pyx":139
  *         return self._cast_parameter(param, self._c_trainer.get(param))
- * 
+ *
  *     def _cast_parameter(self, param, value):             # <<<<<<<<<<<<<<
  *         if param in self._parameter_types:
  *             return self._parameter_types[param](value)
@@ -4133,7 +4133,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_20_cast_parameter(struct __pyx_obj_3crf_
   __Pyx_RefNannySetupContext("_cast_parameter", 0);
 
   /* "crf.pyx":140
- * 
+ *
  *     def _cast_parameter(self, param, value):
  *         if param in self._parameter_types:             # <<<<<<<<<<<<<<
  *             return self._parameter_types[param](value)
@@ -4151,7 +4151,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_20_cast_parameter(struct __pyx_obj_3crf_
  *         if param in self._parameter_types:
  *             return self._parameter_types[param](value)             # <<<<<<<<<<<<<<
  *         return value
- * 
+ *
  */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_parameter_types); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
@@ -4179,7 +4179,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_20_cast_parameter(struct __pyx_obj_3crf_
     goto __pyx_L0;
 
     /* "crf.pyx":140
- * 
+ *
  *     def _cast_parameter(self, param, value):
  *         if param in self._parameter_types:             # <<<<<<<<<<<<<<
  *             return self._parameter_types[param](value)
@@ -4191,8 +4191,8 @@ static PyObject *__pyx_pf_3crf_7Trainer_20_cast_parameter(struct __pyx_obj_3crf_
  *         if param in self._parameter_types:
  *             return self._parameter_types[param](value)
  *         return value             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_value);
@@ -4201,7 +4201,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_20_cast_parameter(struct __pyx_obj_3crf_
 
   /* "crf.pyx":139
  *         return self._cast_parameter(param, self._c_trainer.get(param))
- * 
+ *
  *     def _cast_parameter(self, param, value):             # <<<<<<<<<<<<<<
  *         if param in self._parameter_types:
  *             return self._parameter_types[param](value)
@@ -4337,10 +4337,10 @@ static PyObject *__pyx_pf_3crf_7Trainer_28__setstate_cython__(CYTHON_UNUSED stru
 
 /* "crf.pyx":148
  *     cdef crfsuite_api.Tagger c_tagger
- * 
+ *
  *     def __init__(self, model_filepath: Filepath):             # <<<<<<<<<<<<<<
  *         self._load(model_filepath)
- * 
+ *
  */
 
 /* Python wrapper */
@@ -4408,10 +4408,10 @@ static int __pyx_pf_3crf_5Model___init__(struct __pyx_obj_3crf_Model *__pyx_v_se
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "crf.pyx":149
- * 
+ *
  *     def __init__(self, model_filepath: Filepath):
  *         self._load(model_filepath)             # <<<<<<<<<<<<<<
- * 
+ *
  *     @property
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_load); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
@@ -4435,10 +4435,10 @@ static int __pyx_pf_3crf_5Model___init__(struct __pyx_obj_3crf_Model *__pyx_v_se
 
   /* "crf.pyx":148
  *     cdef crfsuite_api.Tagger c_tagger
- * 
+ *
  *     def __init__(self, model_filepath: Filepath):             # <<<<<<<<<<<<<<
  *         self._load(model_filepath)
- * 
+ *
  */
 
   /* function exit code */
@@ -4456,11 +4456,11 @@ static int __pyx_pf_3crf_5Model___init__(struct __pyx_obj_3crf_Model *__pyx_v_se
 }
 
 /* "crf.pyx":152
- * 
+ *
  *     @property
  *     def _labels(self):             # <<<<<<<<<<<<<<
  *         return self.c_tagger.labels()
- * 
+ *
  */
 
 /* Python wrapper */
@@ -4490,7 +4490,7 @@ static PyObject *__pyx_pf_3crf_5Model_7_labels___get__(struct __pyx_obj_3crf_Mod
  *     @property
  *     def _labels(self):
  *         return self.c_tagger.labels()             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _predict_single(self, sequence: Sequence) -> List[str]:
  */
   __Pyx_XDECREF(__pyx_r);
@@ -4507,11 +4507,11 @@ static PyObject *__pyx_pf_3crf_5Model_7_labels___get__(struct __pyx_obj_3crf_Mod
   goto __pyx_L0;
 
   /* "crf.pyx":152
- * 
+ *
  *     @property
  *     def _labels(self):             # <<<<<<<<<<<<<<
  *         return self.c_tagger.labels()
- * 
+ *
  */
 
   /* function exit code */
@@ -4527,7 +4527,7 @@ static PyObject *__pyx_pf_3crf_5Model_7_labels___get__(struct __pyx_obj_3crf_Mod
 
 /* "crf.pyx":155
  *         return self.c_tagger.labels()
- * 
+ *
  *     def _predict_single(self, sequence: Sequence) -> List[str]:             # <<<<<<<<<<<<<<
  *         self._set_sequence(sequence)
  *         return self.c_tagger.viterbi()
@@ -4558,11 +4558,11 @@ static PyObject *__pyx_pf_3crf_5Model_2_predict_single(struct __pyx_obj_3crf_Mod
   __Pyx_RefNannySetupContext("_predict_single", 0);
 
   /* "crf.pyx":156
- * 
+ *
  *     def _predict_single(self, sequence: Sequence) -> List[str]:
  *         self._set_sequence(sequence)             # <<<<<<<<<<<<<<
  *         return self.c_tagger.viterbi()
- * 
+ *
  */
   try {
     __pyx_t_1 = ((struct __pyx_vtabstruct_3crf_Model *)__pyx_v_self->__pyx_vtab)->_set_sequence(__pyx_v_self, __pyx_v_sequence, 0);
@@ -4578,7 +4578,7 @@ static PyObject *__pyx_pf_3crf_5Model_2_predict_single(struct __pyx_obj_3crf_Mod
  *     def _predict_single(self, sequence: Sequence) -> List[str]:
  *         self._set_sequence(sequence)
  *         return self.c_tagger.viterbi()             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:
  */
   __Pyx_XDECREF(__pyx_r);
@@ -4596,7 +4596,7 @@ static PyObject *__pyx_pf_3crf_5Model_2_predict_single(struct __pyx_obj_3crf_Mod
 
   /* "crf.pyx":155
  *         return self.c_tagger.labels()
- * 
+ *
  *     def _predict_single(self, sequence: Sequence) -> List[str]:             # <<<<<<<<<<<<<<
  *         self._set_sequence(sequence)
  *         return self.c_tagger.viterbi()
@@ -4615,7 +4615,7 @@ static PyObject *__pyx_pf_3crf_5Model_2_predict_single(struct __pyx_obj_3crf_Mod
 
 /* "crf.pyx":159
  *         return self.c_tagger.viterbi()
- * 
+ *
  *     def _predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:             # <<<<<<<<<<<<<<
  *         self._set_sequence(sequence)
  *         return [
@@ -4660,7 +4660,7 @@ static PyObject *__pyx_pf_3crf_5Model_4_predict_proba_single(struct __pyx_obj_3c
   __Pyx_RefNannySetupContext("_predict_proba_single", 0);
 
   /* "crf.pyx":160
- * 
+ *
  *     def _predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:
  *         self._set_sequence(sequence)             # <<<<<<<<<<<<<<
  *         return [
@@ -4692,7 +4692,7 @@ static PyObject *__pyx_pf_3crf_5Model_4_predict_proba_single(struct __pyx_obj_3c
  *             {label: self._marginal(label, index) for label in self._labels}
  *             for index in range(len(sequence))             # <<<<<<<<<<<<<<
  *         ]
- * 
+ *
  */
   __pyx_t_2 = PyObject_Length(__pyx_v_sequence); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 163, __pyx_L1_error)
   __pyx_t_3 = __pyx_t_2;
@@ -4824,7 +4824,7 @@ static PyObject *__pyx_pf_3crf_5Model_4_predict_proba_single(struct __pyx_obj_3c
 
   /* "crf.pyx":159
  *         return self.c_tagger.viterbi()
- * 
+ *
  *     def _predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:             # <<<<<<<<<<<<<<
  *         self._set_sequence(sequence)
  *         return [
@@ -4851,7 +4851,7 @@ static PyObject *__pyx_pf_3crf_5Model_4_predict_proba_single(struct __pyx_obj_3c
 
 /* "crf.pyx":166
  *         ]
- * 
+ *
  *     def _load(self, filepath: Filepath):             # <<<<<<<<<<<<<<
  *         filepath = str(filepath)
  *         self._check_model(filepath)
@@ -4887,7 +4887,7 @@ static PyObject *__pyx_pf_3crf_5Model_6_load(struct __pyx_obj_3crf_Model *__pyx_
   __Pyx_INCREF(__pyx_v_filepath);
 
   /* "crf.pyx":167
- * 
+ *
  *     def _load(self, filepath: Filepath):
  *         filepath = str(filepath)             # <<<<<<<<<<<<<<
  *         self._check_model(filepath)
@@ -4929,7 +4929,7 @@ static PyObject *__pyx_pf_3crf_5Model_6_load(struct __pyx_obj_3crf_Model *__pyx_
  *         self._check_model(filepath)
  *         if not self.c_tagger.open(filepath):             # <<<<<<<<<<<<<<
  *             raise ValueError(f"Cannot load model file {filepath}")
- * 
+ *
  */
   __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_v_filepath); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L1_error)
   try {
@@ -4945,7 +4945,7 @@ static PyObject *__pyx_pf_3crf_5Model_6_load(struct __pyx_obj_3crf_Model *__pyx_
  *         self._check_model(filepath)
  *         if not self.c_tagger.open(filepath):
  *             raise ValueError(f"Cannot load model file {filepath}")             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _marginal(self, label: str, index: int):
  */
     __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_filepath, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
@@ -4965,13 +4965,13 @@ static PyObject *__pyx_pf_3crf_5Model_6_load(struct __pyx_obj_3crf_Model *__pyx_
  *         self._check_model(filepath)
  *         if not self.c_tagger.open(filepath):             # <<<<<<<<<<<<<<
  *             raise ValueError(f"Cannot load model file {filepath}")
- * 
+ *
  */
   }
 
   /* "crf.pyx":166
  *         ]
- * 
+ *
  *     def _load(self, filepath: Filepath):             # <<<<<<<<<<<<<<
  *         filepath = str(filepath)
  *         self._check_model(filepath)
@@ -4995,10 +4995,10 @@ static PyObject *__pyx_pf_3crf_5Model_6_load(struct __pyx_obj_3crf_Model *__pyx_
 
 /* "crf.pyx":172
  *             raise ValueError(f"Cannot load model file {filepath}")
- * 
+ *
  *     def _marginal(self, label: str, index: int):             # <<<<<<<<<<<<<<
  *         return self.c_tagger.marginal(label, index)
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5084,10 +5084,10 @@ static PyObject *__pyx_pf_3crf_5Model_8_marginal(struct __pyx_obj_3crf_Model *__
   __Pyx_RefNannySetupContext("_marginal", 0);
 
   /* "crf.pyx":173
- * 
+ *
  *     def _marginal(self, label: str, index: int):
  *         return self.c_tagger.marginal(label, index)             # <<<<<<<<<<<<<<
- * 
+ *
  *     cpdef _set_sequence(self, sequence) except +:
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5107,10 +5107,10 @@ static PyObject *__pyx_pf_3crf_5Model_8_marginal(struct __pyx_obj_3crf_Model *__
 
   /* "crf.pyx":172
  *             raise ValueError(f"Cannot load model file {filepath}")
- * 
+ *
  *     def _marginal(self, label: str, index: int):             # <<<<<<<<<<<<<<
  *         return self.c_tagger.marginal(label, index)
- * 
+ *
  */
 
   /* function exit code */
@@ -5126,10 +5126,10 @@ static PyObject *__pyx_pf_3crf_5Model_8_marginal(struct __pyx_obj_3crf_Model *__
 
 /* "crf.pyx":175
  *         return self.c_tagger.marginal(label, index)
- * 
+ *
  *     cpdef _set_sequence(self, sequence) except +:             # <<<<<<<<<<<<<<
  *         self.c_tagger.set(to_seq(sequence))
- * 
+ *
  */
 
 static PyObject *__pyx_pw_3crf_5Model_11_set_sequence(PyObject *__pyx_v_self, PyObject *__pyx_v_sequence); /*proto*/
@@ -5193,10 +5193,10 @@ static PyObject *__pyx_f_3crf_5Model__set_sequence(struct __pyx_obj_3crf_Model *
   }
 
   /* "crf.pyx":176
- * 
+ *
  *     cpdef _set_sequence(self, sequence) except +:
  *         self.c_tagger.set(to_seq(sequence))             # <<<<<<<<<<<<<<
- * 
+ *
  *     @staticmethod
  */
   try {
@@ -5214,10 +5214,10 @@ static PyObject *__pyx_f_3crf_5Model__set_sequence(struct __pyx_obj_3crf_Model *
 
   /* "crf.pyx":175
  *         return self.c_tagger.marginal(label, index)
- * 
+ *
  *     cpdef _set_sequence(self, sequence) except +:             # <<<<<<<<<<<<<<
  *         self.c_tagger.set(to_seq(sequence))
- * 
+ *
  */
 
   /* function exit code */
@@ -5283,7 +5283,7 @@ static PyObject *__pyx_pf_3crf_5Model_10_set_sequence(struct __pyx_obj_3crf_Mode
 }
 
 /* "crf.pyx":179
- * 
+ *
  *     @staticmethod
  *     def _check_model(filepath: str):             # <<<<<<<<<<<<<<
  *         with open(filepath, "rb") as model:
@@ -5561,7 +5561,7 @@ static PyObject *__pyx_pf_3crf_5Model_12_check_model(PyObject *__pyx_v_filepath)
  *             model.seek(0, os.SEEK_END)
  *             if model.tell() <= 48:             # <<<<<<<<<<<<<<
  *                 raise ValueError(f"Model file {filepath} does not have a complete header")
- * 
+ *
  */
           __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_model, __pyx_n_s_tell); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 185, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_2);
@@ -5590,8 +5590,8 @@ static PyObject *__pyx_pf_3crf_5Model_12_check_model(PyObject *__pyx_v_filepath)
  *             model.seek(0, os.SEEK_END)
  *             if model.tell() <= 48:
  *                 raise ValueError(f"Model file {filepath} does not have a complete header")             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
             __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 186, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_2);
@@ -5627,7 +5627,7 @@ static PyObject *__pyx_pf_3crf_5Model_12_check_model(PyObject *__pyx_v_filepath)
  *             model.seek(0, os.SEEK_END)
  *             if model.tell() <= 48:             # <<<<<<<<<<<<<<
  *                 raise ValueError(f"Model file {filepath} does not have a complete header")
- * 
+ *
  */
           }
 
@@ -5671,7 +5671,7 @@ static PyObject *__pyx_pf_3crf_5Model_12_check_model(PyObject *__pyx_v_filepath)
             __Pyx_GIVEREF(__pyx_t_4);
             __Pyx_XGIVEREF(__pyx_t_11);
             __Pyx_ErrRestoreWithState(__pyx_t_2, __pyx_t_4, __pyx_t_11);
-            __pyx_t_2 = 0; __pyx_t_4 = 0; __pyx_t_11 = 0; 
+            __pyx_t_2 = 0; __pyx_t_4 = 0; __pyx_t_11 = 0;
             __PYX_ERR(0, 180, __pyx_L9_except_error)
           }
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5714,7 +5714,7 @@ static PyObject *__pyx_pf_3crf_5Model_12_check_model(PyObject *__pyx_v_filepath)
   }
 
   /* "crf.pyx":179
- * 
+ *
  *     @staticmethod
  *     def _check_model(filepath: str):             # <<<<<<<<<<<<<<
  *         with open(filepath, "rb") as model:
@@ -5856,8 +5856,8 @@ static PyObject *__pyx_pf_3crf_5Model_16__setstate_cython__(CYTHON_UNUSED struct
 }
 
 /* "crf.pyx":189
- * 
- * 
+ *
+ *
  * cdef crfsuite_api.Item to_item(sequence) except+:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.Item c_item
  *     cdef double c_value
@@ -5895,7 +5895,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
 
   /* "crf.pyx":196
  *     cdef bint is_dict, is_nested_value
- * 
+ *
  *     separator = b":"             # <<<<<<<<<<<<<<
  *     is_dict = isinstance(sequence, dict)
  *     c_item = crfsuite_api.Item()
@@ -5904,13 +5904,13 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
   __pyx_v_separator = __pyx_t_1;
 
   /* "crf.pyx":197
- * 
+ *
  *     separator = b":"
  *     is_dict = isinstance(sequence, dict)             # <<<<<<<<<<<<<<
  *     c_item = crfsuite_api.Item()
  *     c_item.reserve(len(sequence))
  */
-  __pyx_t_2 = PyDict_Check(__pyx_v_sequence); 
+  __pyx_t_2 = PyDict_Check(__pyx_v_sequence);
   __pyx_v_is_dict = __pyx_t_2;
 
   /* "crf.pyx":198
@@ -5918,7 +5918,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *     is_dict = isinstance(sequence, dict)
  *     c_item = crfsuite_api.Item()             # <<<<<<<<<<<<<<
  *     c_item.reserve(len(sequence))
- * 
+ *
  */
   try {
     __pyx_t_3 = CRFSuite::Item();
@@ -5932,7 +5932,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *     is_dict = isinstance(sequence, dict)
  *     c_item = crfsuite_api.Item()
  *     c_item.reserve(len(sequence))             # <<<<<<<<<<<<<<
- * 
+ *
  *     for token in sequence:
  */
   __pyx_t_4 = PyObject_Length(__pyx_v_sequence); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 199, __pyx_L1_error)
@@ -5940,7 +5940,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
 
   /* "crf.pyx":201
  *     c_item.reserve(len(sequence))
- * 
+ *
  *     for token in sequence:             # <<<<<<<<<<<<<<
  *         if isinstance(token, unicode):
  *             c_token = (<unicode>token).encode("utf8")
@@ -5988,13 +5988,13 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
     __pyx_t_7 = 0;
 
     /* "crf.pyx":202
- * 
+ *
  *     for token in sequence:
  *         if isinstance(token, unicode):             # <<<<<<<<<<<<<<
  *             c_token = (<unicode>token).encode("utf8")
  *         else:
  */
-    __pyx_t_2 = PyUnicode_Check(__pyx_v_token); 
+    __pyx_t_2 = PyUnicode_Check(__pyx_v_token);
     __pyx_t_8 = (__pyx_t_2 != 0);
     if (__pyx_t_8) {
 
@@ -6016,7 +6016,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
       __pyx_v_c_token = __pyx_t_1;
 
       /* "crf.pyx":202
- * 
+ *
  *     for token in sequence:
  *         if isinstance(token, unicode):             # <<<<<<<<<<<<<<
  *             c_token = (<unicode>token).encode("utf8")
@@ -6105,21 +6105,21 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *                 for attr in to_item(value):
  *                     c_item.push_back(
  */
-      __pyx_t_2 = PyDict_Check(__pyx_v_value); 
+      __pyx_t_2 = PyDict_Check(__pyx_v_value);
       __pyx_t_9 = (__pyx_t_2 != 0);
       if (!__pyx_t_9) {
       } else {
         __pyx_t_8 = __pyx_t_9;
         goto __pyx_L8_bool_binop_done;
       }
-      __pyx_t_9 = PyList_Check(__pyx_v_value); 
+      __pyx_t_9 = PyList_Check(__pyx_v_value);
       __pyx_t_2 = (__pyx_t_9 != 0);
       if (!__pyx_t_2) {
       } else {
         __pyx_t_8 = __pyx_t_2;
         goto __pyx_L8_bool_binop_done;
       }
-      __pyx_t_2 = PySet_Check(__pyx_v_value); 
+      __pyx_t_2 = PySet_Check(__pyx_v_value);
       __pyx_t_9 = (__pyx_t_2 != 0);
       __pyx_t_8 = __pyx_t_9;
       __pyx_L8_bool_binop_done:;
@@ -6208,7 +6208,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *                     c_token += <string>(<unicode>value).encode("utf8")
  */
       /*else*/ {
-        __pyx_t_9 = PyUnicode_Check(__pyx_v_value); 
+        __pyx_t_9 = PyUnicode_Check(__pyx_v_value);
         __pyx_t_8 = (__pyx_t_9 != 0);
         if (__pyx_t_8) {
 
@@ -6264,7 +6264,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *                     c_token += separator
  *                     c_token += <string>value
  */
-        __pyx_t_8 = PyBytes_Check(__pyx_v_value); 
+        __pyx_t_8 = PyBytes_Check(__pyx_v_value);
         __pyx_t_9 = (__pyx_t_8 != 0);
         if (__pyx_t_9) {
 
@@ -6324,7 +6324,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *                     c_value = value
  *                 c_item.push_back(crfsuite_api.Attribute(c_token, c_value))             # <<<<<<<<<<<<<<
  *     return c_item
- * 
+ *
  */
         try {
           __pyx_v_c_item.push_back(CRFSuite::Attribute(__pyx_v_c_token, __pyx_v_c_value));
@@ -6339,7 +6339,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
 
     /* "crf.pyx":201
  *     c_item.reserve(len(sequence))
- * 
+ *
  *     for token in sequence:             # <<<<<<<<<<<<<<
  *         if isinstance(token, unicode):
  *             c_token = (<unicode>token).encode("utf8")
@@ -6351,15 +6351,15 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *                     c_value = value
  *                 c_item.push_back(crfsuite_api.Attribute(c_token, c_value))
  *     return c_item             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = __pyx_v_c_item;
   goto __pyx_L0;
 
   /* "crf.pyx":189
- * 
- * 
+ *
+ *
  * cdef crfsuite_api.Item to_item(sequence) except+:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.Item c_item
  *     cdef double c_value
@@ -6379,11 +6379,11 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
 }
 
 /* "crf.pyx":231
- * 
- * 
+ *
+ *
  * cdef crfsuite_api.ItemSequence to_seq(sequence) except+:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.ItemSequence c_sequence
- * 
+ *
  */
 
 static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
@@ -6406,17 +6406,17 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
 
   /* "crf.pyx":234
  *     cdef crfsuite_api.ItemSequence c_sequence
- * 
+ *
  *     if isinstance(sequence, ItemSequence):             # <<<<<<<<<<<<<<
  *         c_sequence = (<ItemSequence>sequence).c_sequence
  *     else:
  */
-  __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_sequence, __pyx_ptype_3crf_ItemSequence); 
+  __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_sequence, __pyx_ptype_3crf_ItemSequence);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
     /* "crf.pyx":235
- * 
+ *
  *     if isinstance(sequence, ItemSequence):
  *         c_sequence = (<ItemSequence>sequence).c_sequence             # <<<<<<<<<<<<<<
  *     else:
@@ -6427,7 +6427,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
 
     /* "crf.pyx":234
  *     cdef crfsuite_api.ItemSequence c_sequence
- * 
+ *
  *     if isinstance(sequence, ItemSequence):             # <<<<<<<<<<<<<<
  *         c_sequence = (<ItemSequence>sequence).c_sequence
  *     else:
@@ -6490,7 +6490,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
  *         for s in sequence:
  *             c_sequence.push_back(to_item(s))             # <<<<<<<<<<<<<<
  *     return c_sequence
- * 
+ *
  */
       try {
         __pyx_t_8 = __pyx_f_3crf_to_item(__pyx_v_s);
@@ -6521,18 +6521,18 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
  *         for s in sequence:
  *             c_sequence.push_back(to_item(s))
  *     return c_sequence             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = __pyx_v_c_sequence;
   goto __pyx_L0;
 
   /* "crf.pyx":231
- * 
- * 
+ *
+ *
  * cdef crfsuite_api.ItemSequence to_seq(sequence) except+:             # <<<<<<<<<<<<<<
  *     cdef crfsuite_api.ItemSequence c_sequence
- * 
+ *
  */
 
   /* function exit code */
@@ -6549,10 +6549,10 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
 
 /* "crf.pyx":245
  *     cdef crfsuite_api.ItemSequence c_sequence
- * 
+ *
  *     def __init__(self, sequence):             # <<<<<<<<<<<<<<
  *         self.c_sequence = to_seq(sequence)
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6618,10 +6618,10 @@ static int __pyx_pf_3crf_12ItemSequence___init__(struct __pyx_obj_3crf_ItemSeque
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "crf.pyx":246
- * 
+ *
  *     def __init__(self, sequence):
  *         self.c_sequence = to_seq(sequence)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def items(self):
  */
   try {
@@ -6634,10 +6634,10 @@ static int __pyx_pf_3crf_12ItemSequence___init__(struct __pyx_obj_3crf_ItemSeque
 
   /* "crf.pyx":245
  *     cdef crfsuite_api.ItemSequence c_sequence
- * 
+ *
  *     def __init__(self, sequence):             # <<<<<<<<<<<<<<
  *         self.c_sequence = to_seq(sequence)
- * 
+ *
  */
 
   /* function exit code */
@@ -6653,7 +6653,7 @@ static int __pyx_pf_3crf_12ItemSequence___init__(struct __pyx_obj_3crf_ItemSeque
 
 /* "crf.pyx":248
  *         self.c_sequence = to_seq(sequence)
- * 
+ *
  *     def items(self):             # <<<<<<<<<<<<<<
  *         cdef crfsuite_api.Item c_item
  *         cdef crfsuite_api.Attribute c_attr
@@ -6696,7 +6696,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
 
   /* "crf.pyx":253
  *         cdef bytes token
- * 
+ *
  *         sequence = []             # <<<<<<<<<<<<<<
  *         for c_item in self.c_sequence:
  *             x = {}
@@ -6707,7 +6707,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
   __pyx_t_1 = 0;
 
   /* "crf.pyx":254
- * 
+ *
  *         sequence = []
  *         for c_item in self.c_sequence:             # <<<<<<<<<<<<<<
  *             x = {}
@@ -6795,12 +6795,12 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
  *                 x[token.decode("utf8")] = c_attr.value
  *             sequence.append(x)             # <<<<<<<<<<<<<<
  *         return sequence
- * 
+ *
  */
     __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_sequence, __pyx_v_x); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 259, __pyx_L1_error)
 
     /* "crf.pyx":254
- * 
+ *
  *         sequence = []
  *         for c_item in self.c_sequence:             # <<<<<<<<<<<<<<
  *             x = {}
@@ -6812,7 +6812,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
  *                 x[token.decode("utf8")] = c_attr.value
  *             sequence.append(x)
  *         return sequence             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __len__(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6822,7 +6822,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
 
   /* "crf.pyx":248
  *         self.c_sequence = to_seq(sequence)
- * 
+ *
  *     def items(self):             # <<<<<<<<<<<<<<
  *         cdef crfsuite_api.Item c_item
  *         cdef crfsuite_api.Attribute c_attr
@@ -6845,10 +6845,10 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
 
 /* "crf.pyx":262
  *         return sequence
- * 
+ *
  *     def __len__(self):             # <<<<<<<<<<<<<<
  *         return self.c_sequence.size()
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6870,10 +6870,10 @@ static Py_ssize_t __pyx_pf_3crf_12ItemSequence_4__len__(struct __pyx_obj_3crf_It
   __Pyx_RefNannySetupContext("__len__", 0);
 
   /* "crf.pyx":263
- * 
+ *
  *     def __len__(self):
  *         return self.c_sequence.size()             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __repr__(self):
  */
   __pyx_r = __pyx_v_self->c_sequence.size();
@@ -6881,10 +6881,10 @@ static Py_ssize_t __pyx_pf_3crf_12ItemSequence_4__len__(struct __pyx_obj_3crf_It
 
   /* "crf.pyx":262
  *         return sequence
- * 
+ *
  *     def __len__(self):             # <<<<<<<<<<<<<<
  *         return self.c_sequence.size()
- * 
+ *
  */
 
   /* function exit code */
@@ -6895,7 +6895,7 @@ static Py_ssize_t __pyx_pf_3crf_12ItemSequence_4__len__(struct __pyx_obj_3crf_It
 
 /* "crf.pyx":265
  *         return self.c_sequence.size()
- * 
+ *
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return f"<ItemSequence ({len(self)})>"
  */
@@ -6927,7 +6927,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_6__repr__(struct __pyx_obj_3crf_It
   __Pyx_RefNannySetupContext("__repr__", 0);
 
   /* "crf.pyx":266
- * 
+ *
  *     def __repr__(self):
  *         return f"<ItemSequence ({len(self)})>"             # <<<<<<<<<<<<<<
  */
@@ -6960,7 +6960,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_6__repr__(struct __pyx_obj_3crf_It
 
   /* "crf.pyx":265
  *         return self.c_sequence.size()
- * 
+ *
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return f"<ItemSequence ({len(self)})>"
  */
@@ -7093,7 +7093,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_10__setstate_cython__(CYTHON_UNUSE
 }
 
 /* "string.from_py":13
- * 
+ *
  * @cname("__pyx_convert_string_from_py_std__in_string")
  * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t length = 0
@@ -7125,7 +7125,7 @@ static std::string __pyx_convert_string_from_py_std__in_string(PyObject *__pyx_v
  *     cdef Py_ssize_t length = 0
  *     cdef const char* data = __Pyx_PyObject_AsStringAndSize(o, &length)             # <<<<<<<<<<<<<<
  *     return string(data, length)
- * 
+ *
  */
   __pyx_t_1 = __Pyx_PyObject_AsStringAndSize(__pyx_v_o, (&__pyx_v_length)); if (unlikely(__pyx_t_1 == ((char const *)NULL))) __PYX_ERR(1, 15, __pyx_L1_error)
   __pyx_v_data = __pyx_t_1;
@@ -7134,14 +7134,14 @@ static std::string __pyx_convert_string_from_py_std__in_string(PyObject *__pyx_v
  *     cdef Py_ssize_t length = 0
  *     cdef const char* data = __Pyx_PyObject_AsStringAndSize(o, &length)
  *     return string(data, length)             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = std::string(__pyx_v_data, __pyx_v_length);
   goto __pyx_L0;
 
   /* "string.from_py":13
- * 
+ *
  * @cname("__pyx_convert_string_from_py_std__in_string")
  * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t length = 0
@@ -7158,7 +7158,7 @@ static std::string __pyx_convert_string_from_py_std__in_string(PyObject *__pyx_v
 }
 
 /* "string.to_py":31
- * 
+ *
  * @cname("__pyx_convert_PyObject_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyObject_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyObject_FromStringAndSize(s.data(), s.size())
@@ -7189,7 +7189,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyObject_string_to_py_std__in_strin
   goto __pyx_L0;
 
   /* "string.to_py":31
- * 
+ *
  * @cname("__pyx_convert_PyObject_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyObject_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyObject_FromStringAndSize(s.data(), s.size())
@@ -7208,7 +7208,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyObject_string_to_py_std__in_strin
 }
 
 /* "string.to_py":37
- * 
+ *
  * @cname("__pyx_convert_PyUnicode_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyUnicode_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyUnicode_FromStringAndSize(s.data(), s.size())
@@ -7239,7 +7239,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyUnicode_string_to_py_std__in_stri
   goto __pyx_L0;
 
   /* "string.to_py":37
- * 
+ *
  * @cname("__pyx_convert_PyUnicode_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyUnicode_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyUnicode_FromStringAndSize(s.data(), s.size())
@@ -7258,7 +7258,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyUnicode_string_to_py_std__in_stri
 }
 
 /* "string.to_py":43
- * 
+ *
  * @cname("__pyx_convert_PyStr_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyStr_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyStr_FromStringAndSize(s.data(), s.size())
@@ -7289,7 +7289,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyStr_string_to_py_std__in_string(s
   goto __pyx_L0;
 
   /* "string.to_py":43
- * 
+ *
  * @cname("__pyx_convert_PyStr_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyStr_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyStr_FromStringAndSize(s.data(), s.size())
@@ -7308,7 +7308,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyStr_string_to_py_std__in_string(s
 }
 
 /* "string.to_py":49
- * 
+ *
  * @cname("__pyx_convert_PyBytes_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyBytes_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyBytes_FromStringAndSize(s.data(), s.size())
@@ -7339,7 +7339,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyBytes_string_to_py_std__in_string
   goto __pyx_L0;
 
   /* "string.to_py":49
- * 
+ *
  * @cname("__pyx_convert_PyBytes_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyBytes_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyBytes_FromStringAndSize(s.data(), s.size())
@@ -7358,11 +7358,11 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyBytes_string_to_py_std__in_string
 }
 
 /* "string.to_py":55
- * 
+ *
  * @cname("__pyx_convert_PyByteArray_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyByteArray_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyByteArray_FromStringAndSize(s.data(), s.size())
- * 
+ *
  */
 
 static CYTHON_INLINE PyObject *__pyx_convert_PyByteArray_string_to_py_std__in_string(std::string const &__pyx_v_s) {
@@ -7378,7 +7378,7 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyByteArray_string_to_py_std__in_st
  * @cname("__pyx_convert_PyByteArray_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyByteArray_string_to_py_std__in_string(const string& s):
  *     return __Pyx_PyByteArray_FromStringAndSize(s.data(), s.size())             # <<<<<<<<<<<<<<
- * 
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyByteArray_FromStringAndSize(__pyx_v_s.data(), __pyx_v_s.size()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 56, __pyx_L1_error)
@@ -7388,11 +7388,11 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyByteArray_string_to_py_std__in_st
   goto __pyx_L0;
 
   /* "string.to_py":55
- * 
+ *
  * @cname("__pyx_convert_PyByteArray_string_to_py_std__in_string")
  * cdef inline object __pyx_convert_PyByteArray_string_to_py_std__in_string(const string& s):             # <<<<<<<<<<<<<<
  *     return __Pyx_PyByteArray_FromStringAndSize(s.data(), s.size())
- * 
+ *
  */
 
   /* function exit code */
@@ -7407,11 +7407,11 @@ static CYTHON_INLINE PyObject *__pyx_convert_PyByteArray_string_to_py_std__in_st
 }
 
 /* "vector.to_py":60
- * 
+ *
  * @cname("__pyx_convert_vector_to_py_std_3a__3a_string")
  * cdef object __pyx_convert_vector_to_py_std_3a__3a_string(vector[X]& v):             # <<<<<<<<<<<<<<
  *     return [v[i] for i in range(v.size())]
- * 
+ *
  */
 
 static PyObject *__pyx_convert_vector_to_py_std_3a__3a_string(const std::vector<std::string>  &__pyx_v_v) {
@@ -7432,8 +7432,8 @@ static PyObject *__pyx_convert_vector_to_py_std_3a__3a_string(const std::vector<
  * @cname("__pyx_convert_vector_to_py_std_3a__3a_string")
  * cdef object __pyx_convert_vector_to_py_std_3a__3a_string(vector[X]& v):
  *     return [v[i] for i in range(v.size())]             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 61, __pyx_L1_error)
@@ -7452,11 +7452,11 @@ static PyObject *__pyx_convert_vector_to_py_std_3a__3a_string(const std::vector<
   goto __pyx_L0;
 
   /* "vector.to_py":60
- * 
+ *
  * @cname("__pyx_convert_vector_to_py_std_3a__3a_string")
  * cdef object __pyx_convert_vector_to_py_std_3a__3a_string(vector[X]& v):             # <<<<<<<<<<<<<<
  *     return [v[i] for i in range(v.size())]
- * 
+ *
  */
 
   /* function exit code */
@@ -7472,7 +7472,7 @@ static PyObject *__pyx_convert_vector_to_py_std_3a__3a_string(const std::vector<
 }
 
 /* "vector.from_py":45
- * 
+ *
  * @cname("__pyx_convert_vector_from_py_std_3a__3a_string")
  * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_string(object o) except *:             # <<<<<<<<<<<<<<
  *     cdef vector[X] v
@@ -7548,7 +7548,7 @@ static std::vector<std::string>  __pyx_convert_vector_from_py_std_3a__3a_string(
  *     for item in o:
  *         v.push_back(<X>item)             # <<<<<<<<<<<<<<
  *     return v
- * 
+ *
  */
     __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_item); if (unlikely(PyErr_Occurred())) __PYX_ERR(1, 48, __pyx_L1_error)
     __pyx_v_v.push_back(((std::string)__pyx_t_5));
@@ -7567,14 +7567,14 @@ static std::vector<std::string>  __pyx_convert_vector_from_py_std_3a__3a_string(
  *     for item in o:
  *         v.push_back(<X>item)
  *     return v             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = __pyx_v_v;
   goto __pyx_L0;
 
   /* "vector.from_py":45
- * 
+ *
  * @cname("__pyx_convert_vector_from_py_std_3a__3a_string")
  * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_string(object o) except *:             # <<<<<<<<<<<<<<
  *     cdef vector[X] v
@@ -8044,7 +8044,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_calibration_samples, __pyx_k_calibration_samples, sizeof(__pyx_k_calibration_samples), 0, 0, 1, 0},
   {&__pyx_n_s_calibration_samples_2, __pyx_k_calibration_samples_2, sizeof(__pyx_k_calibration_samples_2), 0, 0, 1, 1},
   {&__pyx_n_s_cast_parameter, __pyx_k_cast_parameter, sizeof(__pyx_k_cast_parameter), 0, 0, 1, 1},
-  {&__pyx_kp_s_chaine__core_crf_pyx, __pyx_k_chaine__core_crf_pyx, sizeof(__pyx_k_chaine__core_crf_pyx), 0, 0, 1, 0},
+  {&__pyx_kp_s_chaine_core_crf_pyx, __pyx_k_chaine_core_crf_pyx, sizeof(__pyx_k_chaine_core_crf_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_chaine_logging, __pyx_k_chaine_logging, sizeof(__pyx_k_chaine_logging), 0, 0, 1, 1},
   {&__pyx_n_s_chaine_typing, __pyx_k_chaine_typing, sizeof(__pyx_k_chaine_typing), 0, 0, 1, 1},
   {&__pyx_n_s_check_model, __pyx_k_check_model, sizeof(__pyx_k_check_model), 0, 0, 1, 1},
@@ -8147,10 +8147,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
   /* "crf.pyx":99
- * 
+ *
  *     def _log(self):
  *         raise NotImplemented("You have to implement this method.")             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef _on_message(self, string message):
  */
   __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_You_have_to_implement_this_metho); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 99, __pyx_L1_error)
@@ -8226,7 +8226,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__10);
 
   /* "crf.pyx":179
- * 
+ *
  *     @staticmethod
  *     def _check_model(filepath: str):             # <<<<<<<<<<<<<<
  *         with open(filepath, "rb") as model:
@@ -8235,7 +8235,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__11 = PyTuple_Pack(3, __pyx_n_s_filepath, __pyx_n_s_model, __pyx_n_s_magic); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_chaine__core_crf_pyx, __pyx_n_s_check_model, 179, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_chaine_core_crf_pyx, __pyx_n_s_check_model, 179, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -8565,7 +8565,7 @@ if (!__Pyx_RefNanny) {
  * cimport crfsuite_api
  * from libcpp.string cimport string
  * import os             # <<<<<<<<<<<<<<
- * 
+ *
  * from chaine.logging import Logger
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_os, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
@@ -8575,10 +8575,10 @@ if (!__Pyx_RefNanny) {
 
   /* "crf.pyx":12
  * import os
- * 
+ *
  * from chaine.logging import Logger             # <<<<<<<<<<<<<<
  * from chaine.typing import Dict, Iterable, List, Filepath, Sequence
- * 
+ *
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8595,10 +8595,10 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "crf.pyx":13
- * 
+ *
  * from chaine.logging import Logger
  * from chaine.typing import Dict, Iterable, List, Filepath, Sequence             # <<<<<<<<<<<<<<
- * 
+ *
  * LOGGER = Logger(__name__)
  */
   __pyx_t_2 = PyList_New(5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
@@ -8645,10 +8645,10 @@ if (!__Pyx_RefNanny) {
 
   /* "crf.pyx":15
  * from chaine.typing import Dict, Iterable, List, Filepath, Sequence
- * 
+ *
  * LOGGER = Logger(__name__)             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8662,7 +8662,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "crf.pyx":22
- * 
+ *
  *     _algorithm_aliases = {
  *         "lbfgs": "lbfgs",             # <<<<<<<<<<<<<<
  *         "limited-memory-bfgs": "lbfgs",
@@ -8945,7 +8945,7 @@ if (!__Pyx_RefNanny) {
  *             "variance": float,
  *             "gamma": float,             # <<<<<<<<<<<<<<
  *         }
- * 
+ *
  */
   if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_gamma, ((PyObject *)(&PyFloat_Type))) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
   if (PyDict_SetItem((PyObject *)__pyx_ptype_3crf_Trainer->tp_dict, __pyx_n_s_parameter_types, __pyx_t_3) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
@@ -8953,7 +8953,7 @@ if (!__Pyx_RefNanny) {
   PyType_Modified(__pyx_ptype_3crf_Trainer);
 
   /* "crf.pyx":179
- * 
+ *
  *     @staticmethod
  *     def _check_model(filepath: str):             # <<<<<<<<<<<<<<
  *         with open(filepath, "rb") as model:
@@ -8967,7 +8967,7 @@ if (!__Pyx_RefNanny) {
 
   /* "crf.pyx":178
  *         self.c_tagger.set(to_seq(sequence))
- * 
+ *
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def _check_model(filepath: str):
  *         with open(filepath, "rb") as model:
@@ -8992,7 +8992,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "vector.from_py":45
- * 
+ *
  * @cname("__pyx_convert_vector_from_py_std_3a__3a_string")
  * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_string(object o) except *:             # <<<<<<<<<<<<<<
  *     cdef vector[X] v

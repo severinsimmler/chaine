@@ -7,8 +7,8 @@ This module implements the trainer and model.
 
 import json
 
-from chaine._core.crf import Model as _Model
-from chaine._core.crf import Trainer as _Trainer
+from chaine.core.crf import Model as _Model
+from chaine.core.crf import Trainer as _Trainer
 from chaine.logging import Logger
 from chaine.typing import Dict, Filepath, Iterable, Labels, List, Sequence
 

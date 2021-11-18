@@ -136,11 +136,11 @@ cdef class Model:
     def _labels(self):
         return self.c_tagger.labels()
 
-    def _predict_single(self, sequence: Sequence) -> List[str]:
+    def _predict_single(self, sequence: Sequence) -> list[str]:
         self._set_sequence(sequence)
         return self.c_tagger.viterbi()
 
-    def _predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:
+    def _predict_proba_single(self, sequence: Sequence) -> list[dict[str, float]]:
         self._set_sequence(sequence)
         return [
             {label: self._marginal(label, index) for label in self._labels}

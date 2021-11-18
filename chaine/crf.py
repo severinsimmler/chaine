@@ -221,7 +221,7 @@ class Model(_Model):
         """Labels the model is trained on."""
         return set(self._labels)
 
-    def predict_single(self, sequence: Sequence) -> List[str]:
+    def predict_single(self, sequence: Sequence) -> list[str]:
         """Predict most likely labels for a given sequence of tokens.
 
         Parameters
@@ -231,12 +231,12 @@ class Model(_Model):
 
         Returns
         -------
-        List[str]
+        list[str]
             Most likely label sequence.
         """
         return self._predict_single(sequence)
 
-    def predict(self, sequences: Iterable[Sequence]) -> List[List[str]]:
+    def predict(self, sequences: Iterable[Sequence]) -> list[list[str]]:
         """Predict most likely labels for a batch of tokens
 
         Parameters
@@ -246,12 +246,12 @@ class Model(_Model):
 
         Returns
         -------
-        List[List[str]]
+        list[list[str]]
             Most likely label sequences.
         """
         return [self.predict_single(sequence) for sequence in sequences]
 
-    def predict_proba_single(self, sequence: Sequence) -> List[Dict[str, float]]:
+    def predict_proba_single(self, sequence: Sequence) -> list[dict[str, float]]:
         """Predict probabilities over all labels for each token in a sequence.
 
         Parameters
@@ -261,14 +261,14 @@ class Model(_Model):
 
         Returns
         -------
-        List[Dict[str, float]]
+        list[dict[str, float]]
             Probability distributions over all labels for each token.
         """
         if not isinstance(sequence, list):
             sequence = list(sequence)
         return self._predict_proba_single(sequence)
 
-    def predict_proba(self, sequences: Iterable[Sequence]) -> List[List[Dict[str, float]]]:
+    def predict_proba(self, sequences: Iterable[Sequence]) -> list[list[dict[str, float]]]:
         """Predict probabilities over all labels for each token in a batch of sequences.
 
         Parameters
@@ -278,7 +278,7 @@ class Model(_Model):
 
         Returns
         -------
-        List[Dict[str, float]]
+        list[dict[str, float]]
             Probability distributions over all labels for each token in the sequences.
         """
         return [self.predict_proba_single(sequence) for sequence in sequences]

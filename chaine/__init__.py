@@ -1,2 +1,2 @@
 from chaine import crf
-from chaine.api import train
+from chaine.training import train

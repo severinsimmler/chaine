@@ -2,8 +2,7 @@ name: CI & CD
 
 on:
   push:
-    branches:
-      - master
+    tags: "*"
 
 jobs:
   build:

@@ -2,7 +2,7 @@
 chaine.logging
 ~~~~~~~~~~~~~~
 
-This module implements a basic logger
+This module implements a basic logger.
 """
 
 import logging

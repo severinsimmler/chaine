@@ -14,29 +14,20 @@ You can install the latest stable version from [PyPI](https://pypi.org/project/c
 $ pip install chaine
 ```
 
-Please refer to the introducing paper by [Lafferty et al.](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers) for the theoretical concepts behind conditional random fields.
-
+Please refer to the paper by [Lafferty et al.](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers) for a theoretical introduction to conditional random fields.
 
 ## Minimal working example
 
 ```python
 >>> import chaine
->>> tokens = [["John", "Lennon", "was", "born", "in", "Liverpool"]]
->>> labels = [["B-PER", "I-PER", "O", "O", "O", "B-LOC"]]
+>>> tokens = [[{"index": 0, "text": "John"}, {"index": 1, "text": "Lennon"}]]
+>>> labels = [["B-PER", "I-PER"]]
 >>> model = chaine.train(tokens, labels, max_iterations=5)
 >>> model.predict(tokens)
-[['B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC']]
+[['B-PER', 'I-PER']]
 ```
 
-Check out the [examples](https://github.com/severinsimmler/chaine/blob/master/examples) for a more real-world use case.
-
-## Development
-
-If you have modified `chaine/crf.pyx`, you have to compile Cython to C++ first (which will update `chainie/crf.cpp`) and then build the extension:
-
-```
-$ python cythonize && poetry install
-```
+Check out the [examples](https://github.com/severinsimmler/chaine/blob/master/examples) for a more real-world scenario.
 
 ## Credits
 

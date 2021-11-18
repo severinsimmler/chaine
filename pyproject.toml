@@ -4,7 +4,7 @@ version = "1.4.0"
 description = "Linear-chain conditional random fields for natural language processing"
 authors = ["Severin Simmler <severin.simmler@posteo.de>"]
 readme = "README.md"
-build = "build.py"
+build = "tools/build.py"
 
 [tool.poetry.dependencies]
 python = "^3.8"

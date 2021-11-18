@@ -276,3 +276,13 @@ class Model:
             Probability distributions over all labels for each token in the sequences.
         """
         return [self.predict_proba_single(sequence) for sequence in sequences]
+
+    def dump(self, filepath: Filepath):
+        """Dump labels, attributes, transitions and state features as plain text.
+
+        Parameters
+        ----------
+        filepath : Filepath
+            File to dump model to.
+        """
+        self._model.dump(filepath)

@@ -185,6 +185,9 @@ cdef class Model:
             if model.tell() <= 48:
                 raise ValueError(f"Model file {filepath} does not have a complete header")
 
+    def dump(self, filepath: Filepath):
+        self._tagger.dump(os.open(filepath, os.O_WRONLY | os.O_CREAT))
+
 
 cdef crfsuite_api.Item to_item(sequence) except+:
     cdef crfsuite_api.Item c_item

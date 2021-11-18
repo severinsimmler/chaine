@@ -268,9 +268,7 @@ class Model(_Model):
             sequence = list(sequence)
         return self._predict_proba_single(sequence)
 
-    def predict_proba(
-        self, sequences: Iterable[Sequence]
-    ) -> List[List[Dict[str, float]]]:
+    def predict_proba(self, sequences: Iterable[Sequence]) -> List[List[Dict[str, float]]]:
         """Predict probabilities over all labels for each token in a batch of sequences.
 
         Parameters

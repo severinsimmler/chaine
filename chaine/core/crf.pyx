@@ -10,15 +10,15 @@ from libcpp.string cimport string
 import os
 
 from chaine.logging import Logger
-from chaine.typing import Dict, Filepath, Labels, List, Sequence, Union
+from chaine.typing import Filepath, Labels, Sequence, Union
 
 LOGGER = Logger(__name__)
 
 
 cdef class Trainer:
-    cdef crfsuite_api.Trainer _c_trainer
+    cdef crfsuite_api.Trainer _trainer
 
-    _param2kwarg = {
+    param2kwarg = {
         "feature.minfreq": "min_freq",
         "feature.possible_states": "all_possible_states",
         "feature.possible_transitions": "all_possible_transitions",
@@ -29,7 +29,7 @@ cdef class Trainer:
         "calibration.max_trials": "calibration_max_trials",
         "type": "pa_type",
     }
-    _kwarg2param = {
+    kwarg2param = {
         "min_freq": "feature.minfreq",
         "all_possible_states": "feature.possible_states",
         "all_possible_transitions": "feature.possible_transitions",
@@ -39,6 +39,18 @@ cdef class Trainer:
         "calibration_candidates": "calibration.candidates",
         "calibration_max_trials": "calibration.max_trials",
         "pa_type": "type",
+    }
+    _algorithm_aliases = {
+        "lbfgs": "lbfgs",
+        "limited-memory-bfgs": "lbfgs",
+        "l2sgd": "l2sgd",
+        "sgd": "l2sgd",
+        "stochastic-gradient-descent": "l2sgd",
+        "ap": "averaged-perceptron",
+        "averaged-perceptron": "averaged-perceptron",
+        "pa": "passive-aggressive",
+        "passive-aggressive": "passive-aggressive",
+        "arow": "arow"
     }
     _parameter_types = {
             "feature.minfreq": float,
@@ -66,29 +78,29 @@ cdef class Trainer:
             "gamma": float,
         }
 
-    def __init__(self, algorithm: str = "l2sgd", **kwargs):
-        self._select_algorithm(algorithm)
-        self._set_params(self._translate_params(kwargs))
+    def __init__(self, algorithm: str, **kwargs):
+        self.select_algorithm(algorithm)
+        self.set_params(self.translate_params(kwargs))
 
     def __cinit__(self):
-        self._c_trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
-        self._c_trainer.select("l2sgd", "crf1d")
-        self._c_trainer._init_trainer()
+        self._trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
+        self._trainer.select("l2sgd", "crf1d")
+        self._trainer._init_trainer()
 
     @property
-    def _params(self):
-        return self._c_trainer.params()
+    def params(self):
+        return self._trainer.params()
 
-    def _train(self, model_filepath: Filepath):
-        self._c_trainer.train(str(model_filepath), -1)
+    def train(self, model_filepath: Filepath):
+        self._trainer.train(str(model_filepath), -1)
 
-    def _log(self):
-        raise NotImplemented("You have to implement this method.")
+    def _log(self, message: str):
+        LOGGER.info(message)
 
     cdef _on_message(self, string message):
         self._log(message)
 
-    def _append(self, sequence: Sequence, labels: Labels, int group=0):
+    def append(self, sequence: Sequence, labels: Labels, int group=0):
         # no generators allowed
         if not isinstance(sequence, list):
             sequence = [item for item in sequence]
@@ -96,71 +108,75 @@ cdef class Trainer:
             # labels must be strings
             labels = [str(label) for label in labels]
 
-        self._c_trainer.append(to_seq(sequence), labels, group)
+        self._trainer.append(to_seq(sequence), labels, group)
 
-    def _translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):
+    def translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):
         return {
-            self._kwarg2param.get(kwarg, kwarg): value
+            self.kwarg2param.get(kwarg, kwarg): value
             for kwarg, value in kwargs.items()
         }
 
-    def _select_algorithm(self, algorithm: str):
-        if not self._c_trainer.select(algorithm, "crf1d"):
+    def select_algorithm(self, algorithm: str):
+        try:
+            algorithm = self._algorithm_aliases[algorithm.lower()]
+        except:
+            raise ValueError(f"{algorithm} is no available algorithm")
+        if not self._trainer.select(algorithm, "crf1d"):
             raise ValueError(f"{algorithm} is no available algorithm")
 
-    def _set_params(self, params: dict[str, Union[str, int, float, bool]]):
+    def set_params(self, params: dict[str, Union[str, int, float, bool]]):
         for param, value in params.items():
-            self._set_param(param, value)
+            self.set_param(param, value)
 
-    def _set_param(self, param: str, value: Union[str, int, float, bool]):
+    def set_param(self, param: str, value: Union[str, int, float, bool]):
         if isinstance(value, bool):
             value = int(value)
-        self._c_trainer.set(param, str(value))
+        self._trainer.set(param, str(value))
 
-    def _get_param(self, param: str) -> str:
-        return self._cast_parameter(param, self._c_trainer.get(param))
+    def get_param(self, param: str):
+        return self.cast_parameter(param, self._trainer.get(param))
 
-    def _cast_parameter(self, param: str, value: Union[str, int, float, bool]):
+    def cast_parameter(self, param: str, value: Union[str, int, float, bool]):
         if param in self._parameter_types:
             return self._parameter_types[param](value)
         return value
 
 
 cdef class Model:
-    cdef crfsuite_api.Tagger c_tagger
+    cdef crfsuite_api.Tagger _tagger
 
     def __init__(self, model_filepath: Filepath):
-        self._load(model_filepath)
+        self.load(model_filepath)
 
     @property
-    def _labels(self):
-        return self.c_tagger.labels()
+    def labels(self):
+        return self._tagger.labels()
 
-    def _predict_single(self, sequence: Sequence) -> list[str]:
-        self._set_sequence(sequence)
-        return self.c_tagger.viterbi()
+    def predict_single(self, sequence: Sequence) -> list[str]:
+        self.set_sequence(sequence)
+        return self._tagger.viterbi()
 
-    def _predict_proba_single(self, sequence: Sequence) -> list[dict[str, float]]:
-        self._set_sequence(sequence)
+    def predict_proba_single(self, sequence: Sequence) -> list[dict[str, float]]:
+        self.set_sequence(sequence)
         return [
-            {label: self._marginal(label, index) for label in self._labels}
+            {label: self.marginal(label, index) for label in self.labels}
             for index in range(len(sequence))
         ]
 
-    def _load(self, filepath: Filepath):
+    def load(self, filepath: Filepath):
         filepath = str(filepath)
-        self._check_model(filepath)
-        if not self.c_tagger.open(filepath):
+        self.check_model(filepath)
+        if not self._tagger.open(filepath):
             raise ValueError(f"Cannot load model file {filepath}")
 
-    def _marginal(self, label: str, index: int):
-        return self.c_tagger.marginal(label, index)
+    def marginal(self, label: str, index: int):
+        return self._tagger.marginal(label, index)
 
-    cpdef _set_sequence(self, sequence) except +:
-        self.c_tagger.set(to_seq(sequence))
+    cpdef set_sequence(self, sequence) except +:
+        self._tagger.set(to_seq(sequence))
 
     @staticmethod
-    def _check_model(filepath: str):
+    def check_model(filepath: str):
         with open(filepath, "rb") as model:
             magic = model.read(4)
             if magic != b"lCRF":

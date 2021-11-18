@@ -10,12 +10,12 @@ import json
 from chaine.core.crf import Model as _Model
 from chaine.core.crf import Trainer as _Trainer
 from chaine.logging import Logger
-from chaine.typing import Dict, Filepath, Iterable, Labels, List, Sequence, Union
+from chaine.typing import Filepath, Iterable, Labels, Sequence, Union
 
 LOGGER = Logger(__name__)
 
 
-class Trainer(_Trainer):
+class Trainer:
     """Trainer for conditional random fields.
 
     Parameters
@@ -139,9 +139,10 @@ class Trainer(_Trainer):
     gamma : float, optional (default=1)
         Trade-off between loss function and changes of feature weights.
     """
+
     def __init__(self, algorithm: str = "l2sgd", **kwargs):
         self.algorithm = algorithm
-        super().__init__(algorithm, **kwargs)
+        self._trainer = _Trainer(algorithm, **kwargs)
 
     def __repr__(self):
         return f"<Trainer ({self.algorithm}): {self.params}>"
@@ -170,14 +171,14 @@ class Trainer(_Trainer):
                 LOGGER.debug(f"{i} processed data points")
 
             try:
-                self._append(sequence, labels_)
+                self._trainer.append(sequence, labels_)
             except Exception as message:
                 LOGGER.error(message)
                 LOGGER.debug(f"Sequence: {json.dumps(sequence)}")
                 LOGGER.debug(f"Labels: {json.dumps(labels_)}")
 
         # fire!
-        self._train(model_filepath)
+        self._trainer.train(model_filepath)
 
     @property
     def params(self) -> dict[str, Union[str, int, float, bool]]:
@@ -189,22 +190,12 @@ class Trainer(_Trainer):
             Parameters of the trainer.
         """
         return {
-            self._param2kwarg.get(name, name): self._get_param(name)
-            for name in self._params
+            self._trainer.param2kwarg.get(name, name): self._trainer.get_param(name)
+            for name in self._trainer.params
         }
 
-    def _log(self, message: str):
-        """This method is used from the Cython class.
 
-        Parameters
-        ----------
-        message : str
-            Message to log.
-        """
-        LOGGER.info(message)
-
-
-class Model(_Model):
+class Model:
     """Linear-chain conditional random field.
 
     Parameters
@@ -213,13 +204,16 @@ class Model(_Model):
         Path to the trained model.
     """
 
+    def __init__(self, filepath: Filepath):
+        self._model = _Model(filepath)
+
     def __repr__(self):
         return f"<Model: {self.labels}>"
 
     @property
     def labels(self) -> set[str]:
         """Labels the model is trained on."""
-        return set(self._labels)
+        return set(self._model.labels)
 
     def predict_single(self, sequence: Sequence) -> list[str]:
         """Predict most likely labels for a given sequence of tokens.
@@ -234,7 +228,7 @@ class Model(_Model):
         list[str]
             Most likely label sequence.
         """
-        return self._predict_single(sequence)
+        return self._model.predict_single(sequence)
 
     def predict(self, sequences: Iterable[Sequence]) -> list[list[str]]:
         """Predict most likely labels for a batch of tokens
@@ -266,7 +260,7 @@ class Model(_Model):
         """
         if not isinstance(sequence, list):
             sequence = list(sequence)
-        return self._predict_proba_single(sequence)
+        return self._model.predict_proba_single(sequence)
 
     def predict_proba(self, sequences: Iterable[Sequence]) -> list[list[dict[str, float]]]:
         """Predict probabilities over all labels for each token in a batch of sequences.

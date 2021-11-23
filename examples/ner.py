@@ -7,10 +7,10 @@ import chaine
 from chaine.logging import Logger
 
 # type hints
-Sentence = List[str]
-Tags = List[str]
-Features = Dict[str, Union[float, int, str, bool]]
-Dataset = Dict[str, Dict[str, Any]]
+Sentence = list[str]
+Tags = list[str]
+Features = dict[str, Union[float, int, str, bool]]
+Dataset = dict[str, dict[str, Any]]
 
 # consistent logging
 LOGGER = Logger(__name__)
@@ -73,7 +73,7 @@ def featurize_token(token_index: int, sentence: Sentence, pos_tags: Tags) -> Fea
     return features
 
 
-def featurize_sentence(sentence: Sentence, pos_tags: Tags) -> List[Features]:
+def featurize_sentence(sentence: Sentence, pos_tags: Tags) -> list[Features]:
     """Extract features from tokens in a sentence
 
     Parameters
@@ -85,7 +85,7 @@ def featurize_sentence(sentence: Sentence, pos_tags: Tags) -> List[Features]:
 
     Returns
     -------
-    List[Features]
+    list[Features]
         List of features representing tokens of a sentence
     """
     return [
@@ -94,7 +94,7 @@ def featurize_sentence(sentence: Sentence, pos_tags: Tags) -> List[Features]:
     ]
 
 
-def featurize_dataset(dataset: Dataset) -> List[List[Features]]:
+def featurize_dataset(dataset: Dataset) -> list[list[Features]]:
     """Extract features from sentences in a dataset
 
     Parameters
@@ -104,7 +104,7 @@ def featurize_dataset(dataset: Dataset) -> List[List[Features]]:
 
     Returns
     -------
-    List[List[Features]]
+    list[list[Features]]
         Featurized dataset
     """
     return [
@@ -113,7 +113,7 @@ def featurize_dataset(dataset: Dataset) -> List[List[Features]]:
     ]
 
 
-def preprocess_labels(dataset: Dataset) -> List[List[str]]:
+def preprocess_labels(dataset: Dataset) -> list[list[str]]:
     """Translate raw labels (i.e. integers) to the respective string labels
 
     Parameters
@@ -123,7 +123,7 @@ def preprocess_labels(dataset: Dataset) -> List[List[str]]:
 
     Returns
     -------
-    List[List[Features]]
+    list[list[Features]]
         Preprocessed labels
     """
     labels = dataset.features["ner_tags"].feature.names

@@ -1016,59 +1016,7 @@ void crf1dm_dump(crf1dm_t *crf1dm, FILE *fp)
     feature_refs_t refs;
     const header_t *hfile = crf1dm->header;
 
-    /* Dump the file header. */
-    fprintf(fp, "FILEHEADER = {\n");
-    fprintf(fp, "  magic: %c%c%c%c\n",
-            hfile->magic[0], hfile->magic[1], hfile->magic[2], hfile->magic[3]);
-    fprintf(fp, "  size: %" PRIu32 "\n", hfile->size);
-    fprintf(fp, "  type: %c%c%c%c\n",
-            hfile->type[0], hfile->type[1], hfile->type[2], hfile->type[3]);
-    fprintf(fp, "  version: %" PRIu32 "\n", hfile->version);
-    fprintf(fp, "  num_features: %" PRIu32 "\n", hfile->num_features);
-    fprintf(fp, "  num_labels: %" PRIu32 "\n", hfile->num_labels);
-    fprintf(fp, "  num_attrs: %" PRIu32 "\n", hfile->num_attrs);
-    fprintf(fp, "  off_features: 0x%" PRIX32 "\n", hfile->off_features);
-    fprintf(fp, "  off_labels: 0x%" PRIX32 "\n", hfile->off_labels);
-    fprintf(fp, "  off_attrs: 0x%" PRIX32 "\n", hfile->off_attrs);
-    fprintf(fp, "  off_labelrefs: 0x%" PRIX32 "\n", hfile->off_labelrefs);
-    fprintf(fp, "  off_attrrefs: 0x%" PRIX32 "\n", hfile->off_attrrefs);
-    fprintf(fp, "}\n");
-    fprintf(fp, "\n");
-
-    /* Dump the labels. */
-    fprintf(fp, "LABELS = {\n");
-    for (i = 0; i < hfile->num_labels; ++i)
-    {
-        const char *str = crf1dm_to_label(crf1dm, i);
-#if 0
-        int check = crf1dm_to_lid(crf1dm, str);
-        if (i != check) {
-            fprintf(fp, "WARNING: inconsistent label CQDB\n");
-        }
-#endif
-        fprintf(fp, "  %5" PRIu32 ": %s\n", i, str);
-    }
-    fprintf(fp, "}\n");
-    fprintf(fp, "\n");
-
-    /* Dump the attributes. */
-    fprintf(fp, "ATTRIBUTES = {\n");
-    for (i = 0; i < hfile->num_attrs; ++i)
-    {
-        const char *str = crf1dm_to_attr(crf1dm, i);
-#if 0
-        int check = crf1dm_to_aid(crf1dm, str);
-        if (i != check) {
-            fprintf(fp, "WARNING: inconsistent attribute CQDB\n");
-        }
-#endif
-        fprintf(fp, "  %5" PRIu32 ": %s\n", i, str);
-    }
-    fprintf(fp, "}\n");
-    fprintf(fp, "\n");
-
-    /* Dump the transition features. */
-    fprintf(fp, "TRANSITIONS = {\n");
+    /* Dump the transition features as NDJSON. */
     for (i = 0; i < hfile->num_labels; ++i)
     {
         crf1dm_get_labelref(crf1dm, i, &refs);
@@ -1081,14 +1029,12 @@ void crf1dm_dump(crf1dm_t *crf1dm, FILE *fp)
             crf1dm_get_feature(crf1dm, fid, &f);
             from = crf1dm_to_label(crf1dm, f.src);
             to = crf1dm_to_label(crf1dm, f.dst);
-            fprintf(fp, "  (%d) %s --> %s: %f\n", f.type, from, to, f.weight);
+            fprintf(fp, "{\"type\": \"transition\", \"from\": \"%s\", \"to\": \"%s\", \"weight\": %f}\n", from, to, f.weight);
         }
     }
-    fprintf(fp, "}\n");
     fprintf(fp, "\n");
 
-    /* Dump the transition features. */
-    fprintf(fp, "STATE_FEATURES = {\n");
+    /* Dump the state features as NDJSON. */
     for (i = 0; i < hfile->num_attrs; ++i)
     {
         crf1dm_get_attrref(crf1dm, i, &refs);
@@ -1096,7 +1042,7 @@ void crf1dm_dump(crf1dm_t *crf1dm, FILE *fp)
         {
             crf1dm_feature_t f;
             int fid = crf1dm_get_featureid(&refs, j);
-            const char *attr = NULL, *to = NULL;
+            const char *attr = NULL, *label = NULL;
 
             crf1dm_get_feature(crf1dm, fid, &f);
 #if 0
@@ -1105,10 +1051,8 @@ void crf1dm_dump(crf1dm_t *crf1dm, FILE *fp)
             }
 #endif
             attr = crf1dm_to_attr(crf1dm, f.src);
-            to = crf1dm_to_label(crf1dm, f.dst);
-            fprintf(fp, "  (%d) %s --> %s: %f\n", f.type, attr, to, f.weight);
+            label = crf1dm_to_label(crf1dm, f.dst);
+            fprintf(fp, "{\"type\": \"state\", \"feature\": \"%s\", \"label\": \"%s\", \"weight\": %f}\n", attr, label, f.weight);
         }
     }
-    fprintf(fp, "}\n");
-    fprintf(fp, "\n");
 }

@@ -899,7 +899,7 @@ struct __pyx_obj_3crf_Model {
 };
 
 
-/* "crf.pyx":246
+/* "crf.pyx":245
  * 
  * 
  * cdef class ItemSequence:             # <<<<<<<<<<<<<<
@@ -1731,7 +1731,6 @@ static const char __pyx_k_variance[] = "variance";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_algorithm[] = "algorithm";
 static const char __pyx_k_averaging[] = "averaging";
-static const char __pyx_k_model_txt[] = "model.txt";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
 static const char __pyx_k_set_param[] = "set_param";
 static const char __pyx_k_Model_file[] = "Model file ";
@@ -1878,7 +1877,6 @@ static PyObject *__pyx_n_s_max_linesearch;
 static PyObject *__pyx_n_s_min_freq;
 static PyObject *__pyx_n_s_model;
 static PyObject *__pyx_n_s_model_filepath;
-static PyObject *__pyx_kp_s_model_txt;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
 static PyObject *__pyx_n_s_num_memories;
@@ -1943,7 +1941,7 @@ static PyObject *__pyx_pf_3crf_5Model_6load(struct __pyx_obj_3crf_Model *__pyx_v
 static PyObject *__pyx_pf_3crf_5Model_8marginal(struct __pyx_obj_3crf_Model *__pyx_v_self, PyObject *__pyx_v_label, PyObject *__pyx_v_index); /* proto */
 static PyObject *__pyx_pf_3crf_5Model_10set_sequence(struct __pyx_obj_3crf_Model *__pyx_v_self, PyObject *__pyx_v_sequence); /* proto */
 static PyObject *__pyx_pf_3crf_5Model_12check_model(PyObject *__pyx_v_filepath); /* proto */
-static PyObject *__pyx_pf_3crf_5Model_14dump(struct __pyx_obj_3crf_Model *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_filepath); /* proto */
+static PyObject *__pyx_pf_3crf_5Model_14dump(struct __pyx_obj_3crf_Model *__pyx_v_self, PyObject *__pyx_v_filepath); /* proto */
 static PyObject *__pyx_pf_3crf_5Model_16__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3crf_Model *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3crf_5Model_18__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3crf_Model *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_3crf_12ItemSequence___init__(struct __pyx_obj_3crf_ItemSequence *__pyx_v_self, PyObject *__pyx_v_sequence); /* proto */
@@ -5840,8 +5838,8 @@ static PyObject *__pyx_pf_3crf_5Model_12check_model(PyObject *__pyx_v_filepath) 
  *                 raise ValueError(f"Model file {filepath} does not have a complete header")
  * 
  *     def dump(self, filepath: Filepath):             # <<<<<<<<<<<<<<
- *         fd = os.open("model.txt", os.O_WRONLY | os.O_CREAT)
- *         self._tagger.dump(fd)
+ *         self._tagger.dump(os.open(str(filepath), os.O_WRONLY | os.O_CREAT))
+ * 
  */
 
 /* Python wrapper */
@@ -5858,8 +5856,7 @@ static PyObject *__pyx_pw_3crf_5Model_15dump(PyObject *__pyx_v_self, PyObject *_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3crf_5Model_14dump(struct __pyx_obj_3crf_Model *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_filepath) {
-  PyObject *__pyx_v_fd = NULL;
+static PyObject *__pyx_pf_3crf_5Model_14dump(struct __pyx_obj_3crf_Model *__pyx_v_self, PyObject *__pyx_v_filepath) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5867,7 +5864,8 @@ static PyObject *__pyx_pf_3crf_5Model_14dump(struct __pyx_obj_3crf_Model *__pyx_
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -5876,8 +5874,8 @@ static PyObject *__pyx_pf_3crf_5Model_14dump(struct __pyx_obj_3crf_Model *__pyx_
   /* "crf.pyx":189
  * 
  *     def dump(self, filepath: Filepath):
- *         fd = os.open("model.txt", os.O_WRONLY | os.O_CREAT)             # <<<<<<<<<<<<<<
- *         self._tagger.dump(fd)
+ *         self._tagger.dump(os.open(str(filepath), os.O_WRONLY | os.O_CREAT))             # <<<<<<<<<<<<<<
+ * 
  * 
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_os); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 189, __pyx_L1_error)
@@ -5885,91 +5883,86 @@ static PyObject *__pyx_pf_3crf_5Model_14dump(struct __pyx_obj_3crf_Model *__pyx_
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_open); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_os); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_filepath); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_O_WRONLY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_os); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_os); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 189, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_O_CREAT); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_O_WRONLY); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Or(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 189, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_os); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_O_CREAT); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_4 = PyNumber_Or(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = NULL;
-  __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = NULL;
+  __pyx_t_7 = 0;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_5)) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_6)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_3, function);
-      __pyx_t_6 = 1;
+      __pyx_t_7 = 1;
     }
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_kp_s_model_txt, __pyx_t_2};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_2, __pyx_t_4};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_kp_s_model_txt, __pyx_t_2};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_2, __pyx_t_4};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else
   #endif
   {
-    __pyx_t_4 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    if (__pyx_t_5) {
-      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (__pyx_t_6) {
+      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6); __pyx_t_6 = NULL;
     }
-    __Pyx_INCREF(__pyx_kp_s_model_txt);
-    __Pyx_GIVEREF(__pyx_kp_s_model_txt);
-    PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_6, __pyx_kp_s_model_txt);
     __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_6, __pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_7, __pyx_t_2);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_7, __pyx_t_4);
     __pyx_t_2 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_4 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_v_fd = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "crf.pyx":190
- *     def dump(self, filepath: Filepath):
- *         fd = os.open("model.txt", os.O_WRONLY | os.O_CREAT)
- *         self._tagger.dump(fd)             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_fd); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   try {
-    __pyx_v_self->_tagger.dump(__pyx_t_6);
+    __pyx_v_self->_tagger.dump(__pyx_t_7);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 190, __pyx_L1_error)
+    __PYX_ERR(0, 189, __pyx_L1_error)
   }
 
   /* "crf.pyx":188
  *                 raise ValueError(f"Model file {filepath} does not have a complete header")
  * 
  *     def dump(self, filepath: Filepath):             # <<<<<<<<<<<<<<
- *         fd = os.open("model.txt", os.O_WRONLY | os.O_CREAT)
- *         self._tagger.dump(fd)
+ *         self._tagger.dump(os.open(str(filepath), os.O_WRONLY | os.O_CREAT))
+ * 
  */
 
   /* function exit code */
@@ -5981,10 +5974,10 @@ static PyObject *__pyx_pf_3crf_5Model_14dump(struct __pyx_obj_3crf_Model *__pyx_
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
   __Pyx_AddTraceback("crf.Model.dump", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_fd);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -6105,7 +6098,7 @@ static PyObject *__pyx_pf_3crf_5Model_18__setstate_cython__(CYTHON_UNUSED struct
   return __pyx_r;
 }
 
-/* "crf.pyx":193
+/* "crf.pyx":192
  * 
  * 
  * cdef crfsuite_api.Item to_item(sequence) except+:             # <<<<<<<<<<<<<<
@@ -6143,17 +6136,17 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("to_item", 0);
 
-  /* "crf.pyx":200
+  /* "crf.pyx":199
  *     cdef bint is_dict, is_nested_value
  * 
  *     separator = b":"             # <<<<<<<<<<<<<<
  *     is_dict = isinstance(sequence, dict)
  *     c_item = crfsuite_api.Item()
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__6); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__6); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
   __pyx_v_separator = __pyx_t_1;
 
-  /* "crf.pyx":201
+  /* "crf.pyx":200
  * 
  *     separator = b":"
  *     is_dict = isinstance(sequence, dict)             # <<<<<<<<<<<<<<
@@ -6163,7 +6156,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
   __pyx_t_2 = PyDict_Check(__pyx_v_sequence); 
   __pyx_v_is_dict = __pyx_t_2;
 
-  /* "crf.pyx":202
+  /* "crf.pyx":201
  *     separator = b":"
  *     is_dict = isinstance(sequence, dict)
  *     c_item = crfsuite_api.Item()             # <<<<<<<<<<<<<<
@@ -6174,21 +6167,21 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
     __pyx_t_3 = CRFSuite::Item();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 202, __pyx_L1_error)
+    __PYX_ERR(0, 201, __pyx_L1_error)
   }
   __pyx_v_c_item = __pyx_t_3;
 
-  /* "crf.pyx":203
+  /* "crf.pyx":202
  *     is_dict = isinstance(sequence, dict)
  *     c_item = crfsuite_api.Item()
  *     c_item.reserve(len(sequence))             # <<<<<<<<<<<<<<
  * 
  *     for token in sequence:
  */
-  __pyx_t_4 = PyObject_Length(__pyx_v_sequence); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_4 = PyObject_Length(__pyx_v_sequence); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 202, __pyx_L1_error)
   __pyx_v_c_item.reserve(__pyx_t_4);
 
-  /* "crf.pyx":205
+  /* "crf.pyx":204
  *     c_item.reserve(len(sequence))
  * 
  *     for token in sequence:             # <<<<<<<<<<<<<<
@@ -6199,26 +6192,26 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
     __pyx_t_5 = __pyx_v_sequence; __Pyx_INCREF(__pyx_t_5); __pyx_t_4 = 0;
     __pyx_t_6 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_sequence); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_sequence); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 204, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_6 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 204, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_6)) {
       if (likely(PyList_CheckExact(__pyx_t_5))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_5)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_7 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_4); __Pyx_INCREF(__pyx_t_7); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 205, __pyx_L1_error)
+        __pyx_t_7 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_4); __Pyx_INCREF(__pyx_t_7); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
         #else
-        __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 205, __pyx_L1_error)
+        __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 204, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_4); __Pyx_INCREF(__pyx_t_7); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 205, __pyx_L1_error)
+        __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_4); __Pyx_INCREF(__pyx_t_7); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
         #else
-        __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 205, __pyx_L1_error)
+        __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 204, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         #endif
       }
@@ -6228,7 +6221,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 205, __pyx_L1_error)
+          else __PYX_ERR(0, 204, __pyx_L1_error)
         }
         break;
       }
@@ -6237,7 +6230,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
     __Pyx_XDECREF_SET(__pyx_v_token, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "crf.pyx":206
+    /* "crf.pyx":205
  * 
  *     for token in sequence:
  *         if isinstance(token, unicode):             # <<<<<<<<<<<<<<
@@ -6248,7 +6241,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
     __pyx_t_8 = (__pyx_t_2 != 0);
     if (__pyx_t_8) {
 
-      /* "crf.pyx":207
+      /* "crf.pyx":206
  *     for token in sequence:
  *         if isinstance(token, unicode):
  *             c_token = (<unicode>token).encode("utf8")             # <<<<<<<<<<<<<<
@@ -6257,15 +6250,15 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  */
       if (unlikely(__pyx_v_token == Py_None)) {
         PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-        __PYX_ERR(0, 207, __pyx_L1_error)
+        __PYX_ERR(0, 206, __pyx_L1_error)
       }
-      __pyx_t_7 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_token)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 207, __pyx_L1_error)
+      __pyx_t_7 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_token)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 206, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_t_7); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L1_error)
+      __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_t_7); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 206, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_v_c_token = __pyx_t_1;
 
-      /* "crf.pyx":206
+      /* "crf.pyx":205
  * 
  *     for token in sequence:
  *         if isinstance(token, unicode):             # <<<<<<<<<<<<<<
@@ -6275,7 +6268,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
       goto __pyx_L5;
     }
 
-    /* "crf.pyx":209
+    /* "crf.pyx":208
  *             c_token = (<unicode>token).encode("utf8")
  *         else:
  *             c_token = token             # <<<<<<<<<<<<<<
@@ -6283,12 +6276,12 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *             c_value = 1.0
  */
     /*else*/ {
-      __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_token); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L1_error)
+      __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_token); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L1_error)
       __pyx_v_c_token = __pyx_t_1;
     }
     __pyx_L5:;
 
-    /* "crf.pyx":210
+    /* "crf.pyx":209
  *         else:
  *             c_token = token
  *         if not is_dict:             # <<<<<<<<<<<<<<
@@ -6298,7 +6291,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
     __pyx_t_8 = ((!(__pyx_v_is_dict != 0)) != 0);
     if (__pyx_t_8) {
 
-      /* "crf.pyx":211
+      /* "crf.pyx":210
  *             c_token = token
  *         if not is_dict:
  *             c_value = 1.0             # <<<<<<<<<<<<<<
@@ -6307,7 +6300,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  */
       __pyx_v_c_value = 1.0;
 
-      /* "crf.pyx":212
+      /* "crf.pyx":211
  *         if not is_dict:
  *             c_value = 1.0
  *             c_item.push_back(crfsuite_api.Attribute(c_token, c_value))             # <<<<<<<<<<<<<<
@@ -6318,10 +6311,10 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
         __pyx_v_c_item.push_back(CRFSuite::Attribute(__pyx_v_c_token, __pyx_v_c_value));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 212, __pyx_L1_error)
+        __PYX_ERR(0, 211, __pyx_L1_error)
       }
 
-      /* "crf.pyx":210
+      /* "crf.pyx":209
  *         else:
  *             c_token = token
  *         if not is_dict:             # <<<<<<<<<<<<<<
@@ -6331,7 +6324,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
       goto __pyx_L6;
     }
 
-    /* "crf.pyx":214
+    /* "crf.pyx":213
  *             c_item.push_back(crfsuite_api.Attribute(c_token, c_value))
  *         else:
  *             value = (<dict>sequence)[token]             # <<<<<<<<<<<<<<
@@ -6341,14 +6334,14 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
     /*else*/ {
       if (unlikely(__pyx_v_sequence == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 214, __pyx_L1_error)
+        __PYX_ERR(0, 213, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_sequence), __pyx_v_token); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 214, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_sequence), __pyx_v_token); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 213, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_value, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "crf.pyx":215
+      /* "crf.pyx":214
  *         else:
  *             value = (<dict>sequence)[token]
  *             if isinstance(value, (dict, list, set)):             # <<<<<<<<<<<<<<
@@ -6376,7 +6369,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
       __pyx_t_9 = (__pyx_t_8 != 0);
       if (__pyx_t_9) {
 
-        /* "crf.pyx":216
+        /* "crf.pyx":215
  *             value = (<dict>sequence)[token]
  *             if isinstance(value, (dict, list, set)):
  *                 for attr in to_item(value):             # <<<<<<<<<<<<<<
@@ -6387,7 +6380,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
           __pyx_t_3 = __pyx_f_3crf_to_item(__pyx_v_value);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          __PYX_ERR(0, 216, __pyx_L1_error)
+          __PYX_ERR(0, 215, __pyx_L1_error)
         }
         __pyx_t_11 = &__pyx_t_3;
         __pyx_t_10 = __pyx_t_11->begin();
@@ -6397,7 +6390,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
           ++__pyx_t_10;
           __pyx_v_attr = __pyx_t_12;
 
-          /* "crf.pyx":218
+          /* "crf.pyx":217
  *                 for attr in to_item(value):
  *                     c_item.push_back(
  *                         crfsuite_api.Attribute(c_token + separator + attr.attr, attr.value)             # <<<<<<<<<<<<<<
@@ -6408,16 +6401,16 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
             __pyx_t_1 = (__pyx_v_c_token + __pyx_v_separator);
           } catch(...) {
             __Pyx_CppExn2PyErr();
-            __PYX_ERR(0, 218, __pyx_L1_error)
+            __PYX_ERR(0, 217, __pyx_L1_error)
           }
           try {
             __pyx_t_13 = (__pyx_t_1 + __pyx_v_attr.attr);
           } catch(...) {
             __Pyx_CppExn2PyErr();
-            __PYX_ERR(0, 218, __pyx_L1_error)
+            __PYX_ERR(0, 217, __pyx_L1_error)
           }
 
-          /* "crf.pyx":217
+          /* "crf.pyx":216
  *             if isinstance(value, (dict, list, set)):
  *                 for attr in to_item(value):
  *                     c_item.push_back(             # <<<<<<<<<<<<<<
@@ -6428,10 +6421,10 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
             __pyx_v_c_item.push_back(CRFSuite::Attribute(__pyx_t_13, __pyx_v_attr.value));
           } catch(...) {
             __Pyx_CppExn2PyErr();
-            __PYX_ERR(0, 217, __pyx_L1_error)
+            __PYX_ERR(0, 216, __pyx_L1_error)
           }
 
-          /* "crf.pyx":216
+          /* "crf.pyx":215
  *             value = (<dict>sequence)[token]
  *             if isinstance(value, (dict, list, set)):
  *                 for attr in to_item(value):             # <<<<<<<<<<<<<<
@@ -6440,7 +6433,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  */
         }
 
-        /* "crf.pyx":215
+        /* "crf.pyx":214
  *         else:
  *             value = (<dict>sequence)[token]
  *             if isinstance(value, (dict, list, set)):             # <<<<<<<<<<<<<<
@@ -6450,7 +6443,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
         goto __pyx_L7;
       }
 
-      /* "crf.pyx":221
+      /* "crf.pyx":220
  *                     )
  *             else:
  *                 if isinstance(value, unicode):             # <<<<<<<<<<<<<<
@@ -6462,7 +6455,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
         __pyx_t_8 = (__pyx_t_9 != 0);
         if (__pyx_t_8) {
 
-          /* "crf.pyx":222
+          /* "crf.pyx":221
  *             else:
  *                 if isinstance(value, unicode):
  *                     c_token += separator             # <<<<<<<<<<<<<<
@@ -6471,7 +6464,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  */
           __pyx_v_c_token += __pyx_v_separator;
 
-          /* "crf.pyx":223
+          /* "crf.pyx":222
  *                 if isinstance(value, unicode):
  *                     c_token += separator
  *                     c_token += <string>(<unicode>value).encode("utf8")             # <<<<<<<<<<<<<<
@@ -6480,15 +6473,15 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  */
           if (unlikely(__pyx_v_value == Py_None)) {
             PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-            __PYX_ERR(0, 223, __pyx_L1_error)
+            __PYX_ERR(0, 222, __pyx_L1_error)
           }
-          __pyx_t_7 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_value)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 223, __pyx_L1_error)
+          __pyx_t_7 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_value)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 222, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
-          __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_7); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 223, __pyx_L1_error)
+          __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_7); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 222, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           __pyx_v_c_token += ((std::string)__pyx_t_13);
 
-          /* "crf.pyx":224
+          /* "crf.pyx":223
  *                     c_token += separator
  *                     c_token += <string>(<unicode>value).encode("utf8")
  *                     c_value = 1.0             # <<<<<<<<<<<<<<
@@ -6497,7 +6490,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  */
           __pyx_v_c_value = 1.0;
 
-          /* "crf.pyx":221
+          /* "crf.pyx":220
  *                     )
  *             else:
  *                 if isinstance(value, unicode):             # <<<<<<<<<<<<<<
@@ -6507,7 +6500,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
           goto __pyx_L13;
         }
 
-        /* "crf.pyx":225
+        /* "crf.pyx":224
  *                     c_token += <string>(<unicode>value).encode("utf8")
  *                     c_value = 1.0
  *                 elif isinstance(value, bytes):             # <<<<<<<<<<<<<<
@@ -6518,7 +6511,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
         __pyx_t_9 = (__pyx_t_8 != 0);
         if (__pyx_t_9) {
 
-          /* "crf.pyx":226
+          /* "crf.pyx":225
  *                     c_value = 1.0
  *                 elif isinstance(value, bytes):
  *                     c_token += separator             # <<<<<<<<<<<<<<
@@ -6527,17 +6520,17 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  */
           __pyx_v_c_token += __pyx_v_separator;
 
-          /* "crf.pyx":227
+          /* "crf.pyx":226
  *                 elif isinstance(value, bytes):
  *                     c_token += separator
  *                     c_token += <string>value             # <<<<<<<<<<<<<<
  *                     c_value = 1.0
  *                 else:
  */
-          __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_v_value); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 227, __pyx_L1_error)
+          __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_v_value); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L1_error)
           __pyx_v_c_token += ((std::string)__pyx_t_13);
 
-          /* "crf.pyx":228
+          /* "crf.pyx":227
  *                     c_token += separator
  *                     c_token += <string>value
  *                     c_value = 1.0             # <<<<<<<<<<<<<<
@@ -6546,7 +6539,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  */
           __pyx_v_c_value = 1.0;
 
-          /* "crf.pyx":225
+          /* "crf.pyx":224
  *                     c_token += <string>(<unicode>value).encode("utf8")
  *                     c_value = 1.0
  *                 elif isinstance(value, bytes):             # <<<<<<<<<<<<<<
@@ -6556,7 +6549,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
           goto __pyx_L13;
         }
 
-        /* "crf.pyx":230
+        /* "crf.pyx":229
  *                     c_value = 1.0
  *                 else:
  *                     c_value = value             # <<<<<<<<<<<<<<
@@ -6564,12 +6557,12 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
  *     return c_item
  */
         /*else*/ {
-          __pyx_t_14 = __pyx_PyFloat_AsDouble(__pyx_v_value); if (unlikely((__pyx_t_14 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 230, __pyx_L1_error)
+          __pyx_t_14 = __pyx_PyFloat_AsDouble(__pyx_v_value); if (unlikely((__pyx_t_14 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L1_error)
           __pyx_v_c_value = __pyx_t_14;
         }
         __pyx_L13:;
 
-        /* "crf.pyx":231
+        /* "crf.pyx":230
  *                 else:
  *                     c_value = value
  *                 c_item.push_back(crfsuite_api.Attribute(c_token, c_value))             # <<<<<<<<<<<<<<
@@ -6580,14 +6573,14 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
           __pyx_v_c_item.push_back(CRFSuite::Attribute(__pyx_v_c_token, __pyx_v_c_value));
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          __PYX_ERR(0, 231, __pyx_L1_error)
+          __PYX_ERR(0, 230, __pyx_L1_error)
         }
       }
       __pyx_L7:;
     }
     __pyx_L6:;
 
-    /* "crf.pyx":205
+    /* "crf.pyx":204
  *     c_item.reserve(len(sequence))
  * 
  *     for token in sequence:             # <<<<<<<<<<<<<<
@@ -6597,7 +6590,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "crf.pyx":232
+  /* "crf.pyx":231
  *                     c_value = value
  *                 c_item.push_back(crfsuite_api.Attribute(c_token, c_value))
  *     return c_item             # <<<<<<<<<<<<<<
@@ -6607,7 +6600,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
   __pyx_r = __pyx_v_c_item;
   goto __pyx_L0;
 
-  /* "crf.pyx":193
+  /* "crf.pyx":192
  * 
  * 
  * cdef crfsuite_api.Item to_item(sequence) except+:             # <<<<<<<<<<<<<<
@@ -6628,7 +6621,7 @@ static CRFSuite::Item __pyx_f_3crf_to_item(PyObject *__pyx_v_sequence) {
   return __pyx_r;
 }
 
-/* "crf.pyx":235
+/* "crf.pyx":234
  * 
  * 
  * cdef crfsuite_api.ItemSequence to_seq(sequence) except+:             # <<<<<<<<<<<<<<
@@ -6654,7 +6647,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("to_seq", 0);
 
-  /* "crf.pyx":238
+  /* "crf.pyx":237
  *     cdef crfsuite_api.ItemSequence c_sequence
  * 
  *     if isinstance(sequence, ItemSequence):             # <<<<<<<<<<<<<<
@@ -6665,7 +6658,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "crf.pyx":239
+    /* "crf.pyx":238
  * 
  *     if isinstance(sequence, ItemSequence):
  *         c_sequence = (<ItemSequence>sequence).c_sequence             # <<<<<<<<<<<<<<
@@ -6675,7 +6668,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
     __pyx_t_3 = ((struct __pyx_obj_3crf_ItemSequence *)__pyx_v_sequence)->c_sequence;
     __pyx_v_c_sequence = __pyx_t_3;
 
-    /* "crf.pyx":238
+    /* "crf.pyx":237
  *     cdef crfsuite_api.ItemSequence c_sequence
  * 
  *     if isinstance(sequence, ItemSequence):             # <<<<<<<<<<<<<<
@@ -6685,7 +6678,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
     goto __pyx_L3;
   }
 
-  /* "crf.pyx":241
+  /* "crf.pyx":240
  *         c_sequence = (<ItemSequence>sequence).c_sequence
  *     else:
  *         for s in sequence:             # <<<<<<<<<<<<<<
@@ -6697,26 +6690,26 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
       __pyx_t_4 = __pyx_v_sequence; __Pyx_INCREF(__pyx_t_4); __pyx_t_5 = 0;
       __pyx_t_6 = NULL;
     } else {
-      __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_sequence); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 241, __pyx_L1_error)
+      __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_sequence); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 240, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_6 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 241, __pyx_L1_error)
+      __pyx_t_6 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 240, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_6)) {
         if (likely(PyList_CheckExact(__pyx_t_4))) {
           if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 241, __pyx_L1_error)
+          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 240, __pyx_L1_error)
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 241, __pyx_L1_error)
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 240, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         } else {
           if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 241, __pyx_L1_error)
+          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 240, __pyx_L1_error)
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 241, __pyx_L1_error)
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 240, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         }
@@ -6726,7 +6719,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 241, __pyx_L1_error)
+            else __PYX_ERR(0, 240, __pyx_L1_error)
           }
           break;
         }
@@ -6735,7 +6728,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "crf.pyx":242
+      /* "crf.pyx":241
  *     else:
  *         for s in sequence:
  *             c_sequence.push_back(to_item(s))             # <<<<<<<<<<<<<<
@@ -6746,16 +6739,16 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
         __pyx_t_8 = __pyx_f_3crf_to_item(__pyx_v_s);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 242, __pyx_L1_error)
+        __PYX_ERR(0, 241, __pyx_L1_error)
       }
       try {
         __pyx_v_c_sequence.push_back(__pyx_t_8);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 242, __pyx_L1_error)
+        __PYX_ERR(0, 241, __pyx_L1_error)
       }
 
-      /* "crf.pyx":241
+      /* "crf.pyx":240
  *         c_sequence = (<ItemSequence>sequence).c_sequence
  *     else:
  *         for s in sequence:             # <<<<<<<<<<<<<<
@@ -6767,7 +6760,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
   }
   __pyx_L3:;
 
-  /* "crf.pyx":243
+  /* "crf.pyx":242
  *         for s in sequence:
  *             c_sequence.push_back(to_item(s))
  *     return c_sequence             # <<<<<<<<<<<<<<
@@ -6777,7 +6770,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
   __pyx_r = __pyx_v_c_sequence;
   goto __pyx_L0;
 
-  /* "crf.pyx":235
+  /* "crf.pyx":234
  * 
  * 
  * cdef crfsuite_api.ItemSequence to_seq(sequence) except+:             # <<<<<<<<<<<<<<
@@ -6797,7 +6790,7 @@ static CRFSuite::ItemSequence __pyx_f_3crf_to_seq(PyObject *__pyx_v_sequence) {
   return __pyx_r;
 }
 
-/* "crf.pyx":249
+/* "crf.pyx":248
  *     cdef crfsuite_api.ItemSequence c_sequence
  * 
  *     def __init__(self, sequence):             # <<<<<<<<<<<<<<
@@ -6834,7 +6827,7 @@ static int __pyx_pw_3crf_12ItemSequence_1__init__(PyObject *__pyx_v_self, PyObje
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 249, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 248, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -6845,7 +6838,7 @@ static int __pyx_pw_3crf_12ItemSequence_1__init__(PyObject *__pyx_v_self, PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 249, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 248, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("crf.ItemSequence.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6867,7 +6860,7 @@ static int __pyx_pf_3crf_12ItemSequence___init__(struct __pyx_obj_3crf_ItemSeque
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "crf.pyx":250
+  /* "crf.pyx":249
  * 
  *     def __init__(self, sequence):
  *         self.c_sequence = to_seq(sequence)             # <<<<<<<<<<<<<<
@@ -6878,11 +6871,11 @@ static int __pyx_pf_3crf_12ItemSequence___init__(struct __pyx_obj_3crf_ItemSeque
     __pyx_t_1 = __pyx_f_3crf_to_seq(__pyx_v_sequence);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 250, __pyx_L1_error)
+    __PYX_ERR(0, 249, __pyx_L1_error)
   }
   __pyx_v_self->c_sequence = __pyx_t_1;
 
-  /* "crf.pyx":249
+  /* "crf.pyx":248
  *     cdef crfsuite_api.ItemSequence c_sequence
  * 
  *     def __init__(self, sequence):             # <<<<<<<<<<<<<<
@@ -6901,7 +6894,7 @@ static int __pyx_pf_3crf_12ItemSequence___init__(struct __pyx_obj_3crf_ItemSeque
   return __pyx_r;
 }
 
-/* "crf.pyx":252
+/* "crf.pyx":251
  *         self.c_sequence = to_seq(sequence)
  * 
  *     def items(self):             # <<<<<<<<<<<<<<
@@ -6944,19 +6937,19 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("items", 0);
 
-  /* "crf.pyx":257
+  /* "crf.pyx":256
  *         cdef bytes token
  * 
  *         sequence = []             # <<<<<<<<<<<<<<
  *         for c_item in self.c_sequence:
  *             x = {}
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 257, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_sequence = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "crf.pyx":258
+  /* "crf.pyx":257
  * 
  *         sequence = []
  *         for c_item in self.c_sequence:             # <<<<<<<<<<<<<<
@@ -6971,19 +6964,19 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
     ++__pyx_t_2;
     __pyx_v_c_item = __pyx_t_4;
 
-    /* "crf.pyx":259
+    /* "crf.pyx":258
  *         sequence = []
  *         for c_item in self.c_sequence:
  *             x = {}             # <<<<<<<<<<<<<<
  *             for c_attr in c_item:
  *                 token = <bytes>c_attr.attr.c_str()
  */
-    __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 259, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_x, ((PyObject*)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "crf.pyx":260
+    /* "crf.pyx":259
  *         for c_item in self.c_sequence:
  *             x = {}
  *             for c_attr in c_item:             # <<<<<<<<<<<<<<
@@ -6997,14 +6990,14 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
       ++__pyx_t_5;
       __pyx_v_c_attr = __pyx_t_6;
 
-      /* "crf.pyx":261
+      /* "crf.pyx":260
  *             x = {}
  *             for c_attr in c_item:
  *                 token = <bytes>c_attr.attr.c_str()             # <<<<<<<<<<<<<<
  *                 x[token.decode("utf8")] = c_attr.value
  *             sequence.append(x)
  */
-      __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_c_attr.attr.c_str()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_c_attr.attr.c_str()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 260, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_7 = __pyx_t_1;
       __Pyx_INCREF(__pyx_t_7);
@@ -7012,26 +7005,26 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
       __Pyx_XDECREF_SET(__pyx_v_token, ((PyObject*)__pyx_t_7));
       __pyx_t_7 = 0;
 
-      /* "crf.pyx":262
+      /* "crf.pyx":261
  *             for c_attr in c_item:
  *                 token = <bytes>c_attr.attr.c_str()
  *                 x[token.decode("utf8")] = c_attr.value             # <<<<<<<<<<<<<<
  *             sequence.append(x)
  *         return sequence
  */
-      __pyx_t_7 = PyFloat_FromDouble(__pyx_v_c_attr.value); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 262, __pyx_L1_error)
+      __pyx_t_7 = PyFloat_FromDouble(__pyx_v_c_attr.value); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 261, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       if (unlikely(__pyx_v_token == Py_None)) {
         PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "decode");
-        __PYX_ERR(0, 262, __pyx_L1_error)
+        __PYX_ERR(0, 261, __pyx_L1_error)
       }
-      __pyx_t_1 = __Pyx_decode_bytes(__pyx_v_token, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 262, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_decode_bytes(__pyx_v_token, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (unlikely(PyDict_SetItem(__pyx_v_x, __pyx_t_1, __pyx_t_7) < 0)) __PYX_ERR(0, 262, __pyx_L1_error)
+      if (unlikely(PyDict_SetItem(__pyx_v_x, __pyx_t_1, __pyx_t_7) < 0)) __PYX_ERR(0, 261, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "crf.pyx":260
+      /* "crf.pyx":259
  *         for c_item in self.c_sequence:
  *             x = {}
  *             for c_attr in c_item:             # <<<<<<<<<<<<<<
@@ -7040,16 +7033,16 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
  */
     }
 
-    /* "crf.pyx":263
+    /* "crf.pyx":262
  *                 token = <bytes>c_attr.attr.c_str()
  *                 x[token.decode("utf8")] = c_attr.value
  *             sequence.append(x)             # <<<<<<<<<<<<<<
  *         return sequence
  * 
  */
-    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_sequence, __pyx_v_x); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_sequence, __pyx_v_x); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 262, __pyx_L1_error)
 
-    /* "crf.pyx":258
+    /* "crf.pyx":257
  * 
  *         sequence = []
  *         for c_item in self.c_sequence:             # <<<<<<<<<<<<<<
@@ -7058,7 +7051,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
  */
   }
 
-  /* "crf.pyx":264
+  /* "crf.pyx":263
  *                 x[token.decode("utf8")] = c_attr.value
  *             sequence.append(x)
  *         return sequence             # <<<<<<<<<<<<<<
@@ -7070,7 +7063,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
   __pyx_r = __pyx_v_sequence;
   goto __pyx_L0;
 
-  /* "crf.pyx":252
+  /* "crf.pyx":251
  *         self.c_sequence = to_seq(sequence)
  * 
  *     def items(self):             # <<<<<<<<<<<<<<
@@ -7093,7 +7086,7 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_2items(struct __pyx_obj_3crf_ItemS
   return __pyx_r;
 }
 
-/* "crf.pyx":266
+/* "crf.pyx":265
  *         return sequence
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -7119,7 +7112,7 @@ static Py_ssize_t __pyx_pf_3crf_12ItemSequence_4__len__(struct __pyx_obj_3crf_It
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "crf.pyx":267
+  /* "crf.pyx":266
  * 
  *     def __len__(self):
  *         return self.c_sequence.size()             # <<<<<<<<<<<<<<
@@ -7129,7 +7122,7 @@ static Py_ssize_t __pyx_pf_3crf_12ItemSequence_4__len__(struct __pyx_obj_3crf_It
   __pyx_r = __pyx_v_self->c_sequence.size();
   goto __pyx_L0;
 
-  /* "crf.pyx":266
+  /* "crf.pyx":265
  *         return sequence
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -7143,7 +7136,7 @@ static Py_ssize_t __pyx_pf_3crf_12ItemSequence_4__len__(struct __pyx_obj_3crf_It
   return __pyx_r;
 }
 
-/* "crf.pyx":269
+/* "crf.pyx":268
  *         return self.c_sequence.size()
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -7176,13 +7169,13 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_6__repr__(struct __pyx_obj_3crf_It
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "crf.pyx":270
+  /* "crf.pyx":269
  * 
  *     def __repr__(self):
  *         return f"<ItemSequence ({len(self)})>"             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
@@ -7190,8 +7183,8 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_6__repr__(struct __pyx_obj_3crf_It
   __pyx_t_2 += 15;
   __Pyx_GIVEREF(__pyx_kp_u_ItemSequence);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_ItemSequence);
-  __pyx_t_4 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 270, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyUnicode_From_Py_ssize_t(__pyx_t_4, 0, ' ', 'd'); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_4 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyUnicode_From_Py_ssize_t(__pyx_t_4, 0, ' ', 'd'); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -7201,14 +7194,14 @@ static PyObject *__pyx_pf_3crf_12ItemSequence_6__repr__(struct __pyx_obj_3crf_It
   __pyx_t_2 += 2;
   __Pyx_GIVEREF(__pyx_kp_u__7);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u__7);
-  __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "crf.pyx":269
+  /* "crf.pyx":268
  *         return self.c_sequence.size()
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -8340,7 +8333,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_min_freq, __pyx_k_min_freq, sizeof(__pyx_k_min_freq), 0, 0, 1, 1},
   {&__pyx_n_s_model, __pyx_k_model, sizeof(__pyx_k_model), 0, 0, 1, 1},
   {&__pyx_n_s_model_filepath, __pyx_k_model_filepath, sizeof(__pyx_k_model_filepath), 0, 0, 1, 1},
-  {&__pyx_kp_s_model_txt, __pyx_k_model_txt, sizeof(__pyx_k_model_txt), 0, 0, 1, 0},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
   {&__pyx_n_s_num_memories, __pyx_k_num_memories, sizeof(__pyx_k_num_memories), 0, 0, 1, 1},
@@ -8558,15 +8550,15 @@ static int __Pyx_modinit_type_init_code(void) {
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Model, (PyObject *)&__pyx_type_3crf_Model) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3crf_Model) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
   __pyx_ptype_3crf_Model = &__pyx_type_3crf_Model;
-  if (PyType_Ready(&__pyx_type_3crf_ItemSequence) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3crf_ItemSequence) < 0) __PYX_ERR(0, 245, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3crf_ItemSequence.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3crf_ItemSequence.tp_dictoffset && __pyx_type_3crf_ItemSequence.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3crf_ItemSequence.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ItemSequence_2, (PyObject *)&__pyx_type_3crf_ItemSequence) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3crf_ItemSequence) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ItemSequence_2, (PyObject *)&__pyx_type_3crf_ItemSequence) < 0) __PYX_ERR(0, 245, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3crf_ItemSequence) < 0) __PYX_ERR(0, 245, __pyx_L1_error)
   __pyx_ptype_3crf_ItemSequence = &__pyx_type_3crf_ItemSequence;
   __Pyx_RefNannyFinishContext();
   return 0;

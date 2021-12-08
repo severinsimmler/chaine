@@ -199,3 +199,14 @@ def test_model_predict_proba_generator(model: crf.Model, dataset: dict[str, list
     predicted = model.predict_proba(generator)
     expected = [[{"O": 1.0}, {"O": 1.0}] for _ in dataset["labels"]]
     assert predicted == expected
+
+
+def test_model_dump(model: crf.Model):
+    pass
+
+
+def test_transitions(model: crf.Model):
+    pass
+
+def test_state_features(model: crf.Model):
+    pass

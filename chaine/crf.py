@@ -6,6 +6,10 @@ This module implements the trainer and model.
 """
 
 import json
+import tempfile
+import uuid
+from functools import cached_property
+from pathlib import Path
 
 from chaine.core.crf import Model as _Model
 from chaine.core.crf import Trainer as _Trainer
@@ -206,14 +210,56 @@ class Model:
 
     def __init__(self, filepath: Filepath):
         self._model = _Model(filepath)
+        self._model_info = None
 
     def __repr__(self):
         return f"<Model: {self.labels}>"
 
-    @property
+    @cached_property
     def labels(self) -> set[str]:
         """Labels the model is trained on."""
         return set(self._model.labels)
+
+    @cached_property
+    def transitions(self) -> dict[str, float]:
+        """Learned transition weights."""
+        if not self._model_info:
+            # load model info first if not available yet
+            self._model_info = self._load_model_info()
+
+        transitions = []
+        for transition in self._model_info[3].split("\n")[1:-1]:
+            parts = transition.split(":")
+            from_, to = parts[0].split(":").removeprefix("  (1) ").split("-->")
+            transitions.append({"from": from_, "to": to, "weight": float(parts[1])})
+
+        return transitions
+
+    @cached_property
+    def state_features(self) -> dict[str, float]:
+        """Learned state feature weights."""
+        if not self._model_info:
+            # load model info first if not available yet
+            self._model_info = self._load_model_info()
+
+        state_features = []
+        for state_feature in self._model_info[4].split("\n")[1:-1]:
+            parts = state_feature.split(":")
+
+            a
+
+            from_, to = parts[0].split(":").removeprefix("  (1) ").split("-->")
+            transitions.append({"from": from_, "to": to, "weight": float(parts[1])})
+
+
+
+
+        state_features = self._model_info[4].split("\n")[1:-1]
+
+        return {
+            ":".join(state.split(":")[:-1]).removeprefix("  (0) "): float(state.split(":")[-1])
+            for state in state_features
+        }
 
     def predict_single(self, sequence: Sequence) -> list[str]:
         """Predict most likely labels for a given sequence of tokens.
@@ -286,3 +332,25 @@ class Model:
             File to dump model to.
         """
         self._model.dump(filepath)
+
+    def _load_model_info(self) -> list[str]:
+        """Dumps the model to a temporary file, loads the info, and deletes it again.
+
+        Returns
+        -------
+        list[str]
+            Model info, i.e. learned weights etc.
+        """
+        # get temporary file to dump the model
+        filepath = Path(tempfile.gettempdir(), str(uuid.uuid4()))
+
+        # write model to disk
+        self.dump(filepath)
+
+        # return the components
+        model_info = filepath.read_text().split("\n\n")
+
+        # cleanup
+        filepath.unlink()
+
+        return model_info

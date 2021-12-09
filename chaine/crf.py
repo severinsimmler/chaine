@@ -6,7 +6,6 @@ This module implements the trainer and model.
 """
 
 import json
-from operator import mod
 import tempfile
 import uuid
 from functools import cached_property
@@ -185,7 +184,7 @@ class Trainer:
         # fire!
         self._trainer.train(model_filepath)
 
-    @property
+    @cached_property
     def params(self) -> dict[str, Union[str, int, float, bool]]:
         """Set parameters of the trainer.
 
@@ -211,7 +210,6 @@ class Model:
 
     def __init__(self, filepath: Filepath):
         self._model = _Model(filepath)
-        self._model_info = None
 
     def __repr__(self):
         return f"<Model: {self.labels}>"
@@ -224,20 +222,36 @@ class Model:
     @cached_property
     def transitions(self) -> dict[str, float]:
         """Learned transition weights."""
-        if not self._model_info:
-            # load model info first if not available yet
-            self._load_model_info()
+        # get temporary file to dump the transitions
+        filepath = Path(tempfile.gettempdir(), str(uuid.uuid4()))
 
-        return self._transitions
+        # write model to disk
+        self.dump_transitions(filepath)
+
+        # return the components
+        transitions = json.loads(filepath.read_text())
+
+        # cleanup
+        filepath.unlink()
+
+        return transitions
 
     @cached_property
     def states(self) -> dict[str, float]:
         """Learned state feature weights."""
-        if not self._model_info:
-            # load model info first if not available yet
-            self._load_model_info()
+        # get temporary file to dump the states
+        filepath = Path(tempfile.gettempdir(), str(uuid.uuid4()))
 
-        return self._states
+        # write model to disk
+        self.dump_states(filepath)
+
+        # return the components
+        states = json.loads(filepath.read_text())
+
+        # cleanup
+        filepath.unlink()
+
+        return states
 
     def predict_single(self, sequence: Sequence) -> list[str]:
         """Predict most likely labels for a given sequence of tokens.

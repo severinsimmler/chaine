@@ -16,6 +16,7 @@ SOURCES = [
     "chaine/core/crfsuite/lib/crf/src/dataset.c",
     "chaine/core/crfsuite/lib/crf/src/dictionary.c",
     "chaine/core/crfsuite/lib/crf/src/holdout.c",
+    "chaine/core/crfsuite/lib/crf/src/json.c",
     "chaine/core/crfsuite/lib/crf/src/logging.c",
     "chaine/core/crfsuite/lib/crf/src/params.c",
     "chaine/core/crfsuite/lib/crf/src/quark.c",

@@ -63,5 +63,5 @@ cdef extern from "tagger_wrapper.hpp" namespace "CRFSuiteWrapper":
         StringList viterbi() except +
         double probability(StringList) except +
         double marginal(string, int) except +
-        void dump(int) except +
-        void dump2() except +
+        void dump_transitions(int) except +
+        void dump_states(int) except +

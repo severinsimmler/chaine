@@ -6,6 +6,7 @@ This module implements the trainer and model.
 """
 
 import json
+from operator import mod
 import tempfile
 import uuid
 from functools import cached_property
@@ -225,41 +226,18 @@ class Model:
         """Learned transition weights."""
         if not self._model_info:
             # load model info first if not available yet
-            self._model_info = self._load_model_info()
+            self._load_model_info()
 
-        transitions = []
-        for transition in self._model_info[3].split("\n")[1:-1]:
-            parts = transition.split(":")
-            from_, to = parts[0].split(":").removeprefix("  (1) ").split("-->")
-            transitions.append({"from": from_, "to": to, "weight": float(parts[1])})
-
-        return transitions
+        return self._transitions
 
     @cached_property
-    def state_features(self) -> dict[str, float]:
+    def states(self) -> dict[str, float]:
         """Learned state feature weights."""
         if not self._model_info:
             # load model info first if not available yet
-            self._model_info = self._load_model_info()
+            self._load_model_info()
 
-        state_features = []
-        for state_feature in self._model_info[4].split("\n")[1:-1]:
-            parts = state_feature.split(":")
-
-            a
-
-            from_, to = parts[0].split(":").removeprefix("  (1) ").split("-->")
-            transitions.append({"from": from_, "to": to, "weight": float(parts[1])})
-
-
-
-
-        state_features = self._model_info[4].split("\n")[1:-1]
-
-        return {
-            ":".join(state.split(":")[:-1]).removeprefix("  (0) "): float(state.split(":")[-1])
-            for state in state_features
-        }
+        return self._states
 
     def predict_single(self, sequence: Sequence) -> list[str]:
         """Predict most likely labels for a given sequence of tokens.
@@ -323,34 +301,22 @@ class Model:
         """
         return [self.predict_proba_single(sequence) for sequence in sequences]
 
-    def dump(self, filepath: Filepath):
-        """Dump labels, attributes, transitions and state features as plain text.
+    def dump_transitions(self, filepath: Filepath):
+        """Dump learned transitions with weights as JSON.
 
         Parameters
         ----------
         filepath : Filepath
-            File to dump model to.
+            File to dump transitions to.
         """
-        self._model.dump(filepath)
+        self._model.dump_transitions(filepath)
 
-    def _load_model_info(self) -> list[str]:
-        """Dumps the model to a temporary file, loads the info, and deletes it again.
+    def dump_states(self, filepath: Filepath):
+        """Dump learned states with weights as JSON.
 
-        Returns
-        -------
-        list[str]
-            Model info, i.e. learned weights etc.
+        Parameters
+        ----------
+        filepath : Filepath
+            File to dump states to.
         """
-        # get temporary file to dump the model
-        filepath = Path(tempfile.gettempdir(), str(uuid.uuid4()))
-
-        # write model to disk
-        self.dump(filepath)
-
-        # return the components
-        model_info = filepath.read_text().split("\n\n")
-
-        # cleanup
-        filepath.unlink()
-
-        return model_info
+        self._model.dump_states(filepath)

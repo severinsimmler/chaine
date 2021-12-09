@@ -40,6 +40,7 @@
 
 #include <crfsuite.h>
 #include "crf1d.h"
+#include "json.h"
 
 #define FILEMAGIC "lCRF"
 #define MODELTYPE "FOMC"
@@ -1009,32 +1010,15 @@ int crf1dm_get_feature(crf1dm_t *model, int fid, crf1dm_feature_t *f)
     return 0;
 }
 
-void crf1dm_dump(crf1dm_t *crf1dm, FILE *fp)
+void crf1dm_dump_states(crf1dm_t *crf1dm, FILE *fp)
 {
     int j;
     uint32_t i;
     feature_refs_t refs;
     const header_t *hfile = crf1dm->header;
+    const char *stringified_json;
+    JsonNode *states = json_mkarray();
 
-    /* Dump the transition features as NDJSON. */
-    for (i = 0; i < hfile->num_labels; ++i)
-    {
-        crf1dm_get_labelref(crf1dm, i, &refs);
-        for (j = 0; j < refs.num_features; ++j)
-        {
-            crf1dm_feature_t f;
-            int fid = crf1dm_get_featureid(&refs, j);
-            const char *from = NULL, *to = NULL;
-
-            crf1dm_get_feature(crf1dm, fid, &f);
-            from = crf1dm_to_label(crf1dm, f.src);
-            to = crf1dm_to_label(crf1dm, f.dst);
-            fprintf(fp, "{\"type\": \"transition\", \"from\": \"%s\", \"to\": \"%s\", \"weight\": %f}\n", from, to, f.weight);
-        }
-    }
-    fprintf(fp, "\n");
-
-    /* Dump the state features as NDJSON. */
     for (i = 0; i < hfile->num_attrs; ++i)
     {
         crf1dm_get_attrref(crf1dm, i, &refs);
@@ -1043,16 +1027,57 @@ void crf1dm_dump(crf1dm_t *crf1dm, FILE *fp)
             crf1dm_feature_t f;
             int fid = crf1dm_get_featureid(&refs, j);
             const char *attr = NULL, *label = NULL;
+            JsonNode *state = json_mkobject();
 
             crf1dm_get_feature(crf1dm, fid, &f);
-#if 0
-            if (f.src != i) {
-                fprintf(fp, "WARNING: an inconsistent attribute reference.\n");
-            }
-#endif
+
             attr = crf1dm_to_attr(crf1dm, f.src);
             label = crf1dm_to_label(crf1dm, f.dst);
-            fprintf(fp, "{\"type\": \"state\", \"feature\": \"%s\", \"label\": \"%s\", \"weight\": %f}\n", attr, label, f.weight);
+
+            json_append_member(state, "feature", json_mkstring(attr));
+            json_append_member(state, "label", json_mkstring(label));
+            json_append_member(state, "weight", json_mknumber(f.weight));
+
+            json_append_element(states, state);
         }
     }
+
+    stringified_json = json_stringify(states, " ");
+    fprintf(fp, stringified_json);
+}
+
+void crf1dm_dump_transitions(crf1dm_t *crf1dm, FILE *fp)
+{
+    int j;
+    uint32_t i;
+    feature_refs_t refs;
+    const header_t *hfile = crf1dm->header;
+    const char *stringified_json;
+    JsonNode *transitions = json_mkarray();
+
+    for (i = 0; i < hfile->num_labels; ++i)
+    {
+        crf1dm_get_labelref(crf1dm, i, &refs);
+        for (j = 0; j < refs.num_features; ++j)
+        {
+            crf1dm_feature_t f;
+            int fid = crf1dm_get_featureid(&refs, j);
+            const char *from = NULL, *to = NULL;
+            JsonNode *transition = json_mkobject();
+
+            crf1dm_get_feature(crf1dm, fid, &f);
+
+            from = crf1dm_to_label(crf1dm, f.src);
+            to = crf1dm_to_label(crf1dm, f.dst);
+
+            json_append_member(transition, "from", json_mkstring(from));
+            json_append_member(transition, "to", json_mkstring(to));
+            json_append_member(transition, "weight", json_mknumber(f.weight));
+
+            json_append_element(transitions, transition);
+        }
+    }
+
+    stringified_json = json_stringify(transitions, " ");
+    fprintf(fp, stringified_json);
 }

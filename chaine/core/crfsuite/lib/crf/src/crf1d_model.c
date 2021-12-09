@@ -1042,7 +1042,7 @@ void crf1dm_dump_states(crf1dm_t *crf1dm, FILE *fp)
         }
     }
 
-    stringified_json = json_stringify(states, " ");
+    stringified_json = json_stringify(states, "  ");
     fprintf(fp, stringified_json);
 }
 
@@ -1078,6 +1078,6 @@ void crf1dm_dump_transitions(crf1dm_t *crf1dm, FILE *fp)
         }
     }
 
-    stringified_json = json_stringify(transitions, " ");
+    stringified_json = json_stringify(transitions, "  ");
     fprintf(fp, stringified_json);
 }

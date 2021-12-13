@@ -1081,4 +1081,5 @@ void crf1dm_dump_transitions(crf1dm_t *crf1dm, FILE *fp)
 
     stringified_json = json_stringify(transitions, "  ");
     fprintf(fp, stringified_json);
+    free(stringified_json);
 }

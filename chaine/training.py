@@ -247,7 +247,15 @@ def optimize(
                 times.append(end - start)
 
             # save results
-            results.append({"mean_score": statistics.mean(scores), "std_score": statistics.stdev(scores), "mean_time": statistics.mean(times), "std_time": statistics.stdev(times)} | params)
+            results.append(
+                {
+                    "mean_score": statistics.mean(scores),
+                    "std_score": statistics.stdev(scores),
+                    "mean_time": statistics.mean(times),
+                    "std_time": statistics.stdev(times),
+                }
+                | params
+            )
 
     # sort results descending by score
     return sorted(results, key=itemgetter("score"), reverse=True)

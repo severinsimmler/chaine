@@ -11,8 +11,8 @@ import uuid
 from functools import cached_property
 from pathlib import Path
 
-from chaine.core.crf import Model as _Model
-from chaine.core.crf import Trainer as _Trainer
+from chaine._core.crf import Model as _Model
+from chaine._core.crf import Trainer as _Trainer
 from chaine.logging import Logger
 from chaine.typing import Filepath, Iterable, Labels, Sequence, Union
 

@@ -5,8 +5,27 @@ chaine.api
 This module implements the high-level API to train a conditional random field.
 """
 
+import random
+import statistics
+import time
+from operator import itemgetter
+from typing import Optional, Union
+
 from chaine.crf import Model, Trainer
+from chaine.logging import Logger
+from chaine.metrics import evaluate_model
+from chaine.optimization import (
+    APSearchSpace,
+    AROWSearchSpace,
+    L2SGDSearchSpace,
+    LBFGSSearchSpace,
+    PASearchSpace,
+    SearchSpace,
+)
+from chaine.optimization.utils import cross_validation
 from chaine.typing import Filepath, Iterable, Labels, Sequence
+
+LOGGER = Logger(__name__)
 
 
 def train(
@@ -155,3 +174,80 @@ def train(
 
     # load and return the trained model
     return Model(model_filepath)
+
+
+def optimize(
+    dataset: Iterable[Sequence],
+    labels: Iterable[Labels],
+    spaces: list[SearchSpace] = [
+        AROWSearchSpace(),
+        APSearchSpace(),
+        LBFGSSearchSpace(),
+        L2SGDSearchSpace(),
+        PASearchSpace(),
+    ],
+    metric: str = "f1",
+    trials: int = 10,
+    cv: int = 5,
+    seed: Optional[int] = None,
+) -> dict[str, Union[str, int, float, bool]]:
+    """Optimize hyperparameters in a randomized manner on the given data set.
+
+    For each hyperparameter search space of a given optimization algorithm,
+
+    Parameters
+    ----------
+    dataset : Iterable[Sequence]
+        Instances of the given data set.
+    labels : Iterable[Labels]
+        Labels for the given data set.
+    spaces : list[SearchSpace]
+        Search space for a given algorithm.
+    metric : str, optional
+        Metric to optimize, by default "f1".
+    trials : int, optional
+        Number of trials for each search space, by default 10.
+    cv : int, optional
+        Number of folds for cross-validation, by default 5.
+    seed : Optional[int], optional
+        Random seed, by default None.
+
+    Returns
+    -------
+    dict[str, Union[str, int, float, bool]]
+        [description]
+    """
+    # set random seed
+    random.seed(seed)
+
+    # split data set for cross validation
+    splits = cross_validation(dataset, labels, n=cv)
+
+    results = []
+    for space in spaces:
+        for trial in range(trials):
+            LOGGER.info(f"Trial {trial + 1} for {space.algorithm}")
+
+            scores = []
+            times = []
+
+            for (train_dataset, train_labels), (test_dataset, test_labels) in splits:
+                # randomly select hyperparameters
+                params = space.random_parameters()
+
+                # fire!
+                start = time.time()
+                trainer = Trainer(**params)
+                trainer.train(train_dataset, train_labels, model_filepath="optimization.crf")
+                end = time.time()
+
+                # evaluate model
+                model = Model("optimization.crf")
+                scores.append(evaluate_model(model, test_dataset, test_labels, metric=metric))
+                times.append(end - start)
+
+            # save results
+            results.append({"mean_score": statistics.mean(scores), "std_score": statistics.stdev(scores), "mean_time": statistics.mean(times), "std_time": statistics.stdev(times)} | params)
+
+    # sort results descending by score
+    return sorted(results, key=itemgetter("score"), reverse=True)

@@ -463,10 +463,17 @@ static int model_get_attrs(crfsuite_model_t *model, crfsuite_dictionary_t **ptr_
     return 0;
 }
 
-static int model_dump(crfsuite_model_t *model, FILE *fpo)
+static int model_dump_transitions(crfsuite_model_t *model, FILE *fpo)
 {
     model_internal_t *internal = (model_internal_t *)model->internal;
-    crf1dm_dump(internal->crf1dm, fpo);
+    crf1dm_dump_transitions(internal->crf1dm, fpo);
+    return 0;
+}
+
+static int model_dump_states(crfsuite_model_t *model, FILE *fpo)
+{
+    model_internal_t *internal = (model_internal_t *)model->internal;
+    crf1dm_dump_states(internal->crf1dm, fpo);
     return 0;
 }
 
@@ -546,7 +553,9 @@ static int crf1m_model_create(crf1dm_t *crf1dm, void **ptr_model)
     model->get_attrs = model_get_attrs;
     model->get_labels = model_get_labels;
     model->get_tagger = model_get_tagger;
-    model->dump = model_dump;
+    model->dump_transitions = model_dump_transitions;
+    model->dump_states = model_dump_states;
+
 
     *ptr_model = model;
     return 0;

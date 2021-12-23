@@ -42,7 +42,7 @@ extern "C"
 #include <stdio.h>
 #include <stdarg.h>
 
-/** 
+/**
  * \addtogroup crfsuite_api CRFSuite C API
  * @{
  *
@@ -50,7 +50,7 @@ extern "C"
  *  CRFSuite in C language.
  */
 
-/** 
+/**
  * \addtogroup crfsuite_misc Miscellaneous definitions and functions
  * @{
  */
@@ -323,12 +323,20 @@ extern "C"
         int (*get_attrs)(crfsuite_model_t *model, crfsuite_dictionary_t **ptr_attrs);
 
         /**
-     * Print the model in human-readable format.
+     * Print the learned transitions as JSON.
      *  @param  model       The pointer to this model instance.
      *  @param  fpo         The FILE* pointer.
      *  @return int         The status code.
      */
-        int (*dump)(crfsuite_model_t *model, FILE *fpo);
+        int (*dump_transitions)(crfsuite_model_t *model, FILE *fpo);
+
+        /**
+     * Print the learned states as JSON.
+     *  @param  model       The pointer to this model instance.
+     *  @param  fpo         The FILE* pointer.
+     *  @return int         The status code.
+     */
+        int (*dump_states)(crfsuite_model_t *model, FILE *fpo);
     };
 
     /**
@@ -1023,7 +1031,7 @@ extern "C"
 
     /**@}*/
 
-    /** 
+    /**
  * \addtogroup crfsuite_misc Miscellaneous definitions and functions
  * @{
  */

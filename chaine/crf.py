@@ -6,9 +6,13 @@ This module implements the trainer and model.
 """
 
 import json
+import tempfile
+import uuid
+from functools import cached_property
+from pathlib import Path
 
-from chaine.core.crf import Model as _Model
-from chaine.core.crf import Trainer as _Trainer
+from chaine._core.crf import Model as _Model
+from chaine._core.crf import Trainer as _Trainer
 from chaine.logging import Logger
 from chaine.typing import Filepath, Iterable, Labels, Sequence, Union
 
@@ -180,7 +184,7 @@ class Trainer:
         # fire!
         self._trainer.train(model_filepath)
 
-    @property
+    @cached_property
     def params(self) -> dict[str, Union[str, int, float, bool]]:
         """Set parameters of the trainer.
 
@@ -210,10 +214,44 @@ class Model:
     def __repr__(self):
         return f"<Model: {self.labels}>"
 
-    @property
+    @cached_property
     def labels(self) -> set[str]:
         """Labels the model is trained on."""
         return set(self._model.labels)
+
+    @cached_property
+    def transitions(self) -> dict[str, float]:
+        """Learned transition weights."""
+        # get temporary file to dump the transitions
+        filepath = Path(tempfile.gettempdir(), str(uuid.uuid4()))
+
+        # write model to disk
+        self.dump_transitions(filepath)
+
+        # return the components
+        transitions = json.loads(filepath.read_text())
+
+        # cleanup
+        filepath.unlink()
+
+        return transitions
+
+    @cached_property
+    def states(self) -> dict[str, float]:
+        """Learned state feature weights."""
+        # get temporary file to dump the states
+        filepath = Path(tempfile.gettempdir(), str(uuid.uuid4()))
+
+        # write model to disk
+        self.dump_states(filepath)
+
+        # return the components
+        states = json.loads(filepath.read_text())
+
+        # cleanup
+        filepath.unlink()
+
+        return states
 
     def predict_single(self, sequence: Sequence) -> list[str]:
         """Predict most likely labels for a given sequence of tokens.
@@ -277,12 +315,22 @@ class Model:
         """
         return [self.predict_proba_single(sequence) for sequence in sequences]
 
-    def dump(self, filepath: Filepath):
-        """Dump labels, attributes, transitions and state features as plain text.
+    def dump_transitions(self, filepath: Filepath):
+        """Dump learned transitions with weights as JSON.
 
         Parameters
         ----------
         filepath : Filepath
-            File to dump model to.
+            File to dump transitions to.
         """
-        self._model.dump(filepath)
+        self._model.dump_transitions(filepath)
+
+    def dump_states(self, filepath: Filepath):
+        """Dump learned states with weights as JSON.
+
+        Parameters
+        ----------
+        filepath : Filepath
+            File to dump states to.
+        """
+        self._model.dump_states(filepath)

@@ -5,8 +5,27 @@ chaine.api
 This module implements the high-level API to train a conditional random field.
 """
 
+import random
+import statistics
+import time
+from operator import itemgetter
+from typing import Callable, Optional, Union
+
 from chaine.crf import Model, Trainer
+from chaine.logging import Logger
+from chaine.optimization import (
+    APSearchSpace,
+    AROWSearchSpace,
+    L2SGDSearchSpace,
+    LBFGSSearchSpace,
+    PASearchSpace,
+    SearchSpace,
+)
+from chaine.optimization.metrics import evaluate
+from chaine.optimization.utils import cross_validation
 from chaine.typing import Filepath, Iterable, Labels, Sequence
+
+LOGGER = Logger(__name__)
 
 
 def train(
@@ -155,3 +174,104 @@ def train(
 
     # load and return the trained model
     return Model(model_filepath)
+
+
+def optimize(
+    dataset: Iterable[Sequence],
+    labels: Iterable[Labels],
+    spaces: list[SearchSpace] = [
+        AROWSearchSpace(),
+        APSearchSpace(),
+        LBFGSSearchSpace(),
+        L2SGDSearchSpace(),
+        PASearchSpace(),
+    ],
+    metric: str = "f1",
+    trials: int = 10,
+    cv: int = 5,
+    seed: Optional[int] = None,
+) -> dict[str, Union[str, int, float, bool]]:
+    """Optimize hyperparameters in a randomized manner on the given data set.
+
+    For each hyperparameter search space of a given optimization algorithm,
+
+    Parameters
+    ----------
+    dataset : Iterable[Sequence]
+        Instances of the given data set.
+    labels : Iterable[Labels]
+        Labels for the given data set.
+    spaces : list[SearchSpace]
+        Search space for a given algorithm.
+    metric : str, optional
+        Metric to optimize, by default "f1".
+    trials : int, optional
+        Number of trials for each search space, by default 10.
+    cv : int, optional
+        Number of folds for cross-validation, by default 5.
+    seed : Optional[int], optional
+        Random seed, by default None.
+
+    Returns
+    -------
+    dict[str, Union[str, int, float, bool]]
+        [description]
+    """
+    # set random seed
+    random.seed(seed)
+
+    # split data set for cross validation
+    splits = list(cross_validation(dataset, labels, n=cv))
+
+    results = []
+    for space in spaces:
+        for trial in range(trials):
+            LOGGER.info(f"Trial {trial + 1} for {space.algorithm}")
+
+            precision_scores = []
+            recall_scores = []
+            f1_scores = []
+            times = []
+
+            # randomly select hyperparameters
+            params = space.random_parameters()
+
+            for (train_dataset, train_labels), (test_dataset, test_labels) in splits:
+                # fire!
+                start = time.time()
+                trainer = Trainer(max_iterations=10, **params)
+                trainer.train(train_dataset, train_labels, model_filepath="optimization.crf")
+                end = time.time()
+
+                # evaluate model
+                model = Model("optimization.crf")
+
+                # tbd
+                predicted_labels = model.predict(test_dataset)
+
+                # tbd
+                scores = evaluate(test_labels, predicted_labels)
+
+                # tbd
+                precision_scores.append(scores["precision"])
+                recall_scores.append(scores["recall"])
+                f1_scores.append(scores["f1"])
+                times.append(end - start)
+
+            # save results
+            results.append(
+                {
+                    "mean_precision": statistics.mean(precision_scores),
+                    "stdev_precision": statistics.stdev(precision_scores),
+                    "mean_recall": statistics.mean(recall_scores),
+                    "stdev_recall": statistics.stdev(recall_scores),
+                    "mean_f1": statistics.mean(f1_scores),
+                    "stdev_f1": statistics.stdev(f1_scores),
+                    "mean_time": statistics.mean(times),
+                    "stdev_time": statistics.stdev(times),
+                }
+                | params
+            )
+
+    # sort results descending by score
+    return sorted(results, key=itemgetter(f"mean_{metric}"), reverse=True)

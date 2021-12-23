@@ -11,7 +11,7 @@ namespace CRFSuiteWrapper
     class Tagger : public CRFSuite::Tagger
     {
     public:
-        void dump(int fileno)
+        void dump_states(int fileno)
         {
             if (model == NULL)
             {
@@ -24,7 +24,28 @@ namespace CRFSuiteWrapper
                 throw std::runtime_error("Cannot open file");
             }
 
-            model->dump(model, file);
+            model->dump_states(model, file);
+
+            if (fclose(file))
+            {
+                throw std::runtime_error("Cannot close file");
+            };
+        }
+    public:
+        void dump_transitions(int fileno)
+        {
+            if (model == NULL)
+            {
+                throw std::runtime_error("Tagger is closed");
+            }
+
+            FILE *file = fdopen(fileno, "w");
+            if (!file)
+            {
+                throw std::runtime_error("Cannot open file");
+            }
+
+            model->dump_transitions(model, file);
 
             if (fclose(file))
             {

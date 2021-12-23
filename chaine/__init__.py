@@ -1,2 +1,2 @@
 from chaine import crf
-from chaine.training import train
+from chaine.training import train, optimize

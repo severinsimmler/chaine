@@ -1,8 +1,10 @@
+import json
 from pathlib import Path
 
 import pytest
 
 from chaine import crf
+
 
 @pytest.fixture
 def dataset() -> dict[str, list]:
@@ -41,6 +43,7 @@ def test_trainer_algorithm_selection():
 
     with pytest.raises(ValueError):
         crf.Trainer("foo")
+
 
 def test_special_param_values():
     trainer = crf.Trainer(
@@ -168,9 +171,7 @@ def test_model_predict(model: crf.Model, dataset: dict[str, list]):
 
 
 def test_model_predict_generator(model: crf.Model, dataset: dict[str, list]):
-    generator = (
-        (features for features in sequence) for sequence in dataset["sequences"]
-    )
+    generator = ((features for features in sequence) for sequence in dataset["sequences"])
     predicted = model.predict(generator)
     expected = dataset["labels"]
     assert predicted == expected
@@ -193,9 +194,27 @@ def test_model_predict_proba(model: crf.Model, dataset: dict[str, list]):
 
 
 def test_model_predict_proba_generator(model: crf.Model, dataset: dict[str, list]):
-    generator = (
-        (features for features in sequence) for sequence in dataset["sequences"]
-    )
+    generator = ((features for features in sequence) for sequence in dataset["sequences"])
     predicted = model.predict_proba(generator)
     expected = [[{"O": 1.0}, {"O": 1.0}] for _ in dataset["labels"]]
     assert predicted == expected
+
+
+def test_dump_transitions(model: crf.Model):
+    filepath = Path("transitions.json")
+
+    model.dump_transitions(filepath)
+    filepath.exists()
+
+    transitions = json.loads(filepath.read_text())
+    assert len(transitions) > 0
+
+
+def test_dump_states(model: crf.Model):
+    filepath = Path("states.json")
+
+    model.dump_states(filepath)
+    filepath.exists()
+
+    states = json.loads(filepath.read_text())
+    assert len(states) > 0

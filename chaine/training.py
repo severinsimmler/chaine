@@ -9,11 +9,10 @@ import random
 import statistics
 import time
 from operator import itemgetter
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 from chaine.crf import Model, Trainer
 from chaine.logging import Logger
-from chaine.metrics import evaluate_model
 from chaine.optimization import (
     APSearchSpace,
     AROWSearchSpace,
@@ -22,6 +21,7 @@ from chaine.optimization import (
     PASearchSpace,
     SearchSpace,
 )
+from chaine.optimization.metrics import evaluate
 from chaine.optimization.utils import cross_validation
 from chaine.typing import Filepath, Iterable, Labels, Sequence
 
@@ -221,41 +221,57 @@ def optimize(
     random.seed(seed)
 
     # split data set for cross validation
-    splits = cross_validation(dataset, labels, n=cv)
+    splits = list(cross_validation(dataset, labels, n=cv))
 
     results = []
     for space in spaces:
         for trial in range(trials):
             LOGGER.info(f"Trial {trial + 1} for {space.algorithm}")
 
-            scores = []
+            precision_scores = []
+            recall_scores = []
+            f1_scores = []
             times = []
 
-            for (train_dataset, train_labels), (test_dataset, test_labels) in splits:
-                # randomly select hyperparameters
-                params = space.random_parameters()
+            # randomly select hyperparameters
+            params = space.random_parameters()
 
+            for (train_dataset, train_labels), (test_dataset, test_labels) in splits:
                 # fire!
                 start = time.time()
-                trainer = Trainer(**params)
+                trainer = Trainer(max_iterations=10, **params)
                 trainer.train(train_dataset, train_labels, model_filepath="optimization.crf")
                 end = time.time()
 
                 # evaluate model
                 model = Model("optimization.crf")
-                scores.append(evaluate_model(model, test_dataset, test_labels, metric=metric))
+
+                # tbd
+                predicted_labels = model.predict(test_dataset)
+
+                # tbd
+                scores = evaluate(test_labels, predicted_labels)
+
+                # tbd
+                precision_scores.append(scores["precision"])
+                recall_scores.append(scores["recall"])
+                f1_scores.append(scores["f1"])
                 times.append(end - start)
 
             # save results
             results.append(
                 {
-                    "mean_score": statistics.mean(scores),
-                    "std_score": statistics.stdev(scores),
+                    "mean_precision": statistics.mean(precision_scores),
+                    "stdev_precision": statistics.stdev(precision_scores),
+                    "mean_recall": statistics.mean(recall_scores),
+                    "stdev_recall": statistics.stdev(recall_scores),
+                    "mean_f1": statistics.mean(f1_scores),
+                    "stdev_f1": statistics.stdev(f1_scores),
                     "mean_time": statistics.mean(times),
-                    "std_time": statistics.stdev(times),
+                    "stdev_time": statistics.stdev(times),
                 }
                 | params
             )
 
     # sort results descending by score
-    return sorted(results, key=itemgetter("score"), reverse=True)
+    return sorted(results, key=itemgetter(f"mean_{metric}"), reverse=True)

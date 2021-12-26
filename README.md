@@ -1,8 +1,6 @@
 # Chaine
 
-Linear-chain conditional random fields for natural language processing.
-
-Chaine is a modern and lightweight Python package built on top of a [C library](https://www.chokkan.org/software/crfsuite/). You can train conditional random fields for natural language processing tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition).
+Chaine is a modern, fast and lightweight Python library implementing linear-chain conditional random fields. Use it for sequence labeling tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition) or [part-of-speech tagging](https://en.wikipedia.org/wiki/Part-of-speech_tagging).
 
 The main goals of this project are:
 
@@ -10,7 +8,7 @@ The main goals of this project are:
 - **Efficiency**: Performance critical parts are written in C and thus [blazingly fast](http://www.chokkan.org/software/crfsuite/benchmark.html). Loading a model from disk and retrieving feature weights for inference is optimized for both [speed and memory](http://www.chokkan.org/software/cqdb/).
 - **Persistency**: Since we do not use `pickle` or `joblib` for serialization, a trained model will be compatible with all versions for eternity, because the underlying C library will not change. I promise.
 
-Chaine does not make use of any bloated third-party libraries (i.e. has zero external dependencies) and provides wheels (< 1 MB) for Linux, Windows and macOS. Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
+Chaine does not make use of any bloated third-party libraries (i.e. has zero external dependencies). Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 
 ```
 $ pip install chaine

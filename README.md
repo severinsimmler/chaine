@@ -30,7 +30,7 @@ Please refer to the paper by [Lafferty et al.](https://repository.upenn.edu/cgi/
 
 ## Usage
 
-Training and using a conditional random field (CRF) for inference is easy as:
+Training and using a conditional random field for inference is easy as:
 
 ```python
 >>> import chaine
@@ -113,9 +113,11 @@ or use the `Optimizer` class and have more control over the optimization process
 ```python
 >>> from chaine import Optimizer
 >>> from chaine.optimization import L2SGDSearchSpace
->>> optimizer = Optimizer(trials=50, spaces=[L2SGDSearchSpace()])
+>>> optimizer = Optimizer(trials=50, folds=5, spaces=[L2SGDSearchSpace()])
 >>> optimizer.optimize(tokens, labels)
 ```
+
+This will make 50 trails with 5-fold cross validation for the Stochastic Gradient Descent algorithm and return a sorted list of hyperparameters with evaluation stats.
 
 ### Inference
 

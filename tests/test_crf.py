@@ -16,7 +16,7 @@ def dataset() -> dict[str, list]:
 @pytest.fixture
 def serialized_model(tmpdir: Path, dataset: dict[str, list]) -> Path:
     trainer = crf.Trainer()
-    model_filepath = Path(tmpdir.join("model.crf"))
+    model_filepath = Path(tmpdir.join("model.chaine"))
     trainer.train(dataset["sequences"], dataset["labels"], model_filepath)
     return model_filepath
 
@@ -142,7 +142,7 @@ def test_arow_params():
 
 def test_training(tmpdir, dataset: dict[str, list]):
     trainer = crf.Trainer()
-    model_filepath = Path(tmpdir.join("model.crf"))
+    model_filepath = Path(tmpdir.join("model.chaine"))
     assert not model_filepath.exists()
 
     trainer.train(dataset["sequences"], dataset["labels"], model_filepath)

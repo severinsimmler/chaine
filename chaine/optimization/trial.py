@@ -4,7 +4,7 @@ import time
 import uuid
 from abc import abstractmethod
 from pathlib import Path
-from typing import Iterable, Iterator, Union
+from typing import Iterable, Iterator
 
 from chaine.crf import Model, Trainer
 from chaine.optimization.metrics import evaluate_predictions
@@ -41,14 +41,12 @@ class OptimizationTrial:
         self.time = []
 
     @abstractmethod
-    def __enter__(
-        self,
-    ) -> tuple[dict[str], Union[str, int, float, bool], dict[str, Union[float, bool]]]:
+    def __enter__(self) -> dict[str, dict]:
         """Train and evaluate a model.
 
         Returns
         -------
-        tuple[dict[str], Union[str, int, float, bool], dict[str, Union[float, bool]]]
+        dict[str, dict]
             Selected hyperparameters and evaluation scores.
         """
         if self.is_baseline:
@@ -77,16 +75,18 @@ class OptimizationTrial:
             self.time.append(end - start)
 
         # return both hyperparameters and evaluation metrics
-        return params, {
-            "mean_precision": statistics.mean(self.precision),
-            "stdev_precision": statistics.stdev(self.precision),
-            "mean_recall": statistics.mean(self.recall),
-            "stdev_recall": statistics.stdev(self.recall),
-            "mean_f1": statistics.mean(self.f1),
-            "stdev_f1": statistics.stdev(self.f1),
-            "mean_time": statistics.mean(self.time),
-            "stdev_time": statistics.stdev(self.time),
-            "is_baseline": self.is_baseline,
+        return {
+            "hyperparameters": params,
+            "stats": {
+                "mean_precision": statistics.mean(self.precision),
+                "stdev_precision": statistics.stdev(self.precision),
+                "mean_recall": statistics.mean(self.recall),
+                "stdev_recall": statistics.stdev(self.recall),
+                "mean_f1": statistics.mean(self.f1),
+                "stdev_f1": statistics.stdev(self.f1),
+                "mean_time": statistics.mean(self.time),
+                "stdev_time": statistics.stdev(self.time),
+            },
         }
 
     def __exit__(self, *args) -> bool:

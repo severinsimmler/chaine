@@ -7,7 +7,7 @@ A collection of type hints.
 
 from os import PathLike
 from pathlib import Path
-from typing import Any, Generator, Iterable, Optional, Union
+from typing import Iterable, Union
 
 Sequence = Iterable[dict[str, Union[str, int, float, bool]]]
 Labels = Iterable[str]

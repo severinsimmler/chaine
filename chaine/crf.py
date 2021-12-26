@@ -6,14 +6,26 @@ This module implements the trainer and model.
 """
 
 import json
+import random
 import tempfile
 import uuid
 from functools import cached_property
 from pathlib import Path
+from typing import Optional
 
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
 from chaine.logging import Logger
+from chaine.optimization import (
+    APSearchSpace,
+    AROWSearchSpace,
+    L2SGDSearchSpace,
+    LBFGSSearchSpace,
+    PASearchSpace,
+    SearchSpace,
+)
+from chaine.optimization.trial import OptimizationTrial
+from chaine.optimization.utils import cross_validation
 from chaine.typing import Filepath, Iterable, Labels, Sequence, Union
 
 LOGGER = Logger(__name__)
@@ -155,6 +167,7 @@ class Trainer:
         self,
         dataset: Iterable[Sequence],
         labels: Iterable[Labels],
+        *,
         model_filepath: Filepath,
     ):
         """Start training on the given data set.
@@ -165,7 +178,7 @@ class Trainer:
             Data set consisting of sequences of feature sets.
         labels : Iterable[Labels]
             Labels corresponding to each instance in the data set.
-        model_filepath : Filepath, optional (default=model.crf)
+        model_filepath : Filepath, optional (default=model.chaine)
             Path to model location.
         """
         LOGGER.info("Loading training data")
@@ -197,6 +210,98 @@ class Trainer:
             self._trainer.param2kwarg.get(name, name): self._trainer.get_param(name)
             for name in self._trainer.params
         }
+
+
+class Optimizer:
+    def __init__(
+        self,
+        trials: int = 10,
+        seed: Optional[int] = None,
+        metric: str = "f1",
+        folds: int = 5,
+        spaces: list[SearchSpace] = [
+            AROWSearchSpace(),
+            APSearchSpace(),
+            LBFGSSearchSpace(),
+            L2SGDSearchSpace(),
+            PASearchSpace(),
+        ],
+    ):
+        """Optimize hyperparameters in a randomized manner.
+
+        Parameters
+        ----------
+        trials : int, optional
+            Number of trials for an algorithm, by default 10.
+        seed : Optional[int], optional
+            Random seed, by default None.
+        metric : str, optional
+            Metric to sort the results by, by default "f1"..
+        folds : int, optional
+            Number of folds to split the data set into, by default 5.
+        spaces : list[SearchSpace], optional
+            Search spaces to select hyperparameters from, by default [AROWSearchSpace(),
+            APSearchSpace(), LBFGSSearchSpace(), L2SGDSearchSpace(), PASearchSpace()].
+        """
+        self.trials = trials
+        self.seed = seed
+        self.metric = metric
+        self.folds = folds
+        self.spaces = spaces
+        self.results = []
+
+    def optimize(
+        self, dataset: Iterable[Sequence], labels: Iterable[Labels]
+    ) -> list[dict[str, dict]]:
+        """Optimize hyperparameters on the given data set.
+
+        Parameters
+        ----------
+        dataset : Iterable[Sequence]
+            Data set to train models on.
+        labels : Iterable[Labels]
+            Labels to train models on.
+
+        Returns
+        -------
+        list[dict[str, dict]]
+            Sorted list of hyperparameters and evaluation scores.
+        """
+        # set random seed
+        random.seed(self.seed)
+
+        # split data set for cross validation
+        splits = list(cross_validation(dataset, labels, n=self.folds))
+
+        for space in self.spaces:
+            LOGGER.info(f"Training baseline for {space.algorithm}")
+
+            with OptimizationTrial(splits, space, is_baseline=True) as trial:
+                self.results.append(trial)
+
+            for i in range(self.trials):
+                LOGGER.info(f"Trial {i + 1} for {space.algorithm}")
+
+                with OptimizationTrial(splits, space, is_baseline=False) as trial:
+                    self.results.append(trial)
+
+        # sort results descending by specified metrics
+        return sorted(self.results, key=self._metric, reverse=True)
+
+    def _metric(self, trial: dict[str, dict]) -> float:
+        """Metric so select for sorting.
+
+        Parameters
+        ----------
+        trial : dict[str, dict]
+            Optimization trial result.
+
+        Returns
+        -------
+        float
+            Metric.
+        """
+        return trial["hyperparameters"][f"{self.metric}_mean"]
 
 
 class Model:

@@ -139,9 +139,11 @@ if __name__ == "__main__":
     LOGGER.info(f"Number of sentences for evaluation: {len(dataset['test']['tokens'])}")
 
     LOGGER.info("Extracting features from dataset for training")
-    sentences = featurize_dataset(dataset["train"])
-    labels = preprocess_labels(dataset["train"])
+    sentences = featurize_dataset(dataset["test"])
+    labels = preprocess_labels(dataset["test"])
 
-    report = chaine.optimize(sentences, labels, [LBFGSSearchSpace()], cv=2, trials=4)
+    report = chaine.optimize(sentences, labels, folds=3, trials=5)
 
-    print(report)
+    import pandas as pd
+
+    print(pd.DataFrame(report))

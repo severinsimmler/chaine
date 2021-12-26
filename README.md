@@ -6,9 +6,9 @@ The main goals of this project are:
 
 - **Usability**: Designed with special focus on usability and a beautiful high-level API.
 - **Efficiency**: Performance critical parts are written in C and thus [blazingly fast](http://www.chokkan.org/software/crfsuite/benchmark.html). Loading a model from disk and retrieving feature weights for inference is optimized for both [speed and memory](http://www.chokkan.org/software/cqdb/).
-- **Persistency**: Since we do not use `pickle` or `joblib` for serialization, a trained model will be compatible with all versions for eternity, because the underlying C library will not change. I promise.
+- **Persistency**: Since no `pickle` or `joblib` is used for serialization, a trained model will be compatible with all versions for eternity, because the underlying C library will not change. I promise.
 
-Chaine does not make use of any bloated third-party libraries (i.e. has zero external dependencies). Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
+Chaine does not make use of any bloated third-party libraries and has no external dependencies at all. Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 
 ```
 $ pip install chaine
@@ -16,7 +16,7 @@ $ pip install chaine
 
 ## Algorithms
 
-You can train conditional random fields using the following training methods:
+You can train conditional random fields using the following methods:
 
 - Limited-Memory BFGS ([Nocedal 1980](https://www.jstor.org/stable/2006193))
 - Orthant-Wise Limited-Memory Quasi-Newton ([Andrew et al. 2007](https://www.microsoft.com/en-us/research/publication/scalable-training-of-l1-regularized-log-linear-models/))
@@ -35,7 +35,7 @@ Training and using a conditional random field (CRF) for inference is easy as:
 >>> import chaine
 >>> tokens = [[{"index": 0, "text": "John"}, {"index": 1, "text": "Lennon"}]]
 >>> labels = [["B-PER", "I-PER"]]
->>> model = chaine.train(tokens, labels, max_iterations=5)
+>>> model = chaine.train(tokens, labels)
 >>> model.predict(tokens)
 [['B-PER', 'I-PER']]
 ```
@@ -92,7 +92,7 @@ or the lower-level `Trainer` class:
 >>> trainer = Trainer()
 ```
 
-A `Trainer` object has a method `train()` to learn states and transitions from the given data set. You also have to provide a filepath to serialize the model to:
+A `Trainer` object has a method `train()` to learn states and transitions from the given data set. You have to provide a filepath to serialize the model to:
 
 ```python
 >>> trainer.train(tokens, labels, model_filepath="model.chaine")
@@ -100,14 +100,21 @@ A `Trainer` object has a method `train()` to learn states and transitions from t
 
 ### Hyperparameters
 
-Before training a model, you might want to find out the ideal hyperparameter settings first. Use the randomized hyperparameter optimization:
+Before training a model, you might want to find out the ideal hyperparameters first. You can just set the respective argument to `True`:
 
 ```python
 >>> import chaine
->>> results = chaine.optimize(tokens, labels)
+>>> model = chaine.train(tokens, labels, optimize=True)
 ```
 
-This function performs a k-fold cross validation and compares all supported algorithms with randomly chosen hyperparameters.
+or use the `Optimizer` class and have more control over the optimization process:
+
+```python
+>>> from chaine import Optimizer
+>>> from chaine.optimization import L2SGDSearchSpace
+>>> optimizer = Optimizer(trials=50, spaces=[L2SGDSearchSpace()])
+>>> optimizer.optimize(tokens, labels)
+```
 
 ### Inference
 

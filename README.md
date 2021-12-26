@@ -24,7 +24,7 @@ You can train conditional random fields using the following methods:
 - Stochastic Gradient Descent ([Shalev et al. 2007](https://www.google.com/url?q=https://www.cs.huji.ac.il/~shais/papers/ShalevSiSr07.pdf))
 - Averaged Perceptron ([Collins 2002](https://aclanthology.org/W02-1001.pdf))
 - Passive Aggressive ([Crammer et al. 2006](https://jmlr.csail.mit.edu/papers/v7/crammer06a.html))
-- Adaptive Regularization of Weight Vector ([Mejer et al. 2010](https://aclanthology.org/D10-1095.pdf))
+- Adaptive Regularization of Weight Vectors ([Mejer et al. 2010](https://aclanthology.org/D10-1095.pdf))
 
 Please refer to the paper by [Lafferty et al.](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers) for a general introduction to conditional random fields.
 

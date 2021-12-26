@@ -16,7 +16,7 @@ from typing import Optional
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
 from chaine.logging import Logger
-from chaine.optimization import (
+from chaine.optimization.spaces import (
     APSearchSpace,
     AROWSearchSpace,
     L2SGDSearchSpace,
@@ -25,8 +25,9 @@ from chaine.optimization import (
     SearchSpace,
 )
 from chaine.optimization.trial import OptimizationTrial
-from chaine.optimization.utils import cross_validation
+from chaine.optimization.utils import cross_validation, downsample
 from chaine.typing import Filepath, Iterable, Labels, Sequence, Union
+from chaine.validation import is_valid_sequence
 
 LOGGER = Logger(__name__)
 
@@ -183,6 +184,9 @@ class Trainer:
         """
         LOGGER.info("Loading training data")
         for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
+            if not is_valid_sequence(sequence):
+                raise ValueError(f"Invalid format: {sequence}")
+
             # log progress every 100 data points
             if i > 0 and i % 100 == 0:
                 LOGGER.debug(f"{i} processed data points")
@@ -251,7 +255,10 @@ class Optimizer:
         self.results = []
 
     def optimize(
-        self, dataset: Iterable[Sequence], labels: Iterable[Labels]
+        self,
+        dataset: Iterable[Sequence],
+        labels: Iterable[Labels],
+        sample_size: Optional[int] = None,
     ) -> list[dict[str, dict]]:
         """Optimize hyperparameters on the given data set.
 
@@ -261,6 +268,8 @@ class Optimizer:
             Data set to train models on.
         labels : Iterable[Labels]
             Labels to train models on.
+        sample_size : Optional[int]
+            tbd
 
         Returns
         -------
@@ -269,6 +278,10 @@ class Optimizer:
         """
         # set random seed
         random.seed(self.seed)
+
+        # tbd
+        if sample_size:
+            dataset, labels = downsample(dataset, labels, sample_size, self.seed)
 
         # split data set for cross validation
         splits = list(cross_validation(dataset, labels, n=self.folds))
@@ -285,7 +298,7 @@ class Optimizer:
                 with OptimizationTrial(splits, space, is_baseline=False) as trial:
                     self.results.append(trial)
 
-        # sort results descending by specified metrics
+        # sort results descending by specified metric
         return sorted(self.results, key=self._metric, reverse=True)
 
     def _metric(self, trial: dict[str, dict]) -> float:
@@ -299,9 +312,9 @@ class Optimizer:
         Returns
         -------
         float
-            Metric.
+            Metric score.
         """
-        return trial["hyperparameters"][f"{self.metric}_mean"]
+        return trial["stats"][f"mean_{self.metric}"]
 
 
 class Model:
@@ -371,6 +384,9 @@ class Model:
         list[str]
             Most likely label sequence.
         """
+        if not is_valid_sequence(sequence):
+            raise ValueError(f"Invalid format: {sequence}")
+
         return self._model.predict_single(sequence)
 
     def predict(self, sequences: Iterable[Sequence]) -> list[list[str]]:
@@ -401,8 +417,9 @@ class Model:
         list[dict[str, float]]
             Probability distributions over all labels for each token.
         """
-        if not isinstance(sequence, list):
-            sequence = list(sequence)
+        if not is_valid_sequence(sequence):
+            raise ValueError(f"Invalid format: {sequence}")
+
         return self._model.predict_proba_single(sequence)
 
     def predict_proba(self, sequences: Iterable[Sequence]) -> list[list[dict[str, float]]]:

@@ -1,7 +1,7 @@
 import random
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Union
 
 from chaine.typing import Labels, Sequence
 
@@ -68,3 +68,46 @@ class NumberSeries(Iterable):
             yield from [self.start + self.step * i for i in range(n + 1)]
         elif n == 1:
             yield self.start
+
+
+def downsample(
+    dataset: Iterable[Sequence], labels: Iterable[Labels], n: int, seed: Optional[int] = None
+) -> tuple[Iterable[Sequence], Iterable[Labels]]:
+    """[summary]
+
+    Parameters
+    ----------
+    dataset : Iterable[Sequence]
+        [description]
+    labels : Iterable[Labels]
+        [description]
+    n : int
+        [description]
+    seed : Optional[int], optional
+        [description], by default None
+
+    Returns
+    -------
+    tuple[Iterable[Sequence], Iterable[Labels]]
+        [description]
+
+    Raises
+    ------
+    ValueError
+        [description]
+    """
+    if len(dataset) < n:
+        raise ValueError("Data set is too small")
+
+    # tbd
+    indices = list(range(len(dataset)))
+
+    # tbd
+    random.seed(seed)
+    sample = set(random.sample(indices, n))
+
+    # tbd
+    dataset = [s for i, s in enumerate(dataset) if i in sample]
+    labels = [l for i, l in enumerate(labels) if i in sample]
+
+    return dataset, labels

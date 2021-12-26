@@ -8,16 +8,6 @@ This module implements the high-level API to train a conditional random field.
 
 from chaine.crf import Model, Optimizer, Trainer
 from chaine.logging import Logger
-from chaine.optimization import (
-    APSearchSpace,
-    AROWSearchSpace,
-    L2SGDSearchSpace,
-    LBFGSSearchSpace,
-    PASearchSpace,
-    SearchSpace,
-)
-from chaine.optimization.trial import Trial
-from chaine.optimization.utils import cross_validation
 from chaine.typing import Filepath, Iterable, Labels, Sequence
 
 LOGGER = Logger(__name__)

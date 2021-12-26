@@ -19,13 +19,13 @@ class SearchSpace(ABC):
 class LBFGSSearchSpace(SearchSpace):
     def __init__(
         self,
-        min_freq: NumberSeries = NumberSeries(start=0, stop=100, step=1),
-        num_memories: NumberSeries = NumberSeries(start=0, stop=20, step=1),
+        min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
+        num_memories: NumberSeries = NumberSeries(start=0, stop=10, step=1),
         c1: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
         c2: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
-        epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
+        epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         period: NumberSeries = NumberSeries(start=0, stop=20, step=1),
-        delta: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
+        delta: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         max_linesearch: NumberSeries = NumberSeries(start=0, stop=50, step=1),
         linesearch: set[str] = {"MoreThuente", "Backtracking", "StrongBacktracking"},
         all_possible_states: set[bool] = {True, False},
@@ -74,17 +74,17 @@ class LBFGSSearchSpace(SearchSpace):
 class L2SGDSearchSpace(SearchSpace):
     def __init__(
         self,
-        min_freq: NumberSeries = NumberSeries(start=0, stop=100, step=1),
+        min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
         all_possible_states: set[bool] = {True, False},
         all_possible_transitions: set[bool] = {True, False},
         c2: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
         period: NumberSeries = NumberSeries(start=0, stop=20, step=1),
-        delta: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
-        calibration_eta: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
-        calibration_rate: NumberSeries = NumberSeries(start=0.0, stop=5.0, step=0.1),
-        calibration_samples: NumberSeries = NumberSeries(start=100, stop=5000, step=10),
-        calibration_candidates: NumberSeries = NumberSeries(start=1, stop=50, step=1),
-        calibration_max_trials: NumberSeries = NumberSeries(start=1, stop=50, step=1),
+        delta: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
+        calibration_eta: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
+        calibration_rate: NumberSeries = NumberSeries(start=0.5, stop=5.0, step=0.1),
+        calibration_samples: NumberSeries = NumberSeries(start=100, stop=3000, step=10),
+        calibration_candidates: NumberSeries = NumberSeries(start=1, stop=30, step=1),
+        calibration_max_trials: NumberSeries = NumberSeries(start=1, stop=30, step=1),
     ):
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
@@ -129,10 +129,10 @@ class L2SGDSearchSpace(SearchSpace):
 class APSearchSpace(SearchSpace):
     def __init__(
         self,
-        min_freq: NumberSeries = NumberSeries(start=0, stop=100, step=1),
+        min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
         all_possible_states: set[bool] = {True, False},
         all_possible_transitions: set[bool] = {True, False},
-        epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
+        epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
     ):
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
@@ -163,10 +163,10 @@ class APSearchSpace(SearchSpace):
 class PASearchSpace(SearchSpace):
     def __init__(
         self,
-        min_freq: NumberSeries = NumberSeries(start=0, stop=100, step=1),
+        min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
         all_possible_states: set[bool] = {True, False},
         all_possible_transitions: set[bool] = {True, False},
-        epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
+        epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         pa_type: NumberSeries = {0, 1, 2},
         c: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
         error_sensitive: set[bool] = {True, False},
@@ -209,12 +209,12 @@ class PASearchSpace(SearchSpace):
 class AROWSearchSpace(SearchSpace):
     def __init__(
         self,
-        min_freq: NumberSeries = NumberSeries(start=0, stop=100, step=1),
+        min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
         all_possible_states: set[bool] = {True, False},
         all_possible_transitions: set[bool] = {True, False},
-        epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
-        variance: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
-        gamma: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
+        epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
+        variance: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
+        gamma: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
     ):
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states

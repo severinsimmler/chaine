@@ -6,7 +6,6 @@ from abc import abstractmethod
 from pathlib import Path
 from typing import Iterable, Iterator
 
-from chaine.crf import Model, Trainer
 from chaine.optimization.metrics import evaluate_predictions
 from chaine.optimization.spaces import SearchSpace
 from chaine.typing import Labels, Sequence
@@ -49,6 +48,8 @@ class OptimizationTrial:
         dict[str, dict]
             Selected hyperparameters and evaluation scores.
         """
+        from chaine.crf import Model, Trainer
+
         if self.is_baseline:
             # default hyperparameters as baseline
             params = {"algorithm": self.space.algorithm}
@@ -90,7 +91,7 @@ class OptimizationTrial:
         }
 
     def __exit__(self, *args) -> bool:
-        # remove model
+        # clean up
         if self.model_filepath.exists():
             self.model_filepath.unlink()
 

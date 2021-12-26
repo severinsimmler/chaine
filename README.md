@@ -2,7 +2,7 @@
 
 Linear-chain conditional random fields for natural language processing.
 
-Chaine is a modern, lightweight Python package without third-party dependencies – built on top of a [C library](https://www.chokkan.org/software/crfsuite/). You can train conditional random fields for natural language processing tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition).
+Chaine is a modern and lightweight Python package without third-party dependencies – built on top of a [C library](https://www.chokkan.org/software/crfsuite/). You can train conditional random fields for natural language processing tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition).
 
 The main goals of this project are:
 

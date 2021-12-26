@@ -10,7 +10,7 @@ The main goals of this project are:
 - **Efficiency**: Performance critical parts are written in C and thus [blazingly fast](http://www.chokkan.org/software/crfsuite/benchmark.html). Loading a model from disk and retrieving feature weights for inference is optimized for both [speed and memory](http://www.chokkan.org/software/cqdb/).
 - **Persistency**: Since we do not use `pickle` or `joblib` for serialization, a trained model will be compatible with all versions for eternity, because the underlying C library will not change. I promise.
 
-Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
+Chaine does not make use of any bloated third-party libraries (i.e. has zero external dependencies) and provides wheels (< 1 MB) for Linux, Windows and macOS. Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 
 ```
 $ pip install chaine

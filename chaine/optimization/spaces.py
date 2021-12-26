@@ -12,7 +12,7 @@ class SearchSpace(ABC):
         ...
 
     @abstractmethod
-    def random_parameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
         ...
 
 
@@ -47,7 +47,14 @@ class LBFGSSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "lbfgs"
 
-    def random_parameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+        """Select random hyperparameters from the search space.
+
+        Returns
+        -------
+        dict[str, Union[int, float, bool, str]]
+            Randomly selected hyperparameters.
+        """
         return {
             "algorithm": self.algorithm,
             "min_freq": random.choice(list(self.min_freq)),
@@ -95,7 +102,14 @@ class L2SGDSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "l2sgd"
 
-    def random_parameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+        """Select random hyperparameters from the search space.
+
+        Returns
+        -------
+        dict[str, Union[int, float, bool, str]]
+            Randomly selected hyperparameters.
+        """
         return {
             "algorithm": self.algorithm,
             "min_freq": random.choice(list(self.min_freq)),
@@ -129,7 +143,14 @@ class APSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "ap"
 
-    def random_parameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+        """Select random hyperparameters from the search space.
+
+        Returns
+        -------
+        dict[str, Union[int, float, bool, str]]
+            Randomly selected hyperparameters.
+        """
         return {
             "algorithm": self.algorithm,
             "min_freq": random.choice(list(self.min_freq)),
@@ -148,7 +169,7 @@ class PASearchSpace(SearchSpace):
         epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.1, step=0.00001),
         pa_type: NumberSeries = {0, 1, 2},
         c: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
-        errors_sensitive: set[bool] = {True, False},
+        error_sensitive: set[bool] = {True, False},
         averaging: set[bool] = {True, False},
     ):
         self.min_freq = min_freq
@@ -157,14 +178,21 @@ class PASearchSpace(SearchSpace):
         self.epsilon = epsilon
         self.pa_type = pa_type
         self.c = c
-        self.errors_sensitive = errors_sensitive
+        self.error_sensitive = error_sensitive
         self.averaging = averaging
 
     @property
     def algorithm(self) -> str:
         return "pa"
 
-    def random_parameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+        """Select random hyperparameters from the search space.
+
+        Returns
+        -------
+        dict[str, Union[int, float, bool, str]]
+            Randomly selected hyperparameters.
+        """
         return {
             "algorithm": self.algorithm,
             "min_freq": random.choice(list(self.min_freq)),
@@ -173,7 +201,7 @@ class PASearchSpace(SearchSpace):
             "epsilon": random.choice(list(self.epsilon)),
             "pa_type": random.choice(list(self.pa_type)),
             "c": random.choice(list(self.c)),
-            "errors_sensitive": random.choice(list(self.errors_sensitive)),
+            "error_sensitive": random.choice(list(self.error_sensitive)),
             "averaging": random.choice(list(self.averaging)),
         }
 
@@ -199,7 +227,14 @@ class AROWSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "arow"
 
-    def random_parameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+        """Select random hyperparameters from the search space.
+
+        Returns
+        -------
+        dict[str, Union[int, float, bool, str]]
+            Randomly selected hyperparameters.
+        """
         return {
             "algorithm": self.algorithm,
             "min_freq": random.choice(list(self.min_freq)),

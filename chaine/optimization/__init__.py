@@ -7,3 +7,4 @@ from chaine.optimization.spaces import (
     PASearchSpace,
     SearchSpace,
 )
+from chaine.optimization.trial import OptimizationTrial

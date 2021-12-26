@@ -69,7 +69,7 @@ def calculate_f1(true_positives: int, false_positives: int, false_negatives: int
         return 0.0
 
 
-def evaluate(true: list[list[str]], pred: list[list[str]]) -> dict[str, float]:
+def evaluate_predictions(true: list[list[str]], pred: list[list[str]]) -> dict[str, float]:
     """Evaluate the given predictions with the true labels.
 
     Parameters
@@ -91,6 +91,7 @@ def evaluate(true: list[list[str]], pred: list[list[str]]) -> dict[str, float]:
         # ignore prefixes
         a = [label.removeprefix("B-").removeprefix("I-") for label in a]
         b = [label.removeprefix("B-").removeprefix("I-") for label in b]
+
         for t, p in zip(a, b):
             if t == "O" and t == p:
                 counts["tn"] += 1

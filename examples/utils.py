@@ -1,36 +1,22 @@
-from typing import Any, Union
-
-import datasets
-
-import chaine
-from chaine.logging import Logger
-
-# type hints
-Sentence = list[str]
-Tags = list[str]
-Features = dict[str, Union[float, int, str, bool]]
-Dataset = dict[str, dict[str, Any]]
-
-# consistent logging
-LOGGER = Logger(__name__)
+from chaine.typing import Dataset, Features, Sentence, Tags
 
 
 def featurize_token(token_index: int, sentence: Sentence, pos_tags: Tags) -> Features:
-    """Extract features from a token in a sentence
+    """Extract features from a token in a sentence.
 
     Parameters
     ----------
     token_index : int
-        Index of the token to featurize in the sentence
+        Index of the token to featurize in the sentence.
     sentence : Sentence
-        Sequence of tokens
+        Sequence of tokens.
     pos_tags : Tags
-        Sequence of part-of-speech tags corresponding to the tokens in the sentence
+        Sequence of part-of-speech tags corresponding to the tokens in the sentence.
 
     Returns
     -------
     Features
-        Features representing the token
+        Features representing the token.
     """
     token = sentence[token_index]
     pos_tag = pos_tags[token_index]
@@ -73,19 +59,19 @@ def featurize_token(token_index: int, sentence: Sentence, pos_tags: Tags) -> Fea
 
 
 def featurize_sentence(sentence: Sentence, pos_tags: Tags) -> list[Features]:
-    """Extract features from tokens in a sentence
+    """Extract features from tokens in a sentence.
 
     Parameters
     ----------
     sentence : Sentence
-        Sequence of tokens
+        Sequence of tokens.
     pos_tags : Tags
-        Sequence of part-of-speech tags corresponding to the tokens in the sentence
+        Sequence of part-of-speech tags corresponding to the tokens in the sentence.
 
     Returns
     -------
     list[Features]
-        List of features representing tokens of a sentence
+        List of features representing tokens of a sentence.
     """
     return [
         featurize_token(token_index, sentence, pos_tags) for token_index in range(len(sentence))
@@ -93,17 +79,17 @@ def featurize_sentence(sentence: Sentence, pos_tags: Tags) -> list[Features]:
 
 
 def featurize_dataset(dataset: Dataset) -> list[list[Features]]:
-    """Extract features from sentences in a dataset
+    """Extract features from sentences in a dataset.
 
     Parameters
     ----------
     dataset : Dataset
-        Dataset to featurize
+        Dataset to featurize.
 
     Returns
     -------
     list[list[Features]]
-        Featurized dataset
+        Featurized dataset.
     """
     return [
         featurize_sentence(sentence, pos_tags)
@@ -112,17 +98,17 @@ def featurize_dataset(dataset: Dataset) -> list[list[Features]]:
 
 
 def preprocess_labels(dataset: Dataset) -> list[list[str]]:
-    """Translate raw labels (i.e. integers) to the respective string labels
+    """Translate raw labels (i.e. integers) to the respective string labels.
 
     Parameters
     ----------
     dataset : Dataset
-        Dataset to preprocess labels
+        Dataset to preprocess labels.
 
     Returns
     -------
     list[list[Features]]
-        Preprocessed labels
+        Preprocessed labels.
     """
     labels = dataset.features["ner_tags"].feature.names
     return [[labels[index] for index in indices] for indices in dataset["ner_tags"]]

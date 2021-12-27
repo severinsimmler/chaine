@@ -11,6 +11,7 @@ import tempfile
 import uuid
 from functools import cached_property
 from pathlib import Path
+from operator import itemgetter
 
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
@@ -252,6 +253,7 @@ class Optimizer:
         self.folds = folds
         self.spaces = spaces
         self.results = []
+        self.baselines = []
 
     def optimize(
         self,
@@ -275,11 +277,6 @@ class Optimizer:
         list[dict[str, dict]]
             Sorted list of hyperparameters and evaluation scores.
         """
-        from chaine.crf import LOGGER as _LOGGER
-
-        # disable logger
-        _LOGGER.set_level("ERROR")
-
         # set random seed
         random.seed(self.seed)
 
@@ -295,6 +292,7 @@ class Optimizer:
 
             with OptimizationTrial(splits, space, is_baseline=True) as trial:
                 self.results.append(trial)
+                self.baselines.append(trial["stats"])
 
             for j in range(self.trials):
                 LOGGER.info(f"Trial {j + 1}/{self.trials} for {space.algorithm}")
@@ -302,11 +300,16 @@ class Optimizer:
                 with OptimizationTrial(splits, space, is_baseline=False) as trial:
                     self.results.append(trial)
 
-        # reset log level
-        _LOGGER.set_level("INFO")
-
         # sort results descending by specified metric
-        return sorted(self.results, key=self._metric, reverse=True)
+        results = sorted(self.results, key=self._metric, reverse=True)
+
+        # best baseline
+        baselines = sorted(self.baselines, key=itemgetter(f"mean_{self.metric}"))[0]
+
+        LOGGER.info(f"Best baseline: {baselines[0][f'mean_{self.metric}']}")
+        LOGGER.info(f"Best optimized model: {results[0]['stats'][f'mean_{self.metric}']}")
+
+        return results
 
     def _metric(self, trial: dict[str, dict]) -> float:
         """Metric so select for sorting.

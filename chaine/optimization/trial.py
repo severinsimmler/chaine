@@ -54,10 +54,7 @@ class OptimizationTrial:
         dict[str, dict]
             Selected hyperparameters and evaluation scores.
         """
-        from chaine.crf import LOGGER, Model, Trainer
-
-        # set logger to debug
-        LOGGER.set_level("DEBUG")
+        from chaine.crf import Model, Trainer
 
         if self.is_baseline:
             # default hyperparameters as baseline

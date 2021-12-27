@@ -8,16 +8,17 @@ from chaine.logging import Logger
 LOGGER = Logger(__name__)
 
 if __name__ == "__main__":
-    LOGGER.info("Loading raw dataset")
+    LOGGER.info("Loading raw data set")
     dataset = datasets.load_dataset("conll2003")
 
     LOGGER.info(f"Number of sentences for training: {len(dataset['train']['tokens'])}")
     LOGGER.info(f"Number of sentences for evaluation: {len(dataset['test']['tokens'])}")
 
-    LOGGER.info("Extracting features from dataset for training")
+    LOGGER.info("Extracting features from train set for training")
     sentences = featurize_dataset(dataset["train"])
     labels = preprocess_labels(dataset["train"])
 
+    LOGGER.info("Starting training")
     model = chaine.train(
         sentences,
         labels,
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         calibration_max_trials=20,  # number of trials of learning rates for calibration
     )
 
-    LOGGER.info("Extracting features from dataset for evaluation")
+    LOGGER.info("Extracting features from test set for evaluation")
     sentences = featurize_dataset(dataset["test"])
     labels = preprocess_labels(dataset["test"])
 

@@ -7,7 +7,7 @@ The main goals of this project are:
 - **Usability**: Designed with special focus on usability and a beautiful high-level API.
 - **Efficiency**: Performance critical parts are written in C and thus [blazingly fast](http://www.chokkan.org/software/crfsuite/benchmark.html). Loading a model from disk and retrieving feature weights for inference is optimized for both [speed and memory](http://www.chokkan.org/software/cqdb/).
 - **Persistency**: Since no `pickle` or `joblib` is used for serialization, a trained model will be compatible with all versions for eternity, because the underlying C library will not change. I promise.
-- **Minimalism**: No use of bloated third-party libraries and no external dependencies at all.
+- **Minimalism**: No code bloat, no external dependencies.
 
 Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 
@@ -17,7 +17,7 @@ $ pip install chaine
 
 ## Algorithms
 
-You can train conditional random fields using the following methods:
+You can train models using the following methods:
 
 - Limited-Memory BFGS ([Nocedal 1980](https://www.jstor.org/stable/2006193))
 - Orthant-Wise Limited-Memory Quasi-Newton ([Andrew et al. 2007](https://www.microsoft.com/en-us/research/publication/scalable-training-of-l1-regularized-log-linear-models/))
@@ -54,13 +54,13 @@ One token in a sequence is represented as a dictionary with describing feature n
 }
 ```
 
-One sequence is represented as an iterable of feature dictionaries:
+One sequence is represented as a list of feature dictionaries:
 
 ```python
 [{"text": "John"}, {"text": "Lennon"}]
 ```
 
-One data set is represented as an iterable of an iterable of feature dictionaries:
+One data set is represented as an iterable of a list of feature dictionaries:
 
 ```python
 [[{"text": "John"}, {"text": "Lennon"}]]
@@ -108,16 +108,18 @@ Before training a model, you might want to find out the ideal hyperparameters fi
 >>> model = chaine.train(tokens, labels, optimize=True)
 ```
 
+> This might be very memory and time consuming, because 5-fold cross validation for each of the 10 trials for each of the algorithms is performed.
+
 or use the `Optimizer` class and have more control over the optimization process:
 
 ```python
 >>> from chaine import Optimizer
 >>> from chaine.optimization import L2SGDSearchSpace
->>> optimizer = Optimizer(trials=50, folds=5, spaces=[L2SGDSearchSpace()])
->>> optimizer.optimize(tokens, labels)
+>>> optimizer = Optimizer(trials=50, folds=3, spaces=[L2SGDSearchSpace()])
+>>> optimizer.optimize(tokens, labels, sample_size=1000)
 ```
 
-This will make 50 trails with 5-fold cross validation for the Stochastic Gradient Descent algorithm and return a sorted list of hyperparameters with evaluation stats.
+This will make 50 trails with 3-fold cross validation for the Stochastic Gradient Descent algorithm and return a sorted list of hyperparameters with evaluation stats. The given data set is downsampled to 1000 instances.
 
 ### Inference
 

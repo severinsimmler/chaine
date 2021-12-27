@@ -1,6 +1,6 @@
 """
-chaine.api
-~~~~~~~~~~
+chaine.training
+~~~~~~~~~~~~~~~
 
 This module implements the high-level API to train a conditional random field.
 """
@@ -158,10 +158,10 @@ def train(
     """
     if optimize:
         # optionally tune hyperparameters first
-        hyperparamers = Optimizer().optimize(dataset, labels)["hyperparameters"]
+        hyperparameters = Optimizer().optimize(dataset, labels)["hyperparameters"]
 
     # initialize trainer and start training
-    trainer = Trainer(**hyperparamers)
+    trainer = Trainer(**hyperparameters)
     trainer.train(dataset, labels, model_filepath=str(model_filepath))
 
     # load and return the trained model

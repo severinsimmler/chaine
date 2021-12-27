@@ -1,3 +1,10 @@
+"""
+chaine.optimization.spaces
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module implements hyperparameter search spaces for the different training methods.
+"""
+
 import random
 from abc import ABC, abstractmethod
 
@@ -20,17 +27,55 @@ class LBFGSSearchSpace(SearchSpace):
     def __init__(
         self,
         min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
-        num_memories: NumberSeries = NumberSeries(start=0, stop=10, step=1),
+        num_memories: NumberSeries = NumberSeries(start=1, stop=10, step=1),
         c1: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
         c2: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
         epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
-        period: NumberSeries = NumberSeries(start=0, stop=20, step=1),
+        period: NumberSeries = NumberSeries(start=1, stop=20, step=1),
         delta: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         max_linesearch: NumberSeries = NumberSeries(start=0, stop=50, step=1),
         linesearch: set[str] = {"MoreThuente", "Backtracking", "StrongBacktracking"},
         all_possible_states: set[bool] = {True, False},
         all_possible_transitions: set[bool] = {True, False},
     ):
+        """Hyperparameter search space for Limited-Memory BFGS.
+
+        Parameters
+        ----------
+        min_freq : NumberSeries, optional
+            Threshold value for minimum frequency of a feature occurring in training data,
+            by default NumberSeries(start=0, stop=5, step=1).
+        num_memories : NumberSeries, optional
+            Number of limited memories for approximating the inverse hessian matrix,
+            by default NumberSeries(start=1, stop=10, step=1)
+        c1 : NumberSeries, optional
+            Coefficient for L1 regularization,
+            by default NumberSeries(start=0.0, stop=2.0, step=0.01).
+        c2 : NumberSeries, optional
+            Coefficient for L2 regularization,
+            by default NumberSeries(start=0.0, stop=2.0, step=0.01).
+        epsilon : NumberSeries, optional
+            Parameter that determines the condition of convergence,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        period : NumberSeries, optional
+            Threshold value for iterations to test the stopping criterion,
+            by default NumberSeries(start=1, stop=20, step=1).
+        delta : NumberSeries, optional
+            Top iteration when log likelihood is not greater than this,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        max_linesearch : NumberSeries, optional
+            Maximum number of trials for the line search algorithm,
+            by default NumberSeries(start=0, stop=50, step=1).
+        linesearch : set[str], optional
+            Line search algorithm used in updates,
+            by default {"MoreThuente", "Backtracking", "StrongBacktracking"}.
+        all_possible_states : set[bool], optional
+            Generate state features that do not even occur in the training data,
+            by default {True, False}.
+        all_possible_transitions : set[bool], optional
+            Generate transition features that do not even occur in the training data,
+            by default {True, False}.
+        """
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
         self.all_possible_transitions = all_possible_transitions
@@ -78,7 +123,7 @@ class L2SGDSearchSpace(SearchSpace):
         all_possible_states: set[bool] = {True, False},
         all_possible_transitions: set[bool] = {True, False},
         c2: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
-        period: NumberSeries = NumberSeries(start=0, stop=20, step=1),
+        period: NumberSeries = NumberSeries(start=1, stop=20, step=1),
         delta: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         calibration_eta: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         calibration_rate: NumberSeries = NumberSeries(start=0.5, stop=5.0, step=0.1),
@@ -86,6 +131,44 @@ class L2SGDSearchSpace(SearchSpace):
         calibration_candidates: NumberSeries = NumberSeries(start=1, stop=30, step=1),
         calibration_max_trials: NumberSeries = NumberSeries(start=1, stop=30, step=1),
     ):
+        """Hyperparameter search space for SGD with L2 parameters.
+
+        Parameters
+        ----------
+        min_freq : NumberSeries, optional
+            Threshold value for minimum frequency of a feature occurring in training data,
+            by default NumberSeries(start=0, stop=5, step=1).
+        all_possible_states : set[bool], optional
+            Generate state features that do not even occur in the training data,
+            by default {True, False}.
+        all_possible_transitions : set[bool], optional
+            Generate transition features that do not even occur in the training data,
+            by default {True, False}.
+        c2 : NumberSeries, optional
+            Coefficient for L2 regularization,
+            by default NumberSeries(start=0.0, stop=2.0, step=0.01).
+        period : NumberSeries, optional
+            Threshold value for iterations to test the stopping criterion,
+            by default NumberSeries(start=1, stop=20, step=1).
+        delta : NumberSeries, optional
+            Top iteration when log likelihood is not greater than this,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        calibration_eta : NumberSeries, optional
+            Initial value of learning rate (eta) used for calibration,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        calibration_rate : NumberSeries, optional
+            Rate of increase/decrease of learning rate for calibration,
+            by default NumberSeries(start=0.5, stop=5.0, step=0.1).
+        calibration_samples : NumberSeries, optional
+            Number of instances used for calibration,
+            by default NumberSeries(start=100, stop=3000, step=10).
+        calibration_candidates : NumberSeries, optional
+            Number of candidates of learning rate,
+            by default NumberSeries(start=1, stop=30, step=1).
+        calibration_max_trials : NumberSeries, optional
+            Maximum number of trials of learning rates for calibration,
+            by default NumberSeries(start=1, stop=30, step=1).
+        """
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
         self.all_possible_transitions = all_possible_transitions
@@ -134,6 +217,23 @@ class APSearchSpace(SearchSpace):
         all_possible_transitions: set[bool] = {True, False},
         epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
     ):
+        """Hyperparameter search space for Averaged Perceptron.
+
+        Parameters
+        ----------
+        min_freq : NumberSeries, optional
+            Threshold value for minimum frequency of a feature occurring in training data,
+            by default NumberSeries(start=0, stop=5, step=1).
+        all_possible_states : set[bool], optional
+            Generate state features that do not even occur in the training data,
+            by default {True, False}.
+        all_possible_transitions : set[bool], optional
+            Generate transition features that do not even occur in the training data,
+            by default {True, False}.
+        epsilon : NumberSeries, optional
+            Parameter that determines the condition of convergence,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        """
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
         self.all_possible_transitions = all_possible_transitions
@@ -172,6 +272,32 @@ class PASearchSpace(SearchSpace):
         error_sensitive: set[bool] = {True, False},
         averaging: set[bool] = {True, False},
     ):
+        """Hyperparameter search space for Passive Aggressive.
+
+        Parameters
+        ----------
+        min_freq : NumberSeries, optional
+            Threshold value for minimum frequency of a feature occurring in training data,
+            by default NumberSeries(start=0, stop=5, step=1).
+        all_possible_states : set[bool], optional
+            Generate state features that do not even occur in the training data,
+            by default {True, False}.
+        all_possible_transitions : set[bool], optional
+            Generate transition features that do not even occur in the training data,
+            by default {True, False}.
+        epsilon : NumberSeries, optional
+            Parameter that determines the condition of convergence,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        pa_type : NumberSeries, optional
+            Strategy for updating feature weights, by default {0, 1, 2}.
+        c : NumberSeries, optional
+            Aggressiveness parameter, by default NumberSeries(start=0.0, stop=2.0, step=0.01).
+        error_sensitive : set[bool], optional
+            Include square root of predicted incorrect labels into optimization routine,
+            by default {True, False}.
+        averaging : set[bool], optional
+            Compute average of feature weights at all updates, by default {True, False}.
+        """
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
         self.all_possible_transitions = all_possible_transitions
@@ -216,6 +342,29 @@ class AROWSearchSpace(SearchSpace):
         variance: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         gamma: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
     ):
+        """Hyperparameter search space for AROW.
+
+        Parameters
+        ----------
+        min_freq : NumberSeries, optional
+            Threshold value for minimum frequency of a feature occurring in training data,
+            by default NumberSeries(start=0, stop=5, step=1).
+        all_possible_states : set[bool], optional
+            Generate state features that do not even occur in the training data,
+            by default {True, False}.
+        all_possible_transitions : set[bool], optional
+            Generate transition features that do not even occur in the training data,
+            by default {True, False}.
+        epsilon : NumberSeries, optional
+            Parameter that determines the condition of convergence,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        variance : NumberSeries, optional
+            Initial variance of every feature weight,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        gamma : NumberSeries, optional
+            Trade-off between loss function and changes of feature weights,
+            by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
+        """
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
         self.all_possible_transitions = all_possible_transitions

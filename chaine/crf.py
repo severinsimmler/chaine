@@ -2,7 +2,7 @@
 chaine.crf
 ~~~~~~~~~~
 
-This module implements the trainer and model.
+This module implements the trainer, optimizer and model.
 """
 
 import json
@@ -11,7 +11,6 @@ import tempfile
 import uuid
 from functools import cached_property
 from pathlib import Path
-from typing import Optional
 
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
@@ -26,7 +25,7 @@ from chaine.optimization.spaces import (
 )
 from chaine.optimization.trial import OptimizationTrial
 from chaine.optimization.utils import cross_validation, downsample
-from chaine.typing import Filepath, Iterable, Labels, Sequence, Union
+from chaine.typing import Filepath, Iterable, Labels, Optional, Sequence, Union
 from chaine.validation import is_valid_sequence
 
 LOGGER = Logger(__name__)
@@ -39,13 +38,13 @@ class Trainer:
     ----------
     algorithm : str
         The following optimization algorithms are available:
-            * lbfgs: Limited-memory BFGS with L1/L2 regularization
-            * l2sgd: Stochastic gradient descent with L2 regularization
-            * ap: Averaged perceptron
-            * pa: Passive aggressive
-            * arow: Adaptive regularization of weights
+            * lbfgs: Limited-Memory BFGS with L1/L2 regularization
+            * l2sgd: Stochastic Gradient Descent with L2 regularization
+            * ap: Averaged Perceptron
+            * pa: Passive Aggressive
+            * arow: Adaptive Regularization of Weights
 
-    Limited-memory BFGS Parameters (lbfgs)
+    Limited-Memory BFGS Parameters (lbfgs)
     --------------------------------------
     min_freq : float, optional (default=0)
         Threshold value for minimum frequency of a feature occurring in training data.
@@ -269,34 +268,42 @@ class Optimizer:
         labels : Iterable[Labels]
             Labels to train models on.
         sample_size : Optional[int]
-            tbd
+            Number of instances to sample from the data set.
 
         Returns
         -------
         list[dict[str, dict]]
             Sorted list of hyperparameters and evaluation scores.
         """
+        from chaine.crf import LOGGER as _LOGGER
+
+        # disable logger
+        _LOGGER.set_level("ERROR")
+
         # set random seed
         random.seed(self.seed)
 
-        # tbd
+        # optional downsampling
         if sample_size:
             dataset, labels = downsample(dataset, labels, sample_size, self.seed)
 
         # split data set for cross validation
         splits = list(cross_validation(dataset, labels, n=self.folds))
 
-        for space in self.spaces:
-            LOGGER.info(f"Training baseline for {space.algorithm}")
+        for i, space in enumerate(self.spaces):
+            LOGGER.info(f"Training baseline for {space.algorithm} ({i + 1}/{len(self.spaces)})")
 
             with OptimizationTrial(splits, space, is_baseline=True) as trial:
                 self.results.append(trial)
 
-            for i in range(self.trials):
-                LOGGER.info(f"Trial {i + 1} for {space.algorithm}")
+            for j in range(self.trials):
+                LOGGER.info(f"Trial {j + 1}/{self.trials} for {space.algorithm}")
 
                 with OptimizationTrial(splits, space, is_baseline=False) as trial:
                     self.results.append(trial)
+
+        # reset log level
+        _LOGGER.set_level("INFO")
 
         # sort results descending by specified metric
         return sorted(self.results, key=self._metric, reverse=True)

@@ -1,14 +1,20 @@
+"""
+chaine.optimization.trial
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module implements a class for a hyperparameter optimization trial.
+"""
+
 import statistics
 import tempfile
 import time
 import uuid
 from abc import abstractmethod
 from pathlib import Path
-from typing import Iterable, Iterator
 
 from chaine.optimization.metrics import evaluate_predictions
 from chaine.optimization.spaces import SearchSpace
-from chaine.typing import Labels, Sequence
+from chaine.typing import Iterable, Iterator, Labels, Sequence
 
 
 class OptimizationTrial:
@@ -28,7 +34,7 @@ class OptimizationTrial:
         space : SearchSpace
             Search space for hyperparameter optimization.
         is_baseline : bool
-            True if this trial is a baseline (i.e. default hyperparameters to be used).
+            True if trial is a baseline (i.e. default hyperparameters to be used).
         """
         self.splits = splits
         self.space = space
@@ -48,7 +54,10 @@ class OptimizationTrial:
         dict[str, dict]
             Selected hyperparameters and evaluation scores.
         """
-        from chaine.crf import Model, Trainer
+        from chaine.crf import LOGGER, Model, Trainer
+
+        # set logger to debug
+        LOGGER.set_level("DEBUG")
 
         if self.is_baseline:
             # default hyperparameters as baseline

@@ -8,7 +8,8 @@ This module implements a basic logger.
 import logging
 import sys
 from logging import Formatter, StreamHandler
-from typing import Union
+
+from chaine.typing import Union
 
 DEBUG = 10
 INFO = 20

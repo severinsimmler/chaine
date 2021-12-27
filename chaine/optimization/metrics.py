@@ -1,3 +1,10 @@
+"""
+chaine.optimization.metrics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module implements metrics to evaluate the performance of a trained model.
+"""
+
 from collections import Counter
 
 
@@ -77,7 +84,7 @@ def evaluate_predictions(true: list[list[str]], pred: list[list[str]]) -> dict[s
     true : list[list[str]]
         True labels.
     pred : list[list[str]]
-        Predictions.
+        Predicted labels.
 
     Returns
     -------
@@ -87,21 +94,21 @@ def evaluate_predictions(true: list[list[str]], pred: list[list[str]]) -> dict[s
     counts = Counter()
 
     # get true positives, true negatives, false positives, false negatives
-    for a, b in zip(true, pred):
+    for true_labels, predicted_labels in zip(true, pred):
         # ignore prefixes
-        a = [label.removeprefix("B-").removeprefix("I-") for label in a]
-        b = [label.removeprefix("B-").removeprefix("I-") for label in b]
+        true_labels = [l.removeprefix("B-").removeprefix("I-") for l in true_labels]
+        predicted_labels = [l.removeprefix("B-").removeprefix("I-") for l in predicted_labels]
 
-        for t, p in zip(a, b):
-            if t == "O" and t == p:
+        for true_label, predicted_label in zip(true_labels, predicted_labels):
+            if true_label == "O" and true_label == predicted_label:
                 counts["tn"] += 1
-            elif t == "O" and t != p:
+            elif true_label == "O" and true_label != predicted_label:
                 counts["fp"] += 1
-            elif t != "O" and t == p:
+            elif true_label != "O" and true_label == predicted_label:
                 counts["tp"] += 1
-            elif t != "O" and p == "O":
+            elif true_label != "O" and predicted_label == "O":
                 counts["fn"] += 1
-            elif t != "O" and t != p:
+            elif true_label != "O" and true_label != predicted_label:
                 counts["fp"] += 1
 
     # calculate precision, recall and f1 score

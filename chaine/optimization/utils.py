@@ -1,9 +1,32 @@
+"""
+chaine.optimization.utils
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module implements utility functions for hyperparameter optimization.
+"""
+
 import random
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
-from typing import Optional, Union
 
-from chaine.typing import Labels, Sequence
+from chaine.typing import Labels, Optional, Sequence, Union
+
+
+@dataclass
+class NumberSeries(Iterable):
+    start: int
+    stop: int
+    step: Union[int, float]
+
+    def __repr__(self) -> str:
+        return f"<NumberSeries (start={self.start}, stop={self.stop}, step={self.step})>"
+
+    def __iter__(self) -> Iterator[Union[int, float]]:
+        n = int(round((self.stop - self.start) / float(self.step)))
+        if n > 1:
+            yield from [self.start + self.step * i for i in range(n + 1)]
+        elif n == 1:
+            yield self.start
 
 
 def cross_validation(
@@ -53,60 +76,43 @@ def cross_validation(
         )
 
 
-@dataclass
-class NumberSeries(Iterable):
-    start: int
-    stop: int
-    step: Union[int, float]
-
-    def __repr__(self) -> str:
-        return f"<NumberSeries (start={self.start}, stop={self.stop}, step={self.step})>"
-
-    def __iter__(self) -> Iterator[Union[int, float]]:
-        n = int(round((self.stop - self.start) / float(self.step)))
-        if n > 1:
-            yield from [self.start + self.step * i for i in range(n + 1)]
-        elif n == 1:
-            yield self.start
-
-
 def downsample(
     dataset: Iterable[Sequence], labels: Iterable[Labels], n: int, seed: Optional[int] = None
 ) -> tuple[Iterable[Sequence], Iterable[Labels]]:
-    """[summary]
+    """Downsample the given data set to the specified size.
 
     Parameters
     ----------
     dataset : Iterable[Sequence]
-        [description]
+        Data set to downsample.
     labels : Iterable[Labels]
-        [description]
+        Labels for the data set.
     n : int
-        [description]
+        Number of samples to keep.
     seed : Optional[int], optional
-        [description], by default None
+        Random seed, by default None.
 
     Returns
     -------
     tuple[Iterable[Sequence], Iterable[Labels]]
-        [description]
+        Downsampled data set and labels.
 
     Raises
     ------
     ValueError
-        [description]
+        If number of instances in the data set is smaller than specified size.
     """
     if len(dataset) < n:
         raise ValueError("Data set is too small")
 
-    # tbd
+    # get indices of the data set
     indices = list(range(len(dataset)))
 
-    # tbd
+    # sample indices
     random.seed(seed)
     sample = set(random.sample(indices, n))
 
-    # tbd
+    # keep only instances of the sample
     dataset = [s for i, s in enumerate(dataset) if i in sample]
     labels = [l for i, l in enumerate(labels) if i in sample]
 

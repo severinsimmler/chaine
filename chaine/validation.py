@@ -1,6 +1,13 @@
+"""
+chaine.validation
+~~~~~~~~~~~~~~~~~
+
+This module implements functions to validate input sequences (either for training or inference).
+"""
+
 from chaine.typing import Sequence
 
-# supported data types for feature values
+# supported feature value data types
 TYPES = (str, int, float, bool)
 
 

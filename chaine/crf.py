@@ -304,7 +304,7 @@ class Optimizer:
         results = sorted(self.results, key=self._metric, reverse=True)
 
         # best baseline
-        baselines = sorted(self.baselines, key=itemgetter(f"mean_{self.metric}"))[0]
+        baselines = sorted(self.baselines, key=itemgetter(f"mean_{self.metric}"))
 
         LOGGER.info(f"Best baseline: {baselines[0][f'mean_{self.metric}']}")
         LOGGER.info(f"Best optimized model: {results[0]['stats'][f'mean_{self.metric}']}")

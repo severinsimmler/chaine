@@ -16,6 +16,7 @@ LOGGER = Logger(__name__)
 def train(
     dataset: Iterable[Sequence],
     labels: Iterable[Labels],
+    *,
     model_filepath: Filepath = "model.chaine",
     optimize: bool = False,
     **hyperparameters,

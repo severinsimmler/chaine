@@ -9,7 +9,6 @@ import statistics
 import tempfile
 import time
 import uuid
-from abc import abstractmethod
 from pathlib import Path
 
 from chaine.optimization.metrics import evaluate_predictions
@@ -45,7 +44,6 @@ class OptimizationTrial:
         self.f1 = []
         self.time = []
 
-    @abstractmethod
     def __enter__(self) -> dict[str, dict]:
         """Train and evaluate a model.
 

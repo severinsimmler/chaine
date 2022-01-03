@@ -158,6 +158,11 @@ def train(
         A conditional random field trained on the dataset.
     """
     if optimize:
+        LOGGER.info("Start tuning hyperparameters")
+
+        if hyperparameters:
+            LOGGER.warning(f"Specified hyperparameters will be overwritten: {hyperparameters}")
+
         # optionally tune hyperparameters first
         hyperparameters = Optimizer().optimize(dataset, labels)["hyperparameters"]
 

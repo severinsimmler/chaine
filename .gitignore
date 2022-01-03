@@ -125,3 +125,4 @@ venv.bak/
 .vscode
 
 *.crf
+*.chaine

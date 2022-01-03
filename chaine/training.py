@@ -18,7 +18,7 @@ def train(
     labels: Iterable[Labels],
     *,
     model_filepath: Filepath = "model.chaine",
-    optimize: bool = False,
+    optimize_hyperparameters: bool = False,
     **hyperparameters,
 ) -> Model:
     """Train a conditional random field.
@@ -31,7 +31,7 @@ def train(
         Labels corresponding to each instance in the data set.
     model_filepath : Filepath, optional (default=model.chaine)
         Path to model location.
-    optimize : bool
+    optimize_hyperparameters : bool
         If True, optimize hyperparameters first.
     algorithm : str
         The following optimization algorithms are available:
@@ -157,14 +157,15 @@ def train(
     Model
         A conditional random field trained on the dataset.
     """
-    if optimize:
-        LOGGER.info("Start tuning hyperparameters")
-
+    if optimize_hyperparameters:
         if hyperparameters:
             LOGGER.warning(f"Specified hyperparameters will be overwritten: {hyperparameters}")
 
         # optionally tune hyperparameters first
-        hyperparameters = Optimizer().optimize(dataset, labels)["hyperparameters"]
+        results = Optimizer().optimize_hyperparameters(dataset, labels)
+
+        # use hyperparameters of the best run
+        hyperparameters = results[0]["hyperparameters"]
 
     # initialize trainer and start training
     trainer = Trainer(**hyperparameters)

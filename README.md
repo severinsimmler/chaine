@@ -105,7 +105,7 @@ Before training a model, you might want to find out the ideal hyperparameters fi
 
 ```python
 >>> import chaine
->>> model = chaine.train(tokens, labels, optimize=True)
+>>> model = chaine.train(tokens, labels, optimize_hyperparameters=True)
 ```
 
 > This might be very memory and time consuming, because 5-fold cross validation for each of the 10 trials for each of the algorithms is performed.
@@ -116,7 +116,7 @@ or use the `Optimizer` class and have more control over the optimization process
 >>> from chaine import Optimizer
 >>> from chaine.optimization import L2SGDSearchSpace
 >>> optimizer = Optimizer(trials=50, folds=3, spaces=[L2SGDSearchSpace()])
->>> optimizer.optimize(tokens, labels, sample_size=1000)
+>>> optimizer.optimize_hyperparameters(tokens, labels, sample_size=1000)
 ```
 
 This will make 50 trails with 3-fold cross validation for the Stochastic Gradient Descent algorithm and return a sorted list of hyperparameters with evaluation stats. The given data set is downsampled to 1000 instances.

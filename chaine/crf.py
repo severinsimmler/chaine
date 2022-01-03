@@ -255,7 +255,7 @@ class Optimizer:
         self.results = []
         self.baselines = []
 
-    def optimize(
+    def optimize_hyperparameters(
         self,
         dataset: Iterable[Sequence],
         labels: Iterable[Labels],

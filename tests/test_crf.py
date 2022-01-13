@@ -205,7 +205,6 @@ def test_model_predict_proba(model: crf.Model, dataset: dict[str, list]):
 def test_model_predict_proba_generator(model: crf.Model, dataset: dict[str, list]):
     generator = ([features for features in sequence] for sequence in dataset["sequences"])
     predicted = model.predict_proba(generator)
-    print(predicted)
     expected = [
         [
             {"A": 0.953079109284954, "B": 0.04692089071504606},

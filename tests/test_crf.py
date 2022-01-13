@@ -180,7 +180,10 @@ def test_model_predict_generator(model: crf.Model, dataset: dict[str, list]):
 def test_model_predict_proba_single(model: crf.Model, dataset: dict[str, list]):
     for sequence in dataset["sequences"]:
         predicted = model.predict_proba_single(sequence)
-        expected = [{'A': 0.953079109284954, 'B': 0.04692089071504606}, {'A': 0.046920890715046036, 'B': 0.953079109284954}]
+        expected = [
+            {"A": 0.953079109284954, "B": 0.04692089071504606},
+            {"A": 0.046920890715046036, "B": 0.953079109284954},
+        ]
         assert predicted == expected
 
     with pytest.raises(ValueError):
@@ -189,15 +192,29 @@ def test_model_predict_proba_single(model: crf.Model, dataset: dict[str, list]):
 
 def test_model_predict_proba(model: crf.Model, dataset: dict[str, list]):
     predicted = model.predict_proba(dataset["sequences"])
-    expected = [[{'A': 0.953079109284954, 'B': 0.04692089071504606}, {'A': 0.046920890715046036, 'B': 0.953079109284954}] for _ in dataset["labels"]]
+    expected = [
+        [
+            {"A": 0.953079109284954, "B": 0.04692089071504606},
+            {"A": 0.046920890715046036, "B": 0.953079109284954},
+        ]
+        for _ in dataset["labels"]
+    ]
     assert predicted == expected
+
 
 def test_model_predict_proba_generator(model: crf.Model, dataset: dict[str, list]):
     generator = ([features for features in sequence] for sequence in dataset["sequences"])
     predicted = model.predict_proba(generator)
     print(predicted)
-    expected = [[{'A': 0.953079109284954, 'B': 0.04692089071504606}, {'A': 0.046920890715046036, 'B': 0.953079109284954}] for _ in dataset["labels"]]
+    expected = [
+        [
+            {"A": 0.953079109284954, "B": 0.04692089071504606},
+            {"A": 0.046920890715046036, "B": 0.953079109284954},
+        ]
+        for _ in dataset["labels"]
+    ]
     assert predicted == expected
+
 
 def test_dump_transitions(model: crf.Model):
     filepath = Path("transitions.json")
@@ -207,6 +224,7 @@ def test_dump_transitions(model: crf.Model):
 
     transitions = json.loads(filepath.read_text())
     assert len(transitions) > 0
+
 
 def test_dump_states(model: crf.Model):
     filepath = Path("states.json")

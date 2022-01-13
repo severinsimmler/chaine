@@ -9,8 +9,7 @@ def test_is_valid_sequence():
     assert not validation.is_valid_sequence(["foo", "bar"])
     assert not validation.is_valid_sequence([["foo", "bar"]])
     assert not validation.is_valid_sequence({"int": 0, "str": "a", "float": 1.0, "bool": True})
-    assert not validation.is_valid_sequence(({"int": 0} for _ in range(5))
-    )
+    assert not validation.is_valid_sequence(({"int": 0} for _ in range(5)))
 
 
 def test_is_valid_token():

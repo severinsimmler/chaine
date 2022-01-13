@@ -12,6 +12,7 @@ def test_train():
     assert crf.labels == {"O"}
     assert crf.predict(sequences) == labels
 
+
 def test_train_optimize_hyperparameters():
     sequences = [[{"a": "foo"}, {"a": "bar"}] for _ in range(50)]
     labels = [["O", "O"] for _ in range(50)]

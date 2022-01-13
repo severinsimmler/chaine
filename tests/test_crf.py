@@ -9,7 +9,7 @@ from chaine import crf
 @pytest.fixture
 def dataset() -> dict[str, list]:
     sequences = [[{"a": "foo"}, {"a": "bar"}] for _ in range(50)]
-    labels = [["O", "O"] for _ in range(50)]
+    labels = [["A", "B"] for _ in range(50)]
     return {"sequences": sequences, "labels": labels}
 
 
@@ -151,13 +151,13 @@ def test_training(tmpdir, dataset: dict[str, list]):
 
 def test_model_deserialization(serialized_model):
     model = crf.Model(serialized_model)
-    assert model.labels == {"O"}
+    assert model.labels == {"A", "B"}
 
 
 def test_model_predict_single(model: crf.Model, dataset: dict[str, list]):
     for sequence in dataset["sequences"]:
         predicted = model.predict_single(sequence)
-        expected = ["O", "O"]
+        expected = ["A", "B"]
         assert predicted == expected
 
     with pytest.raises(ValueError):
@@ -180,7 +180,7 @@ def test_model_predict_generator(model: crf.Model, dataset: dict[str, list]):
 def test_model_predict_proba_single(model: crf.Model, dataset: dict[str, list]):
     for sequence in dataset["sequences"]:
         predicted = model.predict_proba_single(sequence)
-        expected = [{"O": 1.0}, {"O": 1.0}]
+        expected = [{'A': 0.953079109284954, 'B': 0.04692089071504606}, {'A': 0.046920890715046036, 'B': 0.953079109284954}]
         assert predicted == expected
 
     with pytest.raises(ValueError):
@@ -189,17 +189,16 @@ def test_model_predict_proba_single(model: crf.Model, dataset: dict[str, list]):
 
 def test_model_predict_proba(model: crf.Model, dataset: dict[str, list]):
     predicted = model.predict_proba(dataset["sequences"])
-    expected = [[{"O": 1.0}, {"O": 1.0}] for _ in dataset["labels"]]
+    expected = [[{'A': 0.953079109284954, 'B': 0.04692089071504606}, {'A': 0.046920890715046036, 'B': 0.953079109284954}] for _ in dataset["labels"]]
     assert predicted == expected
-
 
 def test_model_predict_proba_generator(model: crf.Model, dataset: dict[str, list]):
     generator = ([features for features in sequence] for sequence in dataset["sequences"])
     predicted = model.predict_proba(generator)
-    expected = [[{"O": 1.0}, {"O": 1.0}] for _ in dataset["labels"]]
+    print(predicted)
+    expected = [[{'A': 0.953079109284954, 'B': 0.04692089071504606}, {'A': 0.046920890715046036, 'B': 0.953079109284954}] for _ in dataset["labels"]]
     assert predicted == expected
 
-@pytest.mark.skip("why????")
 def test_dump_transitions(model: crf.Model):
     filepath = Path("transitions.json")
 
@@ -209,7 +208,6 @@ def test_dump_transitions(model: crf.Model):
     transitions = json.loads(filepath.read_text())
     assert len(transitions) > 0
 
-@pytest.mark.skip("why???")
 def test_dump_states(model: crf.Model):
     filepath = Path("states.json")
 

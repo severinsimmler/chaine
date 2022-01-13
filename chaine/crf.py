@@ -10,8 +10,8 @@ import random
 import tempfile
 import uuid
 from functools import cached_property
-from pathlib import Path
 from operator import itemgetter
+from pathlib import Path
 
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer

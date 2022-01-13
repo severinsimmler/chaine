@@ -91,6 +91,15 @@ def evaluate_predictions(true: list[list[str]], pred: list[list[str]]) -> dict[s
     dict[str, float]
         Precision, recall and F1 scores.
     """
+    # validate input
+    if (
+        not isinstance(true, list)
+        or not isinstance(pred, list)
+        or not isinstance(true[0], list)
+        or not isinstance(pred[0], list)
+    ):
+        raise ValueError("Input lists are invalid")
+
     counts = Counter()
 
     # get true positives, true negatives, false positives, false negatives

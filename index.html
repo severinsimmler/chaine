@@ -1,54 +1,404 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
-    <title>Chaine – Linear-chain conditional random fields</title>
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+      <link href="styles.css" rel="stylesheet" />
+      <title>Chaine – Linear-chain conditional random fields</title>
+   </head>
+   <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+         <div class="container-fluid">
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    <a class="nav-link" href="https://github.com/severinsimmler/chaine">GitHub</a>
-                </div>
+               <div class="navbar-nav">
+                  <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  <a class="nav-link" href="https://github.com/severinsimmler/chaine">GitHub</a>
+                  <a class="nav-link" href="https://pypi.org/project/chaine">PyPI</a>
+                  <a class="nav-link" href="https://github.com/severinsimmler/chaine/tree/master/examples">Examples</a>
+               </div>
             </div>
-        </div>
-    </nav>
-    <div class="container">
-        <div class="row first-row">
+         </div>
+      </nav>
+      <div class="container">
+         <div class="row first-row">
             <div class="col"></div>
             <div class="col-9">
-                <h1>Chaine</h1>
-                <hr>
-                <p>Linear-chain conditional random fields for natural language processing.</p>
-                <p>Chaine is a modern Python library without third-party dependencies and a backend written in C. You
-                    can train conditional random fields for natural language processing tasks like <a
-                        href="https://en.wikipedia.org/wiki/Named-entity_recognition">named entity recognition</a>.</p>
-                <p>
-                <ul>
-                    <li><b>Lightweight</b>: No use of bloated third-party libraries.</li>
-                    <li><b>Fast</b>: Performance critical parts are written in C and thus <a
-                            href="http://www.chokkan.org/software/crfsuite/benchmark.html">blazingly fast</a>.</li>
-                    <li><b>Easy to use</b>: Designed with special focus on usability and a beautiful high-level API.
-                    </li>
-                </ul>
-                </p>
-                <p>You can install the latest stable version from <a href="https://pypi.org/project/chaine">PyPI</a>:
-                <pre class="code-block">$ pip install chaine</pre>
-                </p>
-                <p>Please refer to the introducing paper by <a
-                        href="https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers">Lafferty
-                        et al.</a> for the theoretical concepts behind conditional random fields.</p>
+               <h1 id="chaine">Chaine</h1>
+               <p>
+                  Chaine is a modern, fast and lightweight Python library implementing
+                  linear-chain conditional random fields. Use it for sequence labeling
+                  tasks like
+                  <a href="https://en.wikipedia.org/wiki/Named-entity_recognition"
+                     >named entity recognition</a
+                     >
+                  or
+                  <a href="https://en.wikipedia.org/wiki/Part-of-speech_tagging"
+                     >part-of-speech tagging</a
+                     >.
+               </p>
+               <p>The main goals of this project are:</p>
+               <ul>
+                  <li>
+                     <strong>Usability</strong>: Designed with special focus on
+                     usability and a beautiful high-level API.
+                  </li>
+                  <li>
+                     <strong>Efficiency</strong>: Performance critical parts are
+                     written in C and thus
+                     <a href="http://www.chokkan.org/software/crfsuite/benchmark.html"
+                        >blazingly fast</a
+                        >. Loading a model from disk and retrieving feature weights for
+                     inference is optimized for both
+                     <a href="http://www.chokkan.org/software/cqdb/"
+                        >speed and memory</a
+                        >.
+                  </li>
+                  <li>
+                     <strong>Persistency</strong>: Since no <code>pickle</code> or
+                     <code>joblib</code> is used for serialization, a trained model
+                     will be compatible with all versions for eternity, because the
+                     underlying C library will not change. I promise.
+                  </li>
+                  <li>
+                     <strong>Minimalism</strong>: No code bloat, no external
+                     dependencies.
+                  </li>
+               </ul>
+               <p>
+                  Install the latest stable version from
+                  <a href="https://pypi.org/project/chaine">PyPI</a>:
+               </p>
+               <pre class="code-block"><code class=>pip <span class="hljs-keyword">install</span> chaine</code></pre>
+               <h2 id="algorithms">Algorithms</h2>
+               <p>You can train models using the following methods:</p>
+               <ul>
+                  <li>
+                     Limited-Memory BFGS (<a
+                        href="https://www.jstor.org/stable/2006193"
+                        >Nocedal 1980</a
+                        >)
+                  </li>
+                  <li>
+                     Orthant-Wise Limited-Memory Quasi-Newton (<a
+                        href="https://www.microsoft.com/en-us/research/publication/scalable-training-of-l1-regularized-log-linear-models/"
+                        >Andrew et al. 2007</a
+                        >)
+                  </li>
+                  <li>
+                     Stochastic Gradient Descent (<a
+                        href="https://www.google.com/url?q=https://www.cs.huji.ac.il/~shais/papers/ShalevSiSr07.pdf"
+                        >Shalev et al. 2007</a
+                        >)
+                  </li>
+                  <li>
+                     Averaged Perceptron (<a
+                        href="https://aclanthology.org/W02-1001.pdf"
+                        >Collins 2002</a
+                        >)
+                  </li>
+                  <li>
+                     Passive Aggressive (<a
+                        href="https://jmlr.csail.mit.edu/papers/v7/crammer06a.html"
+                        >Crammer et al. 2006</a
+                        >)
+                  </li>
+                  <li>
+                     Adaptive Regularization of Weight Vectors (<a
+                        href="https://aclanthology.org/D10-1095.pdf"
+                        >Mejer et al. 2010</a
+                        >)
+                  </li>
+               </ul>
+               <p>
+                  Please refer to the paper by
+                  <a
+                     href="https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&amp;context=cis_papers"
+                     >Lafferty et al.</a
+                     >
+                  for a general introduction to conditional random fields.
+               </p>
+               <h2 id="usage">Usage</h2>
+               <p>
+                  Training and using a conditional random field for inference is easy
+                  as:
+               </p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; import chaine
+<span class="hljs-meta">&gt;&gt;</span>&gt; tokens = [[{<span class="hljs-string">"index"</span>: <span class="hljs-number">0</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"John"</span>}, {<span class="hljs-string">"index"</span>: <span class="hljs-number">1</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"Lennon"</span>}]]
+<span class="hljs-meta">&gt;&gt;</span>&gt; labels = [[<span class="hljs-string">"B-PER"</span>, <span class="hljs-string">"I-PER"</span>]]
+<span class="hljs-meta">&gt;&gt;</span>&gt; model = chaine.train(tokens, labels)
+<span class="hljs-meta">&gt;&gt;</span>&gt; model.predict(tokens)
+[[<span class="hljs-string">'B-PER'</span>, <span class="hljs-string">'I-PER'</span>]]
+</code></pre>
+               <h3 id="features">Features</h3>
+               <p>
+                  One token in a sequence is represented as a dictionary with
+                  describing feature names as keys and respective values of type
+                  string, integer, float or boolean:
+               </p>
+               <pre class="code-block"><code class="lang-python">{
+    <span class="hljs-attr">"text"</span>: <span class="hljs-string">"John"</span>,
+    <span class="hljs-attr">"num_characters"</span>: <span class="hljs-number">4</span>,
+    <span class="hljs-attr">"relative_index"</span>: <span class="hljs-number">0.0</span>,
+    <span class="hljs-attr">"is_number"</span>: False,
+}
+</code></pre>
+               <p>One sequence is represented as a list of feature dictionaries:</p>
+               <pre class="code-block"><code class="lang-python">[{<span class="hljs-attr">"text"</span>: <span class="hljs-string">"John"</span>}, {<span class="hljs-attr">"text"</span>: <span class="hljs-string">"Lennon"</span>}]
+</code></pre>
+               <p>
+                  One data set is represented as an iterable of a list of feature
+                  dictionaries:
+               </p>
+               <pre class="code-block"><code class="lang-python">[[{<span class="hljs-attr">"text"</span>: <span class="hljs-string">"John"</span>}, {<span class="hljs-attr">"text"</span>: <span class="hljs-string">"Lennon"</span>}]]
+</code></pre>
+               <p>
+                  This is the expected input format for training. For inference, you
+                  can also process a single sequence rather than a batch of multiple
+                  sequences.
+               </p>
+               <p>
+                  Depending on the size of your data set, it probably makes sense to
+                  use generators. Something like this would be totally fine for both
+                  training and inference:
+               </p>
+               <pre class="code-block"><code class="lang-python">([extract_features(<span class="hljs-keyword">token</span>) <span class="hljs-keyword">for</span> <span class="hljs-keyword">token</span> <span class="hljs-keyword">in</span> tokens] <span class="hljs-keyword">for</span> tokens <span class="hljs-keyword">in</span> dataset)
+</code></pre>
+               <p>
+                  Assuming <code>dataset</code> is a generator as well, only one
+                  sequence is loaded into memory at a time.
+               </p>
+               <h3 id="training">Training</h3>
+               <p>
+                  You can either use the high-level function to train a model (which
+                  also loads and returns it):
+               </p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; import chaine
+<span class="hljs-meta">&gt;&gt;</span>&gt; chaine.train(tokens, labels)
+</code></pre>
+               <p>or the lower-level <code>Trainer</code> class:</p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; from chaine import Trainer
+<span class="hljs-meta">&gt;&gt;</span>&gt; trainer = Trainer()
+</code></pre>
+               <p>
+                  A <code>Trainer</code> object has a method <code>train()</code> to
+                  learn states and transitions from the given data set. You have to
+                  provide a filepath to serialize the model to:
+               </p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; trainer.train(tokens, labels, model_filepath=<span class="hljs-string">"model.chaine"</span>)
+</code></pre>
+               <h3 id="hyperparameters">Hyperparameters</h3>
+               <p>
+                  Before training a model, you might want to find out the ideal
+                  hyperparameters first. You can just set the respective argument to
+                  <code>True</code>:
+               </p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; import chaine
+<span class="hljs-meta">&gt;&gt;</span>&gt; model = chaine.train(tokens, labels, optimize_hyperparameters=True)
+</code></pre>
+               <blockquote>
+                  <p>
+                     This might be very memory and time consuming, because 5-fold cross
+                     validation for each of the 10 trials for each of the algorithms is
+                     performed.
+                  </p>
+               </blockquote>
+               <p>
+                  or use the <code>Optimizer</code> class and have more control over
+                  the optimization process:
+               </p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; from chaine import Optimizer
+<span class="hljs-meta">&gt;&gt;</span>&gt; from chaine.optimization import L2SGDSearchSpace
+<span class="hljs-meta">&gt;&gt;</span>&gt; optimizer = Optimizer(trials=<span class="hljs-number">50</span>, folds=<span class="hljs-number">3</span>, spaces=[L2SGDSearchSpace()])
+<span class="hljs-meta">&gt;&gt;</span>&gt; optimizer.optimize_hyperparameters(tokens, labels, sample_size=<span class="hljs-number">1000</span>)
+</code></pre>
+               <p>
+                  This will make 50 trails with 3-fold cross validation for the
+                  Stochastic Gradient Descent algorithm and return a sorted list of
+                  hyperparameters with evaluation stats. The given data set is
+                  downsampled to 1000 instances.
+               </p>
+               <details class="details-section">
+                  <summary>Example of a hyperparameter optimization report</summary>
+                  <pre class="code-block">[
+    {
+        "hyperparameters": {
+            "algorithm": "lbfgs",
+            "min_freq": 0,
+            "all_possible_states": true,
+            "all_possible_transitions": true,
+            "num_memories": 8,
+            "c1": 0.9,
+            "c2": 0.31,
+            "epsilon": 0.00011,
+            "period": 17,
+            "delta": 0.00051,
+            "linesearch": "Backtracking",
+            "max_linesearch": 31
+        },
+        "stats": {
+            "mean_precision": 0.4490952380952381,
+            "stdev_precision": 0.16497993418839532,
+            "mean_recall": 0.4554858934169279,
+            "stdev_recall": 0.20082402876210334,
+            "mean_f1": 0.45041435392087253,
+            "stdev_f1": 0.17914435056760908,
+            "mean_time": 0.3920876979827881,
+            "stdev_time": 0.0390961164333519
+        }
+    },
+    {
+        "hyperparameters": {
+            "algorithm": "lbfgs",
+            "min_freq": 5,
+            "all_possible_states": true,
+            "all_possible_transitions": false,
+            "num_memories": 9,
+            "c1": 1.74,
+            "c2": 0.09,
+            "epsilon": 0.0008600000000000001,
+            "period": 1,
+            "delta": 0.00045000000000000004,
+            "linesearch": "StrongBacktracking",
+            "max_linesearch": 34
+        },
+        "stats": {
+            "mean_precision": 0.4344436335328176,
+            "stdev_precision": 0.15542689556199216,
+            "mean_recall": 0.4385174258109041,
+            "stdev_recall": 0.19873733310765845,
+            "mean_f1": 0.43386496201052716,
+            "stdev_f1": 0.17225578421967264,
+            "mean_time": 0.12209572792053222,
+            "stdev_time": 0.0236177196325414
+        }
+    },
+    {
+        "hyperparameters": {
+            "algorithm": "lbfgs",
+            "min_freq": 2,
+            "all_possible_states": true,
+            "all_possible_transitions": true,
+            "num_memories": 1,
+            "c1": 0.91,
+            "c2": 0.4,
+            "epsilon": 0.0008400000000000001,
+            "period": 13,
+            "delta": 0.00018,
+            "linesearch": "MoreThuente",
+            "max_linesearch": 43
+        },
+        "stats": {
+            "mean_precision": 0.41963433149859447,
+            "stdev_precision": 0.16363544501259455,
+            "mean_recall": 0.4331173486012196,
+            "stdev_recall": 0.21344965207006913,
+            "mean_f1": 0.422038027332145,
+            "stdev_f1": 0.18245844823319127,
+            "mean_time": 0.2586916446685791,
+            "stdev_time": 0.04341208573100539
+        }
+    },
+    {
+        "hyperparameters": {
+            "algorithm": "l2sgd",
+            "min_freq": 5,
+            "all_possible_states": true,
+            "all_possible_transitions": true,
+            "c2": 1.68,
+            "period": 2,
+            "delta": 0.00047000000000000004,
+            "calibration_eta": 0.0006900000000000001,
+            "calibration_rate": 2.9000000000000004,
+            "calibration_samples": 1400,
+            "calibration_candidates": 25,
+            "calibration_max_trials": 23
+        },
+        "stats": {
+            "mean_precision": 0.2571428571428571,
+            "stdev_precision": 0.43330716823151716,
+            "mean_recall": 0.01,
+            "stdev_recall": 0.022360679774997897,
+            "mean_f1": 0.01702127659574468,
+            "stdev_f1": 0.038060731531911314,
+            "mean_time": 0.15442829132080077,
+            "stdev_time": 0.051750737506044905
+        }
+    }
+]
+            </pre>
+               </details>
+               <h3 id="inference">Inference</h3>
+               <p>
+                  The high-level function <code>chaine.train()</code> returns a
+                  <code>Model</code> object. You can load an already trained model
+                  from disk by initializing a <code>Model</code> object with the
+                  model&#39;s filepath:
+               </p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; from chaine import Model
+<span class="hljs-meta">&gt;&gt;</span>&gt; model = Model(<span class="hljs-string">"model.chaine"</span>)
+</code></pre>
+               <p>You can predict labels for a batch of sequences:</p>
+               <pre class="code-block"><code class="lang-python">&gt;&gt;&gt; tokens = [
+...     [{<span class="hljs-string">"index"</span>: <span class="hljs-number">0</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"John"</span>}, {<span class="hljs-string">"index"</span>: <span class="hljs-number">1</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"Lennon"</span>}],
+...     [{<span class="hljs-string">"index"</span>: <span class="hljs-number">0</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"Paul"</span>}, {<span class="hljs-string">"index"</span>: <span class="hljs-number">1</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"McCartney"</span>}],
+...     [{<span class="hljs-string">"index"</span>: <span class="hljs-number">0</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"George"</span>}, {<span class="hljs-string">"index"</span>: <span class="hljs-number">1</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"Harrison"</span>}],
+...     [{<span class="hljs-string">"index"</span>: <span class="hljs-number">0</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"Ringo"</span>}, {<span class="hljs-string">"index"</span>: <span class="hljs-number">1</span>, <span class="hljs-string">"text"</span>: <span class="hljs-string">"Starr"</span>}]
+... ]
+&gt;&gt;&gt; model.predict(tokens)
+[[<span class="hljs-string">'B-PER'</span>, <span class="hljs-string">'I-PER'</span>], [<span class="hljs-string">'B-PER'</span>, <span class="hljs-string">'I-PER'</span>], [<span class="hljs-string">'B-PER'</span>, <span class="hljs-string">'I-PER'</span>], [<span class="hljs-string">'B-PER'</span>, <span class="hljs-string">'I-PER'</span>]]
+</code></pre>
+               <p>or only for a single sequence:</p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; model.predict_single(tokens[<span class="hljs-number">0</span>])
+[<span class="hljs-string">'B-PER'</span>, <span class="hljs-string">'I-PER'</span>]
+</code></pre>
+               <p>
+                  If you are interested in the model&#39;s probability distribution
+                  for a given sequence, you can:
+               </p>
+               <pre class="code-block"><code class="lang-python">&gt;&gt;&gt; model.predict_proba_single(tokens[<span class="hljs-number">0</span>])
+[[{<span class="hljs-string">'B-PER'</span>: <span class="hljs-number">0.99</span>, <span class="hljs-string">'I-PER'</span>: <span class="hljs-number">0.01</span>}, {<span class="hljs-string">'B-PER'</span>: <span class="hljs-number">0.01</span>, <span class="hljs-string">'I-PER'</span>: <span class="hljs-number">0.99</span>}]]
+</code></pre>
+               <blockquote>
+                  <p>
+                     Use the <code>model.predict_proba()</code> method for a batch of
+                     sequences.
+                  </p>
+               </blockquote>
+               <h3 id="weights">Weights</h3>
+               <p>
+                  After loading a trained model, you can inspect the learned
+                  transition and state weights:
+               </p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; model = Model(<span class="hljs-string">"model.chaine"</span>)
+<span class="hljs-meta">&gt;&gt;</span>&gt; model.transitions
+[{<span class="hljs-string">'from'</span>: <span class="hljs-string">'B-PER'</span>, <span class="hljs-string">'to'</span>: <span class="hljs-string">'I-PER'</span>, <span class="hljs-string">'weight'</span>: <span class="hljs-number">1.430506540616852</span>e-<span class="hljs-number">06</span>}]
+<span class="hljs-meta">&gt;&gt;</span>&gt; model.states
+[{<span class="hljs-string">'feature'</span>: <span class="hljs-string">'text:John'</span>, <span class="hljs-string">'label'</span>: <span class="hljs-string">'B-PER'</span>, <span class="hljs-string">'weight'</span>: <span class="hljs-number">9.536710877105517</span>e-<span class="hljs-number">07</span>}, ...]
+</code></pre>
+               <p>You can also dump both transition and state weights as JSON:</p>
+               <pre class="code-block"><code class="lang-python"><span class="hljs-meta">&gt;&gt;</span>&gt; model.dump_states(<span class="hljs-string">"states.json"</span>)
+<span class="hljs-meta">&gt;&gt;</span>&gt; model.dump_transitions(<span class="hljs-string">"transitions.json"</span>)
+</code></pre>
+               <h2 id="credits">Credits</h2>
+               <p>This project makes use of and is partially based on:</p>
+               <ul>
+                  <li><a href="https://github.com/chokkan/crfsuite">CRFsuite</a></li>
+                  <li><a href="https://github.com/chokkan/liblbfgs">libLBFGS</a></li>
+                  <li>
+                     <a href="https://github.com/scrapinghub/python-crfsuite"
+                        >python-crfsuite</a
+                        >
+                  </li>
+                  <li>
+                     <a href="https://github.com/TeamHG-Memex/sklearn-crfsuite"
+                        >sklearn-crfsuite</a
+                        >
+                  </li>
+               </ul>
             </div>
             <div class="col"></div>
-        </div>
-    </div>
-</body>
-
+         </div>
+      </div>
+   </body>
 </html>

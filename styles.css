@@ -1,5 +1,6 @@
 .first-row {
     margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .code-block {
@@ -8,6 +9,6 @@
     padding: 15px;
 }
 
-.notebook-iframe {
-    height: 1500px;
+.details-section {
+    margin-bottom: 15px;
 }

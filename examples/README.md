@@ -102,3 +102,11 @@ and pass this search space with the data set to the optimization trial:
 >>> with OptimizationTrial(dataset, space) as trial:
 ...     print(f"Result: {trial}")
 ```
+
+All of this is wrapped in the `Optimization` class (where you can define the number of trials etc.):
+
+```python
+>>> from chaine import Optimizer
+>>> optimizer = Optimizer(trials=50, folds=3, spaces=[space])
+>>> optimizer.optimize_hyperparameters(tokens, labels, sample_size=1000)
+```

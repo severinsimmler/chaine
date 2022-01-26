@@ -12,7 +12,7 @@ The main goals of this project are:
 Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 
 ```
-$ pip install chaine
+pip install chaine
 ```
 
 ## Algorithms
@@ -76,7 +76,6 @@ Depending on the size of your data set, it probably makes sense to use generator
 
 Assuming `dataset` is a generator as well, only one sequence is loaded into memory at a time.
 
-
 ### Training
 
 You can either use the high-level function to train a model (which also loads and returns it):
@@ -120,6 +119,119 @@ or use the `Optimizer` class and have more control over the optimization process
 ```
 
 This will make 50 trails with 3-fold cross validation for the Stochastic Gradient Descent algorithm and return a sorted list of hyperparameters with evaluation stats. The given data set is downsampled to 1000 instances.
+
+<details>
+<summary>Example of a hyperparameter optimization report</summary>
+
+```json
+[
+    {
+        "hyperparameters": {
+            "algorithm": "lbfgs",
+            "min_freq": 0,
+            "all_possible_states": true,
+            "all_possible_transitions": true,
+            "num_memories": 8,
+            "c1": 0.9,
+            "c2": 0.31,
+            "epsilon": 0.00011,
+            "period": 17,
+            "delta": 0.00051,
+            "linesearch": "Backtracking",
+            "max_linesearch": 31
+        },
+        "stats": {
+            "mean_precision": 0.4490952380952381,
+            "stdev_precision": 0.16497993418839532,
+            "mean_recall": 0.4554858934169279,
+            "stdev_recall": 0.20082402876210334,
+            "mean_f1": 0.45041435392087253,
+            "stdev_f1": 0.17914435056760908,
+            "mean_time": 0.3920876979827881,
+            "stdev_time": 0.0390961164333519
+        }
+    },
+    {
+        "hyperparameters": {
+            "algorithm": "lbfgs",
+            "min_freq": 5,
+            "all_possible_states": true,
+            "all_possible_transitions": false,
+            "num_memories": 9,
+            "c1": 1.74,
+            "c2": 0.09,
+            "epsilon": 0.0008600000000000001,
+            "period": 1,
+            "delta": 0.00045000000000000004,
+            "linesearch": "StrongBacktracking",
+            "max_linesearch": 34
+        },
+        "stats": {
+            "mean_precision": 0.4344436335328176,
+            "stdev_precision": 0.15542689556199216,
+            "mean_recall": 0.4385174258109041,
+            "stdev_recall": 0.19873733310765845,
+            "mean_f1": 0.43386496201052716,
+            "stdev_f1": 0.17225578421967264,
+            "mean_time": 0.12209572792053222,
+            "stdev_time": 0.0236177196325414
+        }
+    },
+    {
+        "hyperparameters": {
+            "algorithm": "lbfgs",
+            "min_freq": 2,
+            "all_possible_states": true,
+            "all_possible_transitions": true,
+            "num_memories": 1,
+            "c1": 0.91,
+            "c2": 0.4,
+            "epsilon": 0.0008400000000000001,
+            "period": 13,
+            "delta": 0.00018,
+            "linesearch": "MoreThuente",
+            "max_linesearch": 43
+        },
+        "stats": {
+            "mean_precision": 0.41963433149859447,
+            "stdev_precision": 0.16363544501259455,
+            "mean_recall": 0.4331173486012196,
+            "stdev_recall": 0.21344965207006913,
+            "mean_f1": 0.422038027332145,
+            "stdev_f1": 0.18245844823319127,
+            "mean_time": 0.2586916446685791,
+            "stdev_time": 0.04341208573100539
+        }
+    },
+    {
+        "hyperparameters": {
+            "algorithm": "l2sgd",
+            "min_freq": 5,
+            "all_possible_states": true,
+            "all_possible_transitions": true,
+            "c2": 1.68,
+            "period": 2,
+            "delta": 0.00047000000000000004,
+            "calibration_eta": 0.0006900000000000001,
+            "calibration_rate": 2.9000000000000004,
+            "calibration_samples": 1400,
+            "calibration_candidates": 25,
+            "calibration_max_trials": 23
+        },
+        "stats": {
+            "mean_precision": 0.2571428571428571,
+            "stdev_precision": 0.43330716823151716,
+            "mean_recall": 0.01,
+            "stdev_recall": 0.022360679774997897,
+            "mean_f1": 0.01702127659574468,
+            "stdev_f1": 0.038060731531911314,
+            "mean_time": 0.15442829132080077,
+            "stdev_time": 0.051750737506044905
+        }
+    }
+]
+```
+</details>
 
 ### Inference
 

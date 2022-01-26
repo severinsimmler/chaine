@@ -285,7 +285,7 @@ class Optimizer:
             dataset, labels = downsample(dataset, labels, sample_size, self.seed)
 
         # split data set for cross validation
-        splits = list(cross_validation(dataset, labels, n=self.folds))
+        splits = list(cross_validation(dataset, labels, k=self.folds))
 
         for i, space in enumerate(self.spaces):
             LOGGER.info(f"Training baseline for {space.algorithm} ({i + 1}/{len(self.spaces)})")

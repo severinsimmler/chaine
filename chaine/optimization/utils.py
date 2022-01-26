@@ -30,7 +30,7 @@ class NumberSeries(Iterable):
 
 
 def cross_validation(
-    dataset: Iterable[Sequence], labels: Iterable[Labels], n: int, shuffle: bool = True
+    dataset: Iterable[Sequence], labels: Iterable[Labels], k: int, seed: Optional[int] = None
 ) -> Iterator[tuple[tuple[Iterable[Sequence], Iterable[Labels]]]]:
     """K-fold cross validation.
 
@@ -40,7 +40,7 @@ def cross_validation(
         Data set to split into k folds.
     labels : Iterable[Labels]
         Labels to split into k folds.
-    n : int
+    k : int
         Number of folds.
     shuffle : bool, optional
         True if data set should be shuffled first, by default True.
@@ -53,15 +53,15 @@ def cross_validation(
     # get indices of the examples
     indices = list(range(len(dataset)))
 
-    if shuffle:
-        # optionally shuffle examples
-        random.shuffle(indices)
+    # shuffle examples
+    random.seed(seed)
+    random.shuffle(indices)
 
     # split into k folds
-    folds = [set(indices[i::n]) for i in range(n)]
+    folds = [indices[i::k] for i in range(k)]
 
     # yield every fold split
-    for i in range(n):
+    for i in range(k):
         # get train and test split
         test = folds[i]
         train = [s for x in [fold for fold in folds if fold != test] for s in x]

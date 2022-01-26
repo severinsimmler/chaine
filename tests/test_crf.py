@@ -7,17 +7,22 @@ from chaine import crf
 
 
 @pytest.fixture
-def dataset() -> dict[str, list]:
-    sequences = [[{"a": "foo"}, {"a": "bar"}] for _ in range(50)]
-    labels = [["A", "B"] for _ in range(50)]
-    return {"sequences": sequences, "labels": labels}
+def sequences():
+    return [[{"a": "foo"}, {"a": "bar"}] for _ in range(50)]
 
 
 @pytest.fixture
-def serialized_model(tmpdir: Path, dataset: dict[str, list]) -> Path:
+def labels():
+    return [["A", "B"] for _ in range(50)]
+
+
+@pytest.fixture
+def serialized_model(
+    tmpdir: Path, sequences: list[list[dict[str, str]]], labels: list[list[str]]
+) -> Path:
     trainer = crf.Trainer()
     model_filepath = Path(tmpdir.join("model.chaine"))
-    trainer.train(dataset["sequences"], dataset["labels"], model_filepath=model_filepath)
+    trainer.train(sequences, labels, model_filepath=model_filepath)
     return model_filepath
 
 
@@ -140,12 +145,12 @@ def test_arow_params():
         assert param in trainer.params.keys()
 
 
-def test_training(tmpdir, dataset: dict[str, list]):
+def test_training(tmpdir, sequences: list[list[dict[str, str]]], labels: list[list[str]]):
     trainer = crf.Trainer()
     model_filepath = Path(tmpdir.join("model.chaine"))
     assert not model_filepath.exists()
 
-    trainer.train(dataset["sequences"], dataset["labels"], model_filepath=model_filepath)
+    trainer.train(sequences, labels, model_filepath=model_filepath)
     assert model_filepath.exists()
 
 
@@ -154,31 +159,39 @@ def test_model_deserialization(serialized_model):
     assert model.labels == {"A", "B"}
 
 
-def test_model_predict_single(model: crf.Model, dataset: dict[str, list]):
-    for sequence in dataset["sequences"]:
+def test_model_predict_single(
+    model: crf.Model, sequences: list[list[dict[str, str]]], labels: list[list[str]]
+):
+    for sequence in sequences:
         predicted = model.predict_single(sequence)
         expected = ["A", "B"]
         assert predicted == expected
 
     with pytest.raises(ValueError):
-        model.predict_single(dataset["sequences"])
+        model.predict_single(sequences)
 
 
-def test_model_predict(model: crf.Model, dataset: dict[str, list]):
-    predicted = model.predict(dataset["sequences"])
-    expected = dataset["labels"]
+def test_model_predict(
+    model: crf.Model, sequences: list[list[dict[str, str]]], labels: list[list[str]]
+):
+    predicted = model.predict(sequences)
+    expected = labels
     assert predicted == expected
 
 
-def test_model_predict_generator(model: crf.Model, dataset: dict[str, list]):
-    generator = ([features for features in sequence] for sequence in dataset["sequences"])
+def test_model_predict_generator(
+    model: crf.Model, sequences: list[list[dict[str, str]]], labels: list[list[str]]
+):
+    generator = ([features for features in sequence] for sequence in sequences)
     predicted = model.predict(generator)
-    expected = dataset["labels"]
+    expected = labels
     assert predicted == expected
 
 
-def test_model_predict_proba_single(model: crf.Model, dataset: dict[str, list]):
-    for sequence in dataset["sequences"]:
+def test_model_predict_proba_single(
+    model: crf.Model, sequences: list[list[dict[str, str]]], labels: list[list[str]]
+):
+    for sequence in sequences:
         predicted = model.predict_proba_single(sequence)
         expected = [
             {"A": 0.953079109284954, "B": 0.04692089071504606},
@@ -187,30 +200,34 @@ def test_model_predict_proba_single(model: crf.Model, dataset: dict[str, list]):
         assert predicted == expected
 
     with pytest.raises(ValueError):
-        model.predict_proba_single(dataset["sequences"])
+        model.predict_proba_single(sequences)
 
 
-def test_model_predict_proba(model: crf.Model, dataset: dict[str, list]):
-    predicted = model.predict_proba(dataset["sequences"])
+def test_model_predict_proba(
+    model: crf.Model, sequences: list[list[dict[str, str]]], labels: list[list[str]]
+):
+    predicted = model.predict_proba(sequences)
     expected = [
         [
             {"A": 0.953079109284954, "B": 0.04692089071504606},
             {"A": 0.046920890715046036, "B": 0.953079109284954},
         ]
-        for _ in dataset["labels"]
+        for _ in labels
     ]
     assert predicted == expected
 
 
-def test_model_predict_proba_generator(model: crf.Model, dataset: dict[str, list]):
-    generator = ([features for features in sequence] for sequence in dataset["sequences"])
+def test_model_predict_proba_generator(
+    model: crf.Model, sequences: list[list[dict[str, str]]], labels: list[list[str]]
+):
+    generator = ([features for features in sequence] for sequence in sequences)
     predicted = model.predict_proba(generator)
     expected = [
         [
             {"A": 0.953079109284954, "B": 0.04692089071504606},
             {"A": 0.046920890715046036, "B": 0.953079109284954},
         ]
-        for _ in dataset["labels"]
+        for _ in labels
     ]
     assert predicted == expected
 
@@ -235,9 +252,9 @@ def test_dump_states(model: crf.Model):
     assert len(states) > 0
 
 
-def test_optimizer(dataset: dict[str, list]):
+def test_optimizer(sequences: list[list[dict[str, str]]], labels: list[list[str]]):
     optimizer = crf.Optimizer()
-    result = optimizer.optimize_hyperparameters(dataset["sequences"], dataset["labels"])
+    result = optimizer.optimize_hyperparameters(sequences, labels)
 
     assert len(result) > 0
     assert isinstance(result, list)

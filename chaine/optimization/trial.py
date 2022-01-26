@@ -83,14 +83,14 @@ class OptimizationTrial:
         return {
             "hyperparameters": params,
             "stats": {
-                "mean_precision": statistics.mean(self.precision),
-                "stdev_precision": statistics.stdev(self.precision),
-                "mean_recall": statistics.mean(self.recall),
-                "stdev_recall": statistics.stdev(self.recall),
-                "mean_f1": statistics.mean(self.f1),
-                "stdev_f1": statistics.stdev(self.f1),
-                "mean_time": statistics.mean(self.time),
-                "stdev_time": statistics.stdev(self.time),
+                "mean_precision": statistics.mean(self.precision) if self.precision else None,
+                "stdev_precision": statistics.stdev(self.precision) if self.precision else None,
+                "mean_recall": statistics.mean(self.recall) if self.recall else None,
+                "stdev_recall": statistics.stdev(self.recall) if self.recall else None,
+                "mean_f1": statistics.mean(self.f1) if self.f1 else None,
+                "stdev_f1": statistics.stdev(self.f1) if self.f1 else None,
+                "mean_time": statistics.mean(self.time) if self.time else None,
+                "stdev_time": statistics.stdev(self.time) if self.time else None,
             },
         }
 

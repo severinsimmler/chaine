@@ -1,11 +1,20 @@
+import pytest
+
 from chaine import training
 from chaine.crf import Model
 
 
-def test_train():
-    sequences = [[{"a": "foo"}, {"a": "bar"}] for _ in range(50)]
-    labels = [["O", "O"] for _ in range(50)]
+@pytest.fixture
+def sequences():
+    return [[{"a": "foo"}, {"a": "bar"}] for _ in range(50)]
 
+
+@pytest.fixture
+def labels():
+    return [["O", "O"] for _ in range(50)]
+
+
+def test_train(sequences, labels):
     crf = training.train(sequences, labels)
 
     assert isinstance(crf, Model)
@@ -13,10 +22,7 @@ def test_train():
     assert crf.predict(sequences) == labels
 
 
-def test_train_optimize_hyperparameters():
-    sequences = [[{"a": "foo"}, {"a": "bar"}] for _ in range(50)]
-    labels = [["O", "O"] for _ in range(50)]
-
+def test_train_optimize_hyperparameters(sequences, labels):
     crf = training.train(sequences, labels, optimize_hyperparameters=True)
 
     assert isinstance(crf, Model)

@@ -1,3 +1,5 @@
+import json
+
 import datasets
 from utils import featurize_dataset, preprocess_labels
 
@@ -18,6 +20,8 @@ if __name__ == "__main__":
     labels = preprocess_labels(dataset["train"])
 
     LOGGER.info("Start optimization with downsampled data set")
-    result = Optimizer().optimize_hyperparameters(sentences, labels, sample_size=1000)
+    result = Optimizer().optimize_hyperparameters(sentences, labels, sample_size=100)
 
-    LOGGER.info(f"Best result: {result[0]}")
+    LOGGER.info(f"Writing result to hyperparameter-optimization.json")
+    with open("hyperparameter-optimization.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=4)

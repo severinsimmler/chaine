@@ -36,7 +36,7 @@ test-command = "pytest {project}/tests"
 manylinux-x86_64-image = "manylinux2014"
 manylinux-i686-image = "manylinux2014"
 
-[tool.cibuildwheel.overrides]
+[[tool.cibuildwheel.overrides]]
 select = "cp3?-*"
 manylinux-x86_64-image = "manylinux2010"
 manylinux-i686-image = "manylinux2010"

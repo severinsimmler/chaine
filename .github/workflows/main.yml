@@ -25,8 +25,6 @@ jobs:
 
       - name: Build wheels
         run: cibuildwheel --output-dir dist
-        env:
-          CIBW_BUILD: "cp39-* cp310-*"
 
       - name: Deploy wheels
         run: poetry publish --username ${{ secrets.PYPI_USER }} --password ${{ secrets.PYPI_PW }}

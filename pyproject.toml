@@ -30,7 +30,7 @@ all = true
 exclude = "__init__.py"
 
 [tool.cibuildwheel]
-test-extras = "test"
+build = "cp39-* cp310-*"
 test-requires = "pytest"
 test-command = "pytest {project}/tests"
 manylinux-x86_64-image = "manylinux2014"

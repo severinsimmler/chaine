@@ -220,7 +220,7 @@ class Trainer:
 class HyperparameterOptimizer:
     def __init__(
         self,
-        trials: int = 10,
+        trials: int = 20,
         seed: Optional[int] = None,
         metric: str = "f1",
         folds: int = 5,

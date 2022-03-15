@@ -234,7 +234,7 @@ def test_dump_states(model: crf.Model):
 
 
 def test_optimizer(sequences: list[list[dict[str, str]]], labels: list[list[str]]):
-    optimizer = crf.Optimizer()
+    optimizer = crf.HyperparameterOptimizer()
     result = optimizer.optimize_hyperparameters(sequences, labels)
 
     assert len(result) > 0

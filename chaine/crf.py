@@ -216,7 +216,7 @@ class Trainer:
         }
 
 
-class Optimizer:
+class HyperparameterOptimizer:
     def __init__(
         self,
         trials: int = 10,

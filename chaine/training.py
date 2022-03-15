@@ -6,7 +6,7 @@ This module implements the high-level API to train a conditional random field.
 """
 
 
-from chaine.crf import Model, Optimizer, Trainer
+from chaine.crf import Model, HyperparameterOptimizer, Trainer
 from chaine.logging import Logger
 from chaine.typing import Filepath, Iterable, Labels, Sequence
 
@@ -162,7 +162,7 @@ def train(
             LOGGER.warning(f"Specified hyperparameters will be overwritten: {hyperparameters}")
 
         # optionally tune hyperparameters first
-        results = Optimizer().optimize_hyperparameters(dataset, labels)
+        results = HyperparameterOptimizer().optimize_hyperparameters(dataset, labels)
 
         # use hyperparameters of the best run
         hyperparameters = results[0]["hyperparameters"]

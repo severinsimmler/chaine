@@ -109,12 +109,12 @@ Before training a model, you might want to find out the ideal hyperparameters fi
 
 > This might be very memory and time consuming, because 5-fold cross validation for each of the 10 trials for each of the algorithms is performed.
 
-or use the `Optimizer` class and have more control over the optimization process:
+or use the `HyperparameterOptimizer` class and have more control over the optimization process:
 
 ```python
->>> from chaine import Optimizer
+>>> from chaine import HyperparameterOptimizer
 >>> from chaine.optimization import L2SGDSearchSpace
->>> optimizer = Optimizer(trials=50, folds=3, spaces=[L2SGDSearchSpace()])
+>>> optimizer = HyperparameterOptimizer(trials=50, folds=3, spaces=[L2SGDSearchSpace()])
 >>> optimizer.optimize_hyperparameters(tokens, labels, sample_size=1000)
 ```
 

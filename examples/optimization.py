@@ -3,7 +3,7 @@ import json
 import datasets
 from utils import featurize_dataset, preprocess_labels
 
-from chaine import Optimizer
+from chaine import HyperparameterOptimizer
 from chaine.logging import Logger
 
 LOGGER = Logger(__name__)
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     labels = preprocess_labels(dataset["train"])
 
     LOGGER.info("Start optimization with downsampled data set")
-    result = Optimizer().optimize_hyperparameters(sentences, labels, sample_size=1000)
+    result = HyperparameterOptimizer().optimize_hyperparameters(sentences, labels, sample_size=1000)
 
     LOGGER.info(f"Writing result to hyperparameter-optimization.json")
     with open("hyperparameter-optimization.json", "w", encoding="utf-8") as f:

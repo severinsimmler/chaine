@@ -317,7 +317,7 @@ class HyperparameterOptimizer:
 
         # make logging verbose again
         set_level("chaine._core.crf", "INFO")
-        set_level("chaine.crf", "ERROR")
+        set_level("chaine.crf", "INFO")
 
         return results
 

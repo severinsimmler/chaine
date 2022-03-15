@@ -15,7 +15,7 @@ from pathlib import Path
 
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
-from chaine.logging import Logger
+from chaine.logging import Logger, set_level
 from chaine.optimization.spaces import (
     APSearchSpace,
     AROWSearchSpace,
@@ -182,7 +182,7 @@ class Trainer:
         model_filepath : Filepath, optional (default=model.chaine)
             Path to model location.
         """
-        LOGGER.info("Loading training data")
+        LOGGER.info("Start training")
         for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
             if not is_valid_sequence(sequence):
                 raise ValueError(f"Invalid format: {sequence}")
@@ -277,6 +277,9 @@ class HyperparameterOptimizer:
         list[dict[str, dict]]
             Sorted list of hyperparameters and evaluation scores.
         """
+        # make logging less verbose
+        set_level("chaine._core.crf", "ERROR")
+
         # set random seed
         random.seed(self.seed)
 
@@ -308,6 +311,9 @@ class HyperparameterOptimizer:
 
         LOGGER.info(f"Best baseline: {baselines[0][f'mean_{self.metric}']}")
         LOGGER.info(f"Best optimized model: {results[0]['stats'][f'mean_{self.metric}']}")
+
+        # make logging verbose again
+        set_level("chaine._core.crf", "INFO")
 
         return results
 

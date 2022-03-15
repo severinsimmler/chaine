@@ -182,7 +182,7 @@ class Trainer:
         model_filepath : Filepath, optional (default=model.chaine)
             Path to model location.
         """
-        LOGGER.info("Start training")
+        LOGGER.info("Loading data set")
         for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
             if not is_valid_sequence(sequence):
                 raise ValueError(f"Invalid format: {sequence}")
@@ -199,6 +199,7 @@ class Trainer:
                 LOGGER.debug(f"Labels: {json.dumps(labels_)}")
 
         # fire!
+        LOGGER.info("Start training")
         self._trainer.train(model_filepath)
 
     @cached_property
@@ -279,6 +280,7 @@ class HyperparameterOptimizer:
         """
         # make logging less verbose
         set_level("chaine._core.crf", "ERROR")
+        set_level("chaine.crf", "ERROR")
 
         # set random seed
         random.seed(self.seed)
@@ -291,7 +293,8 @@ class HyperparameterOptimizer:
         splits = list(cross_validation(dataset, labels, k=self.folds))
 
         for i, space in enumerate(self.spaces):
-            LOGGER.info(f"Training baseline for {space.algorithm} ({i + 1}/{len(self.spaces)})")
+            LOGGER.info(f"Starting with {space.algorithm} ({i + 1}/{len(self.spaces)})")
+            LOGGER.info(f"Baseline for {space.algorithm}")
 
             with OptimizationTrial(splits, space, is_baseline=True) as trial:
                 self.results.append(trial)
@@ -314,6 +317,7 @@ class HyperparameterOptimizer:
 
         # make logging verbose again
         set_level("chaine._core.crf", "INFO")
+        set_level("chaine.crf", "ERROR")
 
         return results
 

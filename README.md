@@ -1,8 +1,8 @@
 # Chaine
 
-[![downloads](https://static.pepy.tech/personalized-badge/chaine?period=total&units=international_system&left_color=black&right_color=black&left_text=downloads)](https://pepy.tech/project/databank)
-[![downloads/month](https://static.pepy.tech/personalized-badge/chaine?period=month&units=abbreviation&left_color=black&right_color=black&left_text=downloads/month)](https://pepy.tech/project/databank)
-[![downloads/week](https://static.pepy.tech/personalized-badge/chaine?period=week&units=abbreviation&left_color=black&right_color=black&left_text=downloads/week)](https://pepy.tech/project/databank)
+[![downloads](https://static.pepy.tech/personalized-badge/chaine?period=total&units=international_system&left_color=black&right_color=black&left_text=downloads)](https://pepy.tech/project/chaine)
+[![downloads/month](https://static.pepy.tech/personalized-badge/chaine?period=month&units=abbreviation&left_color=black&right_color=black&left_text=downloads/month)](https://pepy.tech/project/chaine)
+[![downloads/week](https://static.pepy.tech/personalized-badge/chaine?period=week&units=abbreviation&left_color=black&right_color=black&left_text=downloads/week)](https://pepy.tech/project/chaine)
 
 Chaine is a modern, fast and lightweight Python library implementing linear-chain conditional random fields. Use it for sequence labeling tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition) or [part-of-speech tagging](https://en.wikipedia.org/wiki/Part-of-speech_tagging).
 

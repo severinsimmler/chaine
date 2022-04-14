@@ -46,6 +46,8 @@ Training and using a conditional random field for inference is easy as:
 [['B-PER', 'I-PER']]
 ```
 
+> You can control verbosity with the argument `verbose`, where `0` will set the log level to `ERROR`, `1` to `INFO` (which is the default) and `2` to `DEBUG`.
+
 ### Features
 
 One token in a sequence is represented as a dictionary with describing feature names as keys and respective values of type string, integer, float or boolean:

@@ -163,7 +163,8 @@ def logger_exists(name: str) -> bool:
     bool
         True if logger exists, False otherwise
     """
-    return logging.getLogger(name).hasHandlers()
+    return logging.getLogger(name).hasHa
+    ndlers()
 
 
 def set_level(name: str, level: Union[int, str]):
@@ -173,7 +174,6 @@ def set_level(name: str, level: Union[int, str]):
     ----------
     name : str
         Name of the module
-
     level : Union[int, str]
         Level to set
     """
@@ -195,3 +195,22 @@ def set_level(name: str, level: Union[int, str]):
             handler.setFormatter(DEBUG_FORMAT)
         else:
             handler.setFormatter(DEFAULT_FORMAT)
+
+
+def set_verbosity(level: int):
+    """Sets verbosity to the given level
+
+    Parameters
+    ----------
+    level : int
+        Logg only errors (0), info (1) or even debug messages (2)
+    """
+    if level == 0:
+        set_level("chaine._core.crf", "ERROR")
+        set_level("chaine.crf", "ERROR")
+    elif level == 1:
+        set_level("chaine._core.crf", "INFO")
+        set_level("chaine.crf", "INFO")
+    elif level == 2:
+        set_level("chaine._core.crf", "DEBUG")
+        set_level("chaine.crf", "DEBUG")

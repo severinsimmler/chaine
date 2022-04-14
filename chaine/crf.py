@@ -15,7 +15,7 @@ from pathlib import Path
 
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
-from chaine.logging import Logger, set_level
+from chaine.logging import Logger, set_verbosity
 from chaine.optimization.spaces import (
     APSearchSpace,
     AROWSearchSpace,
@@ -279,8 +279,7 @@ class HyperparameterOptimizer:
             Sorted list of hyperparameters and evaluation scores.
         """
         # make logging less verbose
-        set_level("chaine._core.crf", "ERROR")
-        set_level("chaine.crf", "ERROR")
+        set_verbosity(0)
 
         # set random seed
         random.seed(self.seed)
@@ -316,8 +315,7 @@ class HyperparameterOptimizer:
         LOGGER.info(f"Best optimized model: {results[0]['stats'][f'mean_{self.metric}']}")
 
         # make logging verbose again
-        set_level("chaine._core.crf", "INFO")
-        set_level("chaine.crf", "INFO")
+        set_verbosity(1)
 
         return results
 

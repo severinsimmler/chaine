@@ -17,6 +17,9 @@ pycln = "^1.1.0"
 pytest = "^6.1.2"
 jupyterlab = "^3.3.3"
 ipywidgets = "^7.7.0"
+seqeval = "^1.2.2"
+datasets = "^2.1.0"
+pandas = "^1.4.2"
 
 [tool.black]
 line-length = 99

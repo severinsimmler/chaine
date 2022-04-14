@@ -278,9 +278,6 @@ class HyperparameterOptimizer:
         list[dict[str, dict]]
             Sorted list of hyperparameters and evaluation scores.
         """
-        # make logging less verbose
-        set_verbosity(0)
-
         # set random seed
         random.seed(self.seed)
 
@@ -313,9 +310,6 @@ class HyperparameterOptimizer:
 
         LOGGER.info(f"Best baseline: {baselines[0][f'mean_{self.metric}']}")
         LOGGER.info(f"Best optimized model: {results[0]['stats'][f'mean_{self.metric}']}")
-
-        # make logging verbose again
-        set_verbosity(1)
 
         return results
 

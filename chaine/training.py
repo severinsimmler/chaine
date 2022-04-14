@@ -8,7 +8,7 @@ This module implements the high-level API to train a conditional random field.
 
 from chaine.crf import Model, HyperparameterOptimizer, Trainer
 from chaine.logging import Logger, set_verbosity
-from chaine.typing import Filepath, Iterable, Labels, Sequence
+from chaine.typing import Filepath, Iterable, Labels, Sequence, Optional
 
 LOGGER = Logger(__name__)
 
@@ -19,6 +19,7 @@ def train(
     *,
     model_filepath: Filepath = "model.chaine",
     optimize_hyperparameters: bool = False,
+    optimization_sample_size: Optional[int] = None,
     verbose: int = 1,
     **hyperparameters,
 ) -> Model:
@@ -34,6 +35,8 @@ def train(
         Path to model location.
     optimize_hyperparameters : bool
         If True, optimize hyperparameters first.
+    optimization_sample_size : Optional[int]
+        Number of instances to sample from the data set for hyperparameter optimization.
     verbose : int
         Controls the verbosity: the higher, the more messages.
     algorithm : str
@@ -167,7 +170,8 @@ def train(
             LOGGER.warning(f"Specified hyperparameters will be overwritten: {hyperparameters}")
 
         # optionally tune hyperparameters first
-        results = HyperparameterOptimizer().optimize_hyperparameters(dataset, labels)
+        optimizer = HyperparameterOptimizer()
+        results = optimizer.optimize_hyperparameters(dataset, labels, optimization_sample_size)
 
         # use hyperparameters of the best run
         hyperparameters = results[0]["hyperparameters"]

@@ -6,9 +6,9 @@ This module implements the high-level API to train a conditional random field.
 """
 
 
-from chaine.crf import Model, HyperparameterOptimizer, Trainer
+from chaine.crf import HyperparameterOptimizer, Model, Trainer
 from chaine.logging import Logger, set_verbosity
-from chaine.typing import Filepath, Iterable, Labels, Sequence, Optional
+from chaine.typing import Filepath, Iterable, Labels, Optional, Sequence
 
 LOGGER = Logger(__name__)
 

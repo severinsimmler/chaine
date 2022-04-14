@@ -1,2 +1,2 @@
-from chaine.crf import Model, HyperparameterOptimizer, Trainer
+from chaine.crf import HyperparameterOptimizer, Model, Trainer
 from chaine.training import train

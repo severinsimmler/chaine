@@ -10,11 +10,11 @@ build = "build.py"
 python = "^3.9"
 
 [tool.poetry.dev-dependencies]
-black = "^20.8b1"
+black = "^22.3.0"
 cython = "^0.29.23"
 isort = "^5.6.4"
 pycln = "^1.1.0"
-pytest = "^6.1.2"
+pytest = "^7.1.1"
 jupyterlab = "^3.3.3"
 ipywidgets = "^7.7.0"
 seqeval = "^1.2.2"

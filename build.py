@@ -36,7 +36,12 @@ INCLUDE_DIRS = [
     "chaine/_core/liblbfgs/include",
     "chaine/_core",
 ]
-EXTENSION = Extension("chaine._core.crf", language="c++", include_dirs=INCLUDE_DIRS, sources=SOURCES)
+EXTENSION = Extension(
+    "chaine._core.crf",
+    language="c++",
+    include_dirs=INCLUDE_DIRS,
+    sources=SOURCES
+)
 
 
 class ExtensionBuilder(build_ext):

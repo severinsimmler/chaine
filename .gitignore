@@ -126,3 +126,4 @@ venv.bak/
 
 *.crf
 *.chaine
+hyperparameter-optimization.json

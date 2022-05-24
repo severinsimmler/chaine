@@ -255,6 +255,7 @@ class HyperparameterOptimizer:
         self.spaces = spaces
         self.results = []
         self.baselines = []
+        self.logger = Logger("hyperparameter-optimization")
 
     def optimize_hyperparameters(
         self,
@@ -278,6 +279,9 @@ class HyperparameterOptimizer:
         list[dict[str, dict]]
             Sorted list of hyperparameters and evaluation scores.
         """
+        # disable logging
+        set_verbosity(0)
+
         # set random seed
         random.seed(self.seed)
 
@@ -289,29 +293,60 @@ class HyperparameterOptimizer:
         splits = list(cross_validation(dataset, labels, k=self.folds))
 
         for i, space in enumerate(self.spaces):
-            LOGGER.info(f"Starting with {space.algorithm} ({i + 1}/{len(self.spaces)})")
-            LOGGER.info(f"Baseline for {space.algorithm}")
+            self.logger.info(f"Starting with {space.algorithm} ({i + 1}/{len(self.spaces)})")
+            self.logger.info(f"Baseline for {space.algorithm}")
 
             with OptimizationTrial(splits, space, is_baseline=True) as trial:
                 self.results.append(trial)
                 self.baselines.append(trial["stats"])
 
             for j in range(self.trials):
-                LOGGER.info(f"Trial {j + 1}/{self.trials} for {space.algorithm}")
+                self.logger.info(f"Trial {j + 1}/{self.trials} for {space.algorithm}")
 
                 with OptimizationTrial(splits, space, is_baseline=False) as trial:
                     self.results.append(trial)
 
-        # sort results descending by specified metric
-        results = sorted(self.results, key=self._metric, reverse=True)
+                self.logger.info(f"Best baseline model: {self._best_baseline_score}")
+                self.logger.info(f"Best optimized model: {self._best_optimized_score}")
 
-        # best baseline
-        baselines = sorted(self.baselines, key=itemgetter(f"mean_{self.metric}"), reverse=True)
+        self.logger.info("Finished hyperparameter optimization")
+        self.logger.info(f"Trained {len(self.results)} models with different hyperparamters")
 
-        LOGGER.info(f"Best baseline: {baselines[0][f'mean_{self.metric}']}")
-        LOGGER.info(f"Best optimized model: {results[0]['stats'][f'mean_{self.metric}']}")
+        # make more verbose again
+        set_verbosity(1)
 
-        return results
+        # return sorted results
+        return sorted(self.results, key=self._metric, reverse=True)
+
+    @property
+    def _best_baseline_score(self) -> Union[str, float]:
+        """Best evaluation score with default hyperparameters.
+
+        Returns
+        -------
+        Union[str, float]
+            Score (or 'n/a' of no results available).
+        """
+        if self.baselines:
+            best = sorted(self.baselines, key=itemgetter(f"mean_{self.metric}"), reverse=True)[0]
+            return best[f"mean_{self.metric}"]
+
+        return "n/a"
+
+    @property
+    def _best_optimized_score(self) -> Union[str, float]:
+        """Best evaluation score with optimized hyperparameters.
+
+        Returns
+        -------
+        Union[str, float]
+            Score (or 'n/a' of no results available).
+        """
+        if self.results:
+            best = sorted(self.results, key=self._metric, reverse=True)[0]
+            return best["stats"][f"mean_{self.metric}"]
+
+        return "n/a"
 
     def _metric(self, trial: dict[str, dict]) -> float:
         """Metric so select for sorting.

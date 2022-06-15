@@ -1,6 +1,5 @@
-from distutils.command.build_ext import build_ext
-
 from setuptools import Extension
+from setuptools.command.build_ext import build_ext
 
 SOURCES = [
     "chaine/_core/crf.cpp",

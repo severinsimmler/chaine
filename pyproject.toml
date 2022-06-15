@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chaine"
-version = "2.0.0b1"
+version = "2.0.0b2"
 description = "Linear-chain conditional random fields for natural language processing"
 authors = ["Severin Simmler <s.simmler@snapaddy.com>"]
 readme = "README.md"
@@ -33,13 +33,6 @@ exclude = "__init__.py"
 build = "cp39-* cp310-*"
 test-requires = "pytest"
 test-command = "pytest {project}/tests"
-manylinux-x86_64-image = "manylinux2014"
-manylinux-i686-image = "manylinux2014"
-
-[[tool.cibuildwheel.overrides]]
-select = "cp3?-*"
-manylinux-x86_64-image = "manylinux2010"
-manylinux-i686-image = "manylinux2010"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "setuptools"]

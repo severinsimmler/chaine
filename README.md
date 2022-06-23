@@ -4,7 +4,7 @@
 [![downloads/month](https://static.pepy.tech/personalized-badge/chaine?period=month&units=abbreviation&left_color=black&right_color=black&left_text=downloads/month)](https://pepy.tech/project/chaine)
 [![downloads/week](https://static.pepy.tech/personalized-badge/chaine?period=week&units=abbreviation&left_color=black&right_color=black&left_text=downloads/week)](https://pepy.tech/project/chaine)
 
-Chaine is a modern, fast and lightweight Python library implementing linear-chain conditional random fields. Use it for sequence labeling tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition) or [part-of-speech tagging](https://en.wikipedia.org/wiki/Part-of-speech_tagging).
+Chaine is a modern, fast and lightweight Python library implementing **linear-chain conditional random fields (CRF)**. Use it for sequence labeling tasks like [named entity recognition](https://en.wikipedia.org/wiki/Named-entity_recognition) or [part-of-speech tagging](https://en.wikipedia.org/wiki/Part-of-speech_tagging).
 
 The main goals of this project are:
 
@@ -31,11 +31,11 @@ You can train models using the following methods:
 - Passive Aggressive ([Crammer et al. 2006](https://jmlr.csail.mit.edu/papers/v7/crammer06a.html))
 - Adaptive Regularization of Weight Vectors ([Mejer et al. 2010](https://aclanthology.org/D10-1095.pdf))
 
-Please refer to the paper by [Lafferty et al.](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers) for a general introduction to conditional random fields.
+Please refer to the paper by [Lafferty et al.](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1162&context=cis_papers) for a general introduction to **conditional random fields**. Other helpful sources are [Chapter 8.5 of Jurafsky's and Martin's book "Speech and Language Processing"](https://web.stanford.edu/~jurafsky/slp3/8.pdf), this [blog post](https://blog.echen.me/2012/01/03/introduction-to-conditional-random-fields/) or this [video by ritvikmath](https://www.youtube.com/watch?v=rI3DQS0P2fk)
 
 ## Usage
 
-Training and using a conditional random field for inference is easy as:
+Training and using a **conditional random field** for inference is easy as:
 
 ```python
 >>> import chaine
@@ -64,13 +64,26 @@ One token in a sequence is represented as a dictionary with describing feature n
 One sequence is represented as a list of feature dictionaries:
 
 ```python
-[{"text": "John"}, {"text": "Lennon"}]
+[
+    {"text": "John", "num_characters": 4}, 
+    {"text": "Lennon", "num_characters": 6}
+]
 ```
 
 One data set is represented as an iterable of a list of feature dictionaries:
 
 ```python
-[[{"text": "John"}, {"text": "Lennon"}]]
+[
+    [
+        {"text": "John", "num_characters": 4}, 
+        {"text": "Lennon", "num_characters": 6}
+    ],
+    [
+        {"text": "Paul", "num_characters": 4}, 
+        {"text": "McCartney", "num_characters": 9}
+    ],
+    ...
+]
 ```
 
 This is the expected input format for training. For inference, you can also process a single sequence rather than a batch of multiple sequences.
@@ -125,7 +138,7 @@ or use the `HyperparameterOptimizer` class and have more control over the optimi
 >>> optimizer.optimize_hyperparameters(tokens, labels, sample_size=1000)
 ```
 
-This will make 50 trails with 3-fold cross validation for the Stochastic Gradient Descent algorithm and return a sorted list of hyperparameters with evaluation stats. The given data set is downsampled to 1000 instances.
+This will make 50 trials with 3-fold cross validation for the Stochastic Gradient Descent algorithm and return a sorted list of hyperparameters with evaluation stats. The given data set is downsampled to 1000 instances.
 
 <details>
 <summary>Example of a hyperparameter optimization report</summary>

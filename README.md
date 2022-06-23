@@ -20,6 +20,18 @@ Install the latest stable version from [PyPI](https://pypi.org/project/chaine):
 pip install chaine
 ```
 
+### Table of contents
+
+- [Algorithms](#algorithms)
+- [Usage](#usage)
+  - [Features](#features)
+    - [Generators](#generators)
+  - [Training](#training)
+  - [Hyperparameters](#hyperparameters)
+  - [Inference](#inference)
+  - [Weights](#weights)
+- [Credits](#credits)
+
 ## Algorithms
 
 You can train models using the following methods:
@@ -87,6 +99,8 @@ One data set is represented as an iterable of a list of feature dictionaries:
 ```
 
 This is the expected input format for training. For inference, you can also process a single sequence rather than a batch of multiple sequences.
+
+#### Generators
 
 Depending on the size of your data set, it probably makes sense to use generators. Something like this would be totally fine for both training and inference:
 

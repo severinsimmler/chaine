@@ -25,7 +25,6 @@ pip install chaine
 - [Algorithms](#algorithms)
 - [Usage](#usage)
   - [Features](#features)
-    - [Generators](#generators)
   - [Training](#training)
   - [Hyperparameters](#hyperparameters)
   - [Inference](#inference)

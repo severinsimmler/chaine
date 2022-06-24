@@ -391,7 +391,7 @@ int cqdb_writer_close(cqdb_writer_t *dbw)
 
     /*
         Write references to hash tables. At this moment, dbw->cur points
-        to the offset succeeding the last key/data pair. 
+        to the offset succeeding the last key/data pair.
      */
     for (i = 0; i < NUM_TABLES; ++i)
     {

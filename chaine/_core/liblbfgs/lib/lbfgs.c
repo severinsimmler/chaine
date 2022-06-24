@@ -1225,7 +1225,7 @@ static int line_search_morethuente(
  *  @param  brackt  The pointer to the predicate if the trial value is
  *                  bracketed.
  *  @retval int     Status value. Zero indicates a normal termination.
- *  
+ *
  *  @see
  *      Jorge J. More and David J. Thuente. Line search algorithm with
  *      guaranteed sufficient decrease. ACM Transactions on Mathematical
@@ -1387,7 +1387,7 @@ static int update_trial_interval(
             x <- x, y <- t.
         - Case b: if f(t) <= f(x) && f'(t)*f'(x) > 0,
             x <- t, y <- y.
-        - Case c: if f(t) <= f(x) && f'(t)*f'(x) < 0, 
+        - Case c: if f(t) <= f(x) && f'(t)*f'(x) < 0,
             x <- t, y <- x.
      */
     if (*fx < *ft)

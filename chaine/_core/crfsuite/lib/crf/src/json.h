@@ -27,7 +27,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef enum {
+typedef enum
+{
 	JSON_NULL,
 	JSON_BOOL,
 	JSON_STRING,
@@ -48,7 +49,8 @@ struct JsonNode
 	char *key; /* Must be valid UTF-8. */
 
 	JsonTag tag;
-	union {
+	union
+	{
 		/* JSON_BOOL */
 		bool bool_;
 
@@ -60,7 +62,8 @@ struct JsonNode
 
 		/* JSON_ARRAY */
 		/* JSON_OBJECT */
-		struct {
+		struct
+		{
 			JsonNode *head, *tail;
 		} children;
 	};
@@ -68,24 +71,24 @@ struct JsonNode
 
 /*** Encoding, decoding, and validation ***/
 
-JsonNode   *json_decode         (const char *json);
-char       *json_encode         (const JsonNode *node);
-char       *json_encode_string  (const char *str);
-char       *json_stringify      (const JsonNode *node, const char *space);
-void        json_delete         (JsonNode *node);
+JsonNode *json_decode(const char *json);
+char *json_encode(const JsonNode *node);
+char *json_encode_string(const char *str);
+char *json_stringify(const JsonNode *node, const char *space);
+void json_delete(JsonNode *node);
 
-bool        json_validate       (const char *json);
+bool json_validate(const char *json);
 
 /*** Lookup and traversal ***/
 
-JsonNode   *json_find_element   (JsonNode *array, int index);
-JsonNode   *json_find_member    (JsonNode *object, const char *name);
+JsonNode *json_find_element(JsonNode *array, int index);
+JsonNode *json_find_member(JsonNode *object, const char *name);
 
-JsonNode   *json_first_child    (const JsonNode *node);
+JsonNode *json_first_child(const JsonNode *node);
 
-#define json_foreach(i, object_or_array)            \
-	for ((i) = json_first_child(object_or_array);   \
-		 (i) != NULL;                               \
+#define json_foreach(i, object_or_array)          \
+	for ((i) = json_first_child(object_or_array); \
+		 (i) != NULL;                             \
 		 (i) = (i)->next)
 
 /*** Construction and manipulation ***/

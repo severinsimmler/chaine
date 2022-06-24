@@ -31,6 +31,7 @@ namespace CRFSuiteWrapper
                 throw std::runtime_error("Cannot close file");
             };
         }
+
     public:
         void dump_transitions(int fileno)
         {

@@ -556,7 +556,6 @@ static int crf1m_model_create(crf1dm_t *crf1dm, void **ptr_model)
     model->dump_transitions = model_dump_transitions;
     model->dump_states = model_dump_states;
 
-
     *ptr_model = model;
     return 0;
 

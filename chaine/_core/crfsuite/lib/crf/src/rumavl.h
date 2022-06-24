@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2005-2007 Jesse Long <jpl@unknown.za.net>
  * All rights reserved.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -43,8 +43,8 @@ extern "C"
 #include <stddef.h> /* size_t */
 
 	/*----------------------------------------------------------------------------
- * DATA TYPES
- *--------------------------------------------------------------------------*/
+	 * DATA TYPES
+	 *--------------------------------------------------------------------------*/
 
 	/* Opaque context handle for the tree */
 	typedef struct rumavl RUMAVL;
@@ -53,8 +53,8 @@ extern "C"
 	typedef struct rumavl_node RUMAVL_NODE;
 
 	/*----------------------------------------------------------------------------
- * FUNDEMENTAL FUNCTIONS
- *--------------------------------------------------------------------------*/
+	 * FUNDEMENTAL FUNCTIONS
+	 *--------------------------------------------------------------------------*/
 
 	/* Create a new RumAVL tree */
 	RUMAVL *rumavl_new(size_t reclen,
@@ -83,14 +83,14 @@ extern "C"
 	int rumavl_delete(RUMAVL *tree, const void *record);
 
 	/*----------------------------------------------------------------------------
- * ITERATOR FUNCTIONS
- *--------------------------------------------------------------------------*/
+	 * ITERATOR FUNCTIONS
+	 *--------------------------------------------------------------------------*/
 
 	/* Get a pointer to the node containing a specific record */
 	RUMAVL_NODE *rumavl_node_find(RUMAVL *tree, const void *find, void **record);
 
 	/* Get the next node in sequence after a specific node, in a specific
- * direction, or get the first node on either end of a tree */
+	 * direction, or get the first node on either end of a tree */
 	RUMAVL_NODE *rumavl_node_next(RUMAVL *tree, RUMAVL_NODE *node, int dir,
 								  void **record);
 /* Possible directions */
@@ -105,28 +105,28 @@ extern "C"
 							  int (*cbfn)(RUMAVL *, void *, void *), void *udata);
 
 	/*----------------------------------------------------------------------------
- * CALLBACK FUNCTIONS
- *
- * Functions giving you more control over the actions of this library.
- *--------------------------------------------------------------------------*/
+	 * CALLBACK FUNCTIONS
+	 *
+	 * Functions giving you more control over the actions of this library.
+	 *--------------------------------------------------------------------------*/
 
 	int (**rumavl_owcb(RUMAVL *tree))(RUMAVL *, RUMAVL_NODE *, void *,
 									  const void *, void *);
 	int (**rumavl_delcb(RUMAVL *tree))(RUMAVL *, RUMAVL_NODE *, void *, void *);
 
 	/*----------------------------------------------------------------------------
- * MEMORY MANAGEMENT
- *
- * The rumavl_mem struct is used to define how a RUMAVL object allocates
- * and frees memory.
- *--------------------------------------------------------------------------*/
+	 * MEMORY MANAGEMENT
+	 *
+	 * The rumavl_mem struct is used to define how a RUMAVL object allocates
+	 * and frees memory.
+	 *--------------------------------------------------------------------------*/
 	void *(**rumavl_alloc(RUMAVL *tree))(void *ptr, size_t size, void *udata);
 
 	/*----------------------------------------------------------------------------
- * ERROR CODES
- *
- * The functions returning int's will return these errors
- *--------------------------------------------------------------------------*/
+	 * ERROR CODES
+	 *
+	 * The functions returning int's will return these errors
+	 *--------------------------------------------------------------------------*/
 
 #define RUMAVL_ERR_INVAL (-1) /* Invalid argument */
 #define RUMAVL_ERR_NOMEM (-2) /* Insufficient memory */

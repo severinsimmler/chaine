@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  * RumAVL - Threaded AVL Tree Implementation
- * 
+ *
  * Copyright (c) 2005-2007 Jesse Long <jpl@unknown.za.net>
  * All rights reserved.
  *
@@ -42,9 +42,9 @@
  *    the BST, the respective thread flag is marked 0. When the link is a
  *    thread, the respective thread flag is marked 1, or 2 if the thread is
  *    to the opposite edge of the BST.
- *    
+ *
  * Direction
- *    In RumAVL we use the numbers -1 (RUMAVL_DESC) and +1 (RUMAVL_ASC) to 
+ *    In RumAVL we use the numbers -1 (RUMAVL_DESC) and +1 (RUMAVL_ASC) to
  *    indicate direction, where -1 (RUMAVL_DESC) means left or descending in
  *    value, and +1 (RUMAVL_ASC) means right or ascending in value.
  *
@@ -69,9 +69,9 @@
 #endif */
 
 /*****************************************************************************
- * 
+ *
  * MACROS - to make readability better
- * 
+ *
  ****************************************************************************/
 
 /* Link numbers */
@@ -94,12 +94,12 @@
 #define mem_relloc(tree, ptr, bytes) mem_mgr((tree), (ptr), (bytes))
 
 /*****************************************************************************
- * 
+ *
  * DATA TYPES
- * 
+ *
  ****************************************************************************/
 
-/* 
+/*
  * RUMAVL - the handle on the tree
  *
  * All settings for a tree are in the RUMAVL object, including memory
@@ -124,7 +124,7 @@ struct rumavl
  * RUMAVL_NODE - the node structure
  *
  * RUMAVL_NODE's contain all information about a specific node, including
- * links to the right and left children of the node, and flags (thread) 
+ * links to the right and left children of the node, and flags (thread)
  * indicating whether or not the links are threads or not, and the balance
  * factor of the node.
  *
@@ -163,9 +163,9 @@ struct rumavl_stack
 /* various other RumAVL specific structs defined in rumavl.h */
 
 /*****************************************************************************
- * 
+ *
  * FORWARD DECLERATIONS
- * 
+ *
  ****************************************************************************/
 
 static RUMAVL_NODE *seq_next(RUMAVL_NODE *node, int dir);
@@ -188,9 +188,9 @@ static int insert_cb(RUMAVL *t, RUMAVL_NODE *n, void *r1, const void *r2,
 					 void *udata);
 
 /*****************************************************************************
- * 
+ *
  * PUBLIC FUNCTIONS
- * 
+ *
  ****************************************************************************/
 
 /*----------------------------------------------------------------------------
@@ -235,7 +235,7 @@ RUMAVL *rumavl_new(size_t reclen,
 }
 
 /*----------------------------------------------------------------------------
- * rumavl_destroy - cleanly frees all memory used by the RUMAVL, as well as 
+ * rumavl_destroy - cleanly frees all memory used by the RUMAVL, as well as
  * all nodes. All nodes are passed to the delete callback function in case the
  * user has a special way of destroying nodes. The return value of the delete
  * callback function is ignored, because once we start destroying we cant
@@ -311,9 +311,9 @@ int rumavl_set(RUMAVL *tree, const void *record)
 	}
 
 	/* Since the tree is not empty, we must descend towards the nodes ideal
-     * possition, and we may even find an existing node with the same record.
-     * We keep a list parents for the eventual node position, because these
-     * parents may become inbalanced by a new insertion. */
+	 * possition, and we may even find an existing node with the same record.
+	 * We keep a list parents for the eventual node position, because these
+	 * parents may become inbalanced by a new insertion. */
 
 	stack = NULL;
 	node = &tree->root;
@@ -322,7 +322,7 @@ int rumavl_set(RUMAVL *tree, const void *record)
 		if ((ln = rec_cmp(tree, record, NODE_REC(*node))) == 0)
 		{
 			/* OK, we found the exact node we wish to set, and we now
-	     * overwrite it. No change happens to the tree structure */
+			 * overwrite it. No change happens to the tree structure */
 			stack_destroy(tree, stack);
 
 			if (tree->owcb != NULL &&
@@ -348,7 +348,7 @@ int rumavl_set(RUMAVL *tree, const void *record)
 		if ((*node)->thread[ln] > 0)
 		{
 			/* This is as close to the correct node as we can get. We will
-	     * now break and add the new node as a leaf */
+			 * now break and add the new node as a leaf */
 			break;
 		}
 
@@ -443,11 +443,11 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 			if (stack != NULL)
 			{
 				/* This node has a parent, which will need to take over a
-		 * thread from the node being deleted. First we work out
-		 * which (left/right) child we are of parent, then give
-		 * parent the respective thread. If the thread destination
-		 * points back to us (edge of tree thread), update it to
-		 * point to our parent. */
+				 * thread from the node being deleted. First we work out
+				 * which (left/right) child we are of parent, then give
+				 * parent the respective thread. If the thread destination
+				 * points back to us (edge of tree thread), update it to
+				 * point to our parent. */
 				ln = LINK_NO(stack->dir);
 				(*stack->node)->link[ln] = tmpnode->link[ln];
 				(*stack->node)->thread[ln] = tmpnode->thread[ln];
@@ -457,11 +457,11 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 			}
 			else
 			{
-				/* 
-		 * the only time stack will == NULL is when we are
-		 * deleting the root of the tree. We already know that
-		 * this is a leaf, so we will be leaving the tree empty.
-		 */
+				/*
+				 * the only time stack will == NULL is when we are
+				 * deleting the root of the tree. We already know that
+				 * this is a leaf, so we will be leaving the tree empty.
+				 */
 				tree->root = NULL;
 			}
 			node_destroy(tree, tmpnode);
@@ -469,21 +469,21 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 		else
 		{
 			/* *node has only one child, and can be pruned by replacing
-	     * *node with its only child. This block of code and the next
-	     * should be identical, except that all directions and link
-	     * numbers are opposite.
-	     *
-	     * Let node being deleted = DELNODE for this comment.
-	     * DELNODE only has one child (the right child). The left
-	     * most descendant of DELNODE will have a thread (left thread)
-	     * pointing to DELNODE. This thread must be updated to point
-	     * to the node currently pointed to by DELNODE's left thread.
-	     *
-	     * DELNODE's left thread may point to the opposite edge of the
-	     * BST. In this case, the destination of the thread will have
-	     * a thread back to DELNODE. This will need to be updated to
-	     * point back to the leftmost descendant of DELNODE.
-	     */
+			 * *node with its only child. This block of code and the next
+			 * should be identical, except that all directions and link
+			 * numbers are opposite.
+			 *
+			 * Let node being deleted = DELNODE for this comment.
+			 * DELNODE only has one child (the right child). The left
+			 * most descendant of DELNODE will have a thread (left thread)
+			 * pointing to DELNODE. This thread must be updated to point
+			 * to the node currently pointed to by DELNODE's left thread.
+			 *
+			 * DELNODE's left thread may point to the opposite edge of the
+			 * BST. In this case, the destination of the thread will have
+			 * a thread back to DELNODE. This will need to be updated to
+			 * point back to the leftmost descendant of DELNODE.
+			 */
 			tmpnode = *node;			  /* node being deleted */
 			*node = (*node)->link[RIGHT]; /* right child */
 			/* find left most descendant */
@@ -514,12 +514,12 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 	else
 	{
 		/* Delete a node with children on both sides. We do this by replacing
-	 * the node to be deleted (delnode) with its inner most child
-	 * on the heavier side (repnode). This in place replacement is quicker
-	 * than the previously used method of rotating delnode until it is a
-	 * (semi) leaf.
-	 *
-	 * At this point node points to delnode's parent's link to delnode. */
+		 * the node to be deleted (delnode) with its inner most child
+		 * on the heavier side (repnode). This in place replacement is quicker
+		 * than the previously used method of rotating delnode until it is a
+		 * (semi) leaf.
+		 *
+		 * At this point node points to delnode's parent's link to delnode. */
 		RUMAVL_NODE *repnode, *parent;
 		int outdir, outln;
 
@@ -540,9 +540,9 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 		}
 
 		/* Add node to be deleted to the list of nodes to be rebalanced.
-	 * Rememer that the replacement node will actually be acted apon,
-	 * and that the replacement node should feel the effect of its own
-	 * move */
+		 * Rememer that the replacement node will actually be acted apon,
+		 * and that the replacement node should feel the effect of its own
+		 * move */
 		if (stack_push(tree, &stack, node, outdir) != 0)
 			goto nomemout;
 
@@ -552,7 +552,7 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 		if (repnode->thread[ln] != 0)
 		{
 			/* repnode inherits delnode's lighter tree, and balance, and gets
-	     * balance readjusted below */
+			 * balance readjusted below */
 			repnode->link[ln] = (*node)->link[ln];
 			repnode->thread[ln] = (*node)->thread[ln];
 			repnode->balance = (*node)->balance;
@@ -560,13 +560,13 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 		else
 		{
 			/* Now we add delnodes direct child to the list of "to update".
-	     * We pass a pointer to delnode's link to its direct child to 
-	     * stack_push(), but that pointer is invalid, because when
-	     * stack_update() tries to access the link, delnode would have
-	     * been destroyed. So, we remember the stack position at which
-	     * we passed the faulty pointer to stack_push, and update its
-	     * node pointer when we find repnode to point to repnodes 
-	     * link on the same side */
+			 * We pass a pointer to delnode's link to its direct child to
+			 * stack_push(), but that pointer is invalid, because when
+			 * stack_update() tries to access the link, delnode would have
+			 * been destroyed. So, we remember the stack position at which
+			 * we passed the faulty pointer to stack_push, and update its
+			 * node pointer when we find repnode to point to repnodes
+			 * link on the same side */
 			RUMAVL_STACK *tmpstack;
 
 			if (stack_push(tree, &stack, &parent->link[outln], dir) != 0)
@@ -594,7 +594,7 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 			else
 			{
 				/* parent already has a link to repnode, but it must now be
-		 * marked as a thread */
+				 * marked as a thread */
 				parent->thread[ln] = 1;
 			}
 
@@ -611,7 +611,7 @@ int rumavl_delete(RUMAVL *tree, const void *record)
 		*node = repnode;
 
 		/* innermost child in lighter tree has an invalid thread to delnode,
-	 * update it to point to repnode */
+		 * update it to point to repnode */
 		repnode = seq_next(repnode, dir);
 		repnode->link[outln] = *node;
 	}
@@ -689,7 +689,7 @@ fail:
 }
 
 /*----------------------------------------------------------------------------
- * rumavl_node_next - find next node 
+ * rumavl_node_next - find next node
  *--------------------------------------------------------------------------*/
 RUMAVL_NODE *rumavl_node_next(RUMAVL *tree, RUMAVL_NODE *node, int dir,
 							  void **record)
@@ -703,7 +703,7 @@ RUMAVL_NODE *rumavl_node_next(RUMAVL *tree, RUMAVL_NODE *node, int dir,
 		dir = RUMAVL_DESC;
 
 	/* if node is uninitialised, start with first possible node in `dir'
-     * direction */
+	 * direction */
 	if (node == NULL)
 	{
 		/* unless the tree is empty of course */
@@ -791,9 +791,9 @@ const char *rumavl_strerror(int errno)
 }
 
 /*****************************************************************************
- * 
+ *
  * PRIVATE FUNCTIONS
- * 
+ *
  ****************************************************************************/
 
 /*----------------------------------------------------------------------------
@@ -872,7 +872,7 @@ static void node_destroy(RUMAVL *tree, RUMAVL_NODE *node)
 }
 
 /*----------------------------------------------------------------------------
- * stack_push - push a node entry onto stack, for rumavl_set() and 
+ * stack_push - push a node entry onto stack, for rumavl_set() and
  * rumavl_delete(). If this is the first entry, *stack should == NULL
  *--------------------------------------------------------------------------*/
 static int stack_push(RUMAVL *tree, RUMAVL_STACK **stack, RUMAVL_NODE **node,
@@ -909,7 +909,7 @@ static void stack_destroy(RUMAVL *tree, RUMAVL_STACK *stack)
  * stack_update - goes up stack readjusting balance as needed. This function
  * serves as a testiment to the philosophy of commenting while you code, 'cos
  * hell if I can remember how I got to this. I think is has something to do
- * with the varying effects on tree height, depending on exactly which sub 
+ * with the varying effects on tree height, depending on exactly which sub
  * tree, or sub-sub tree was modified. TODO study and comment
  *--------------------------------------------------------------------------*/
 static void stack_update(RUMAVL *tree, RUMAVL_STACK *stack, signed char diff)
@@ -917,7 +917,7 @@ static void stack_update(RUMAVL *tree, RUMAVL_STACK *stack, signed char diff)
 	RUMAVL_STACK *tmpstack;
 
 	/* if diff becomes 0, we quit, because no further change to ancestors
-     * can be made */
+	 * can be made */
 	while (stack != NULL && diff != 0)
 	{
 		signed char ob, nb;
@@ -976,7 +976,7 @@ static void stack_update(RUMAVL *tree, RUMAVL_STACK *stack, signed char diff)
 	}
 
 	/* we may exit early if diff becomes 0. We still need to free all stack
-     * entries */
+	 * entries */
 	while (stack != NULL)
 	{
 		tmpstack = stack;

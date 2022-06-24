@@ -59,18 +59,18 @@ typedef double lbfgsfloatval_t;
 
 #endif
 
-  /** 
- * \addtogroup liblbfgs_api libLBFGS API
- * @{
- *
- *  The libLBFGS API.
- */
+  /**
+   * \addtogroup liblbfgs_api libLBFGS API
+   * @{
+   *
+   *  The libLBFGS API.
+   */
 
   /**
- * Return values of lbfgs().
- * 
- *  Roughly speaking, a negative value indicates an error.
- */
+   * Return values of lbfgs().
+   *
+   *  Roughly speaking, a negative value indicates an error.
+   */
   enum
   {
     /** L-BFGS reaches convergence. */
@@ -148,8 +148,8 @@ typedef double lbfgsfloatval_t;
   };
 
   /**
- * Line search algorithms.
- */
+   * Line search algorithms.
+   */
   enum
   {
     /** The default algorithm (MoreThuente method). */
@@ -193,10 +193,10 @@ typedef double lbfgsfloatval_t;
   };
 
   /**
- * L-BFGS optimization parameters.
- *  Call lbfgs_parameter_init() function to initialize parameters to the
- *  default values.
- */
+   * L-BFGS optimization parameters.
+   *  Call lbfgs_parameter_init() function to initialize parameters to the
+   *  default values.
+   */
   typedef struct
   {
     /**
@@ -361,22 +361,22 @@ typedef double lbfgsfloatval_t;
   } lbfgs_parameter_t;
 
   /**
- * Callback interface to provide objective function and gradient evaluations.
- *
- *  The lbfgs() function call this function to obtain the values of objective
- *  function and its gradients when needed. A client program must implement
- *  this function to evaluate the values of the objective function and its
- *  gradients, given current values of variables.
- *  
- *  @param  instance    The user data sent for lbfgs() function by the client.
- *  @param  x           The current values of variables.
- *  @param  g           The gradient vector. The callback function must compute
- *                      the gradient values for the current variables.
- *  @param  n           The number of variables.
- *  @param  step        The current step of the line search routine.
- *  @retval lbfgsfloatval_t The value of the objective function for the current
- *                          variables.
- */
+   * Callback interface to provide objective function and gradient evaluations.
+   *
+   *  The lbfgs() function call this function to obtain the values of objective
+   *  function and its gradients when needed. A client program must implement
+   *  this function to evaluate the values of the objective function and its
+   *  gradients, given current values of variables.
+   *
+   *  @param  instance    The user data sent for lbfgs() function by the client.
+   *  @param  x           The current values of variables.
+   *  @param  g           The gradient vector. The callback function must compute
+   *                      the gradient values for the current variables.
+   *  @param  n           The number of variables.
+   *  @param  step        The current step of the line search routine.
+   *  @retval lbfgsfloatval_t The value of the objective function for the current
+   *                          variables.
+   */
   typedef lbfgsfloatval_t (*lbfgs_evaluate_t)(
       void *instance,
       const lbfgsfloatval_t *x,
@@ -385,25 +385,25 @@ typedef double lbfgsfloatval_t;
       const lbfgsfloatval_t step);
 
   /**
- * Callback interface to receive the progress of the optimization process.
- *
- *  The lbfgs() function call this function for each iteration. Implementing
- *  this function, a client program can store or display the current progress
- *  of the optimization process.
- *
- *  @param  instance    The user data sent for lbfgs() function by the client.
- *  @param  x           The current values of variables.
- *  @param  g           The current gradient values of variables.
- *  @param  fx          The current value of the objective function.
- *  @param  xnorm       The Euclidean norm of the variables.
- *  @param  gnorm       The Euclidean norm of the gradients.
- *  @param  step        The line-search step used for this iteration.
- *  @param  n           The number of variables.
- *  @param  k           The iteration count.
- *  @param  ls          The number of evaluations called for this iteration.
- *  @retval int         Zero to continue the optimization process. Returning a
- *                      non-zero value will cancel the optimization process.
- */
+   * Callback interface to receive the progress of the optimization process.
+   *
+   *  The lbfgs() function call this function for each iteration. Implementing
+   *  this function, a client program can store or display the current progress
+   *  of the optimization process.
+   *
+   *  @param  instance    The user data sent for lbfgs() function by the client.
+   *  @param  x           The current values of variables.
+   *  @param  g           The current gradient values of variables.
+   *  @param  fx          The current value of the objective function.
+   *  @param  xnorm       The Euclidean norm of the variables.
+   *  @param  gnorm       The Euclidean norm of the gradients.
+   *  @param  step        The line-search step used for this iteration.
+   *  @param  n           The number of variables.
+   *  @param  k           The iteration count.
+   *  @param  ls          The number of evaluations called for this iteration.
+   *  @retval int         Zero to continue the optimization process. Returning a
+   *                      non-zero value will cancel the optimization process.
+   */
   typedef int (*lbfgs_progress_t)(
       void *instance,
       const lbfgsfloatval_t *x,
@@ -438,42 +438,42 @@ In this formula, ||.|| denotes the Euclidean norm.
 */
 
   /**
- * Start a L-BFGS optimization.
- *
- *  @param  n           The number of variables.
- *  @param  x           The array of variables. A client program can set
- *                      default values for the optimization and receive the
- *                      optimization result through this array. This array
- *                      must be allocated by ::lbfgs_malloc function
- *                      for libLBFGS built with SSE/SSE2 optimization routine
- *                      enabled. The library built without SSE/SSE2
- *                      optimization does not have such a requirement.
- *  @param  ptr_fx      The pointer to the variable that receives the final
- *                      value of the objective function for the variables.
- *                      This argument can be set to \c NULL if the final
- *                      value of the objective function is unnecessary.
- *  @param  proc_evaluate   The callback function to provide function and
- *                          gradient evaluations given a current values of
- *                          variables. A client program must implement a
- *                          callback function compatible with \ref
- *                          lbfgs_evaluate_t and pass the pointer to the
- *                          callback function.
- *  @param  proc_progress   The callback function to receive the progress
- *                          (the number of iterations, the current value of
- *                          the objective function) of the minimization
- *                          process. This argument can be set to \c NULL if
- *                          a progress report is unnecessary.
- *  @param  instance    A user data for the client program. The callback
- *                      functions will receive the value of this argument.
- *  @param  param       The pointer to a structure representing parameters for
- *                      L-BFGS optimization. A client program can set this
- *                      parameter to \c NULL to use the default parameters.
- *                      Call lbfgs_parameter_init() function to fill a
- *                      structure with the default values.
- *  @retval int         The status code. This function returns zero if the
- *                      minimization process terminates without an error. A
- *                      non-zero value indicates an error.
- */
+   * Start a L-BFGS optimization.
+   *
+   *  @param  n           The number of variables.
+   *  @param  x           The array of variables. A client program can set
+   *                      default values for the optimization and receive the
+   *                      optimization result through this array. This array
+   *                      must be allocated by ::lbfgs_malloc function
+   *                      for libLBFGS built with SSE/SSE2 optimization routine
+   *                      enabled. The library built without SSE/SSE2
+   *                      optimization does not have such a requirement.
+   *  @param  ptr_fx      The pointer to the variable that receives the final
+   *                      value of the objective function for the variables.
+   *                      This argument can be set to \c NULL if the final
+   *                      value of the objective function is unnecessary.
+   *  @param  proc_evaluate   The callback function to provide function and
+   *                          gradient evaluations given a current values of
+   *                          variables. A client program must implement a
+   *                          callback function compatible with \ref
+   *                          lbfgs_evaluate_t and pass the pointer to the
+   *                          callback function.
+   *  @param  proc_progress   The callback function to receive the progress
+   *                          (the number of iterations, the current value of
+   *                          the objective function) of the minimization
+   *                          process. This argument can be set to \c NULL if
+   *                          a progress report is unnecessary.
+   *  @param  instance    A user data for the client program. The callback
+   *                      functions will receive the value of this argument.
+   *  @param  param       The pointer to a structure representing parameters for
+   *                      L-BFGS optimization. A client program can set this
+   *                      parameter to \c NULL to use the default parameters.
+   *                      Call lbfgs_parameter_init() function to fill a
+   *                      structure with the default values.
+   *  @retval int         The status code. This function returns zero if the
+   *                      minimization process terminates without an error. A
+   *                      non-zero value indicates an error.
+   */
   int lbfgs(
       int n,
       lbfgsfloatval_t *x,
@@ -484,34 +484,34 @@ In this formula, ||.|| denotes the Euclidean norm.
       lbfgs_parameter_t *param);
 
   /**
- * Initialize L-BFGS parameters to the default values.
- *
- *  Call this function to fill a parameter structure with the default values
- *  and overwrite parameter values if necessary.
- *
- *  @param  param       The pointer to the parameter structure.
- */
+   * Initialize L-BFGS parameters to the default values.
+   *
+   *  Call this function to fill a parameter structure with the default values
+   *  and overwrite parameter values if necessary.
+   *
+   *  @param  param       The pointer to the parameter structure.
+   */
   void lbfgs_parameter_init(lbfgs_parameter_t *param);
 
   /**
- * Allocate an array for variables.
- *
- *  This function allocates an array of variables for the convenience of
- *  ::lbfgs function; the function has a requreiemt for a variable array
- *  when libLBFGS is built with SSE/SSE2 optimization routines. A user does
- *  not have to use this function for libLBFGS built without SSE/SSE2
- *  optimization.
- *  
- *  @param  n           The number of variables.
- */
+   * Allocate an array for variables.
+   *
+   *  This function allocates an array of variables for the convenience of
+   *  ::lbfgs function; the function has a requreiemt for a variable array
+   *  when libLBFGS is built with SSE/SSE2 optimization routines. A user does
+   *  not have to use this function for libLBFGS built without SSE/SSE2
+   *  optimization.
+   *
+   *  @param  n           The number of variables.
+   */
   lbfgsfloatval_t *lbfgs_malloc(int n);
 
   /**
- * Free an array of variables.
- *  
- *  @param  x           The array of variables allocated by ::lbfgs_malloc
- *                      function.
- */
+   * Free an array of variables.
+   *
+   *  @param  x           The array of variables allocated by ::lbfgs_malloc
+   *                      function.
+   */
   void lbfgs_free(lbfgsfloatval_t *x);
 
   /** @} */

@@ -75,7 +75,7 @@ crfsuite_instance_t *dataset_get(dataset_t *ds, int i);
 typedef void (*crfsuite_encoder_features_on_path_callback)(void *instance, int fid, floatval_t value);
 
 /**
- * Internal data structure for 
+ * Internal data structure for
  */
 struct tag_crfsuite_train_internal
 {

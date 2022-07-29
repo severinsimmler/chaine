@@ -13,6 +13,8 @@ from functools import cached_property
 from operator import itemgetter
 from pathlib import Path
 
+from progress.bar import Bar
+
 from chaine._core.crf import Model as _Model
 from chaine._core.crf import Trainer as _Trainer
 from chaine.logging import Logger, set_verbosity
@@ -183,20 +185,23 @@ class Trainer:
             Path to model location.
         """
         LOGGER.info("Loading data set")
-        for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
-            if not is_valid_sequence(sequence):
-                raise ValueError(f"Invalid format: {sequence}")
+        with Bar("Loading data set...", max=len(labels)) as bar:
+            for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
+                if not is_valid_sequence(sequence):
+                    raise ValueError(f"Invalid format: {sequence}")
 
-            # log progress every 100 data points
-            if i > 0 and i % 100 == 0:
-                LOGGER.debug(f"{i} processed data points")
+                # log progress every 100 data points
+                if i > 0 and i % 100 == 0:
+                    LOGGER.debug(f"{i} processed data points")
 
-            try:
-                self._trainer.append(sequence, labels_)
-            except Exception as message:
-                LOGGER.error(message)
-                LOGGER.debug(f"Sequence: {json.dumps(sequence)}")
-                LOGGER.debug(f"Labels: {json.dumps(labels_)}")
+                try:
+                    self._trainer.append(sequence, labels_)
+                except Exception as message:
+                    LOGGER.error(message)
+                    LOGGER.debug(f"Sequence: {json.dumps(sequence)}")
+                    LOGGER.debug(f"Labels: {json.dumps(labels_)}")
+
+                bar.next()
 
         # fire!
         LOGGER.info("Start training")

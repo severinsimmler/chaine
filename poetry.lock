@@ -56,7 +56,7 @@ tests = ["pytest"]
 
 [[package]]
 name = "asttokens"
-version = "2.0.5"
+version = "2.0.6"
 description = "Annotate AST trees with source code positions"
 category = "dev"
 optional = false
@@ -66,7 +66,7 @@ python-versions = "*"
 six = "*"
 
 [package.extras]
-test = ["astroid", "pytest"]
+test = ["astroid (<=2.5.3)", "pytest"]
 
 [[package]]
 name = "atomicwrites"
@@ -414,7 +414,7 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "json5"
-version = "0.9.8"
+version = "0.9.9"
 description = "A Python implementation of the JSON5 data format."
 category = "dev"
 optional = false
@@ -425,7 +425,7 @@ dev = ["hypothesis"]
 
 [[package]]
 name = "jsonschema"
-version = "4.8.0"
+version = "4.9.1"
 description = "An implementation of JSON Schema validation for Python"
 category = "dev"
 optional = false
@@ -1002,7 +1002,7 @@ python-versions = "*"
 
 [[package]]
 name = "pywinpty"
-version = "2.0.6"
+version = "2.0.7"
 description = "Pseudo terminal support for Windows from Python."
 category = "dev"
 optional = false
@@ -1298,8 +1298,8 @@ argon2-cffi-bindings = [
     {file = "argon2_cffi_bindings-21.2.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:5e00316dabdaea0b2dd82d141cc66889ced0cdcbfa599e8b471cf22c620c329a"},
 ]
 asttokens = [
-    {file = "asttokens-2.0.5-py2.py3-none-any.whl", hash = "sha256:0844691e88552595a6f4a4281a9f7f79b8dd45ca4ccea82e5e05b4bbdb76705c"},
-    {file = "asttokens-2.0.5.tar.gz", hash = "sha256:9a54c114f02c7a9480d56550932546a3f1fe71d8a02f1bc7ccd0ee3ee35cf4d5"},
+    {file = "asttokens-2.0.6-py2.py3-none-any.whl", hash = "sha256:d74743b486968525b02d6f5497b106c051b7ee1d8eb554cdfc2adddef48bc717"},
+    {file = "asttokens-2.0.6.tar.gz", hash = "sha256:eb1dcb2c4b7ae8267f70e2220a935521972443ebacbdeab08596934b76104d93"},
 ]
 atomicwrites = [
     {file = "atomicwrites-1.4.1.tar.gz", hash = "sha256:81b2c9071a49367a7f770170e5eec8cb66567cfbbc8c73d20ce5ca4a8d71cf11"},
@@ -1550,11 +1550,12 @@ jinja2 = [
     {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
 ]
 json5 = [
-    {file = "json5-0.9.8.tar.gz", hash = "sha256:0fa6e4d3ef062f93ba9cf2a9103fe8e68c7917dfa33519ae3ac8c7e48e3c84ff"},
+    {file = "json5-0.9.9-py2.py3-none-any.whl", hash = "sha256:1ff8351ee2ae80fd89d64210d9522db7e157516a7b12c72089ded6964527283f"},
+    {file = "json5-0.9.9.tar.gz", hash = "sha256:2ace77117c068c5f1f23f97e530a0d49bc09a46039521b6daa74aa39524e02a2"},
 ]
 jsonschema = [
-    {file = "jsonschema-4.8.0-py3-none-any.whl", hash = "sha256:58bb77251318cef5e1179e33dd6e7a008a3c6c638487ab4d943c2f370cc31a1a"},
-    {file = "jsonschema-4.8.0.tar.gz", hash = "sha256:c1d410e379b210ba903bee6adf3fce6d5204cea4c2b622d63f914d2dbfef0993"},
+    {file = "jsonschema-4.9.1-py3-none-any.whl", hash = "sha256:8ebad55894c002585271af2d327d99339ef566fb085d9129b69e2623867c4106"},
+    {file = "jsonschema-4.9.1.tar.gz", hash = "sha256:408c4c8ed0dede3b268f7a441784f74206380b04f93eb2d537c7befb3df3099f"},
 ]
 jupyter-client = [
     {file = "jupyter_client-7.3.4-py3-none-any.whl", hash = "sha256:17d74b0d0a7b24f1c8c527b24fcf4607c56bee542ffe8e3418e50b21e514b621"},
@@ -1842,11 +1843,11 @@ pywin32 = [
     {file = "pywin32-304-cp39-cp39-win_amd64.whl", hash = "sha256:d24a3382f013b21aa24a5cfbfad5a2cd9926610c0affde3e8ab5b3d7dbcf4ac9"},
 ]
 pywinpty = [
-    {file = "pywinpty-2.0.6-cp310-none-win_amd64.whl", hash = "sha256:7fadc5265484c7d7c84554b9f1cfd7acf6383a877c1cfb3ee77d51179145b3ce"},
-    {file = "pywinpty-2.0.6-cp37-none-win_amd64.whl", hash = "sha256:906a3048ecfec6ece1b141594ebbbcd5c4751960714c50524e8e907bb77c9207"},
-    {file = "pywinpty-2.0.6-cp38-none-win_amd64.whl", hash = "sha256:5e4b2167e813575bf495b46adb2d88be5c470d9daf49d488900350853e95248f"},
-    {file = "pywinpty-2.0.6-cp39-none-win_amd64.whl", hash = "sha256:f7ae5d29f1c3d028e06032f8d267b51fd72ea219b9bba3e2a972a7bc26a25a87"},
-    {file = "pywinpty-2.0.6.tar.gz", hash = "sha256:a91a77d23f29a58b44f62a9474a31ed67df1277cddb69665275f8d22429046ac"},
+    {file = "pywinpty-2.0.7-cp310-none-win_amd64.whl", hash = "sha256:d56361ed2bd3395347882a7a4e6246359e745a233e89c91786ab3d9421323c17"},
+    {file = "pywinpty-2.0.7-cp37-none-win_amd64.whl", hash = "sha256:2d62ede3ed10feb0901b3b4667201766a741b6a2c69f27be623ba9fe9348447b"},
+    {file = "pywinpty-2.0.7-cp38-none-win_amd64.whl", hash = "sha256:c3b7e6a2f0e5f86e0dc5cb5e4fec7de19adacc6900232e4a48a2ecf04bae447f"},
+    {file = "pywinpty-2.0.7-cp39-none-win_amd64.whl", hash = "sha256:80a6713a586401c2a19efd2969ffd019eb85f18442611a3880e3d618887d2f84"},
+    {file = "pywinpty-2.0.7.tar.gz", hash = "sha256:f52b2e51c46dac40708ede1d42577f3ddb9d7cf8acaa36c8e27b3d3b975f4c95"},
 ]
 pyyaml = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},

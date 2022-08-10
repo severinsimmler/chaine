@@ -9,19 +9,19 @@ import random
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 
-from chaine.typing import Labels, Optional, Sequence, Union
+from chaine.typing import Labels, Sequence
 
 
 @dataclass
 class NumberSeries(Iterable):
     start: int
     stop: int
-    step: Union[int, float]
+    step: int | float
 
     def __repr__(self) -> str:
         return f"<NumberSeries (start={self.start}, stop={self.stop}, step={self.step})>"
 
-    def __iter__(self) -> Iterator[Union[int, float]]:
+    def __iter__(self) -> Iterator[int | float]:
         n = int(round((self.stop - self.start) / float(self.step)))
         if n > 1:
             yield from [self.start + self.step * i for i in range(n + 1)]
@@ -30,7 +30,7 @@ class NumberSeries(Iterable):
 
 
 def cross_validation(
-    dataset: Iterable[Sequence], labels: Iterable[Labels], k: int, seed: Optional[int] = None
+    dataset: Iterable[Sequence], labels: Iterable[Labels], k: int, seed: int | None = None
 ) -> Iterator[tuple[tuple[Iterable[Sequence], Iterable[Labels]]]]:
     """K-fold cross validation.
 
@@ -77,7 +77,7 @@ def cross_validation(
 
 
 def downsample(
-    dataset: Iterable[Sequence], labels: Iterable[Labels], n: int, seed: Optional[int] = None
+    dataset: Iterable[Sequence], labels: Iterable[Labels], n: int, seed: int | None = None
 ) -> tuple[Iterable[Sequence], Iterable[Labels]]:
     """Downsample the given data set to the specified size.
 
@@ -89,7 +89,7 @@ def downsample(
         Labels for the data set.
     n : int
         Number of samples to keep.
-    seed : Optional[int], optional
+    seed : int | None, optional
         Random seed, by default None.
 
     Returns

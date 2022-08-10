@@ -26,7 +26,7 @@ from chaine.optimization.spaces import (
 )
 from chaine.optimization.trial import OptimizationTrial
 from chaine.optimization.utils import cross_validation, downsample
-from chaine.typing import Filepath, Iterable, Labels, Optional, Sequence, Union
+from chaine.typing import Filepath, Iterable, Labels, Sequence
 from chaine.validation import is_valid_sequence
 
 LOGGER = Logger(__name__)
@@ -203,12 +203,12 @@ class Trainer:
         self._trainer.train(model_filepath)
 
     @cached_property
-    def params(self) -> dict[str, Union[str, int, float, bool]]:
+    def params(self) -> dict[str, str | int | float | bool]:
         """Set parameters of the trainer.
 
         Returns
         -------
-        dict[str, Union[str, int, float, bool]]
+        dict[str, str | int | float | bool]
             Parameters of the trainer.
         """
         return {
@@ -221,7 +221,7 @@ class HyperparameterOptimizer:
     def __init__(
         self,
         trials: int = 10,
-        seed: Optional[int] = None,
+        seed: int | None = None,
         metric: str = "f1",
         folds: int = 5,
         spaces: list[SearchSpace] = [
@@ -238,7 +238,7 @@ class HyperparameterOptimizer:
         ----------
         trials : int, optional
             Number of trials for an algorithm, by default 10.
-        seed : Optional[int], optional
+        seed : int | None, optional
             Random seed, by default None.
         metric : str, optional
             Metric to sort the results by, by default "f1"..
@@ -261,7 +261,7 @@ class HyperparameterOptimizer:
         self,
         dataset: Iterable[Sequence],
         labels: Iterable[Labels],
-        sample_size: Optional[int] = None,
+        sample_size: int | None = None,
     ) -> list[dict[str, dict]]:
         """Optimize hyperparameters on the given data set.
 
@@ -271,7 +271,7 @@ class HyperparameterOptimizer:
             Data set to train models on.
         labels : Iterable[Labels]
             Labels to train models on.
-        sample_size : Optional[int]
+        sample_size : int | None
             Number of instances to sample from the data set.
 
         Returns
@@ -319,12 +319,12 @@ class HyperparameterOptimizer:
         return sorted(self.results, key=self._metric, reverse=True)
 
     @property
-    def _best_baseline_score(self) -> Union[str, float]:
+    def _best_baseline_score(self) -> str | float:
         """Best evaluation score with default hyperparameters.
 
         Returns
         -------
-        Union[str, float]
+        str | float
             Score (or 'n/a' of no results available).
         """
         if self.baselines:
@@ -334,12 +334,12 @@ class HyperparameterOptimizer:
         return "n/a"
 
     @property
-    def _best_optimized_score(self) -> Union[str, float]:
+    def _best_optimized_score(self) -> str | float:
         """Best evaluation score with optimized hyperparameters.
 
         Returns
         -------
-        Union[str, float]
+        str | float
             Score (or 'n/a' of no results available).
         """
         if self.results:

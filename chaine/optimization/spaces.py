@@ -9,7 +9,6 @@ import random
 from abc import ABC, abstractmethod
 
 from chaine.optimization.utils import NumberSeries
-from chaine.typing import Union
 
 
 class SearchSpace(ABC):
@@ -19,7 +18,7 @@ class SearchSpace(ABC):
         ...
 
     @abstractmethod
-    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
         ...
 
 
@@ -92,12 +91,12 @@ class LBFGSSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "lbfgs"
 
-    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
         """Select random hyperparameters from the search space.
 
         Returns
         -------
-        dict[str, Union[int, float, bool, str]]
+        dict[str, int | float | bool | str]
             Randomly selected hyperparameters.
         """
         return {
@@ -185,12 +184,12 @@ class L2SGDSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "l2sgd"
 
-    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
         """Select random hyperparameters from the search space.
 
         Returns
         -------
-        dict[str, Union[int, float, bool, str]]
+        dict[str, int | float | bool | str]
             Randomly selected hyperparameters.
         """
         return {
@@ -243,12 +242,12 @@ class APSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "ap"
 
-    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
         """Select random hyperparameters from the search space.
 
         Returns
         -------
-        dict[str, Union[int, float, bool, str]]
+        dict[str, int | float | bool | str]
             Randomly selected hyperparameters.
         """
         return {
@@ -311,12 +310,12 @@ class PASearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "pa"
 
-    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
         """Select random hyperparameters from the search space.
 
         Returns
         -------
-        dict[str, Union[int, float, bool, str]]
+        dict[str, int | float | bool | str]
             Randomly selected hyperparameters.
         """
         return {
@@ -376,12 +375,12 @@ class AROWSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "arow"
 
-    def random_hyperparameters(self) -> dict[str, Union[int, float, bool, str]]:
+    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
         """Select random hyperparameters from the search space.
 
         Returns
         -------
-        dict[str, Union[int, float, bool, str]]
+        dict[str, int | float | bool | str]
             Randomly selected hyperparameters.
         """
         return {

@@ -9,8 +9,6 @@ import logging
 import sys
 from logging import Formatter, StreamHandler
 
-from chaine.typing import Union
-
 DEBUG = 10
 INFO = 20
 WARNING = 30
@@ -42,7 +40,7 @@ class Logger:
         # set level of both the logger and the handler to INFO by default
         self.set_level("INFO")
 
-    def set_level(self, level: Union[str, int]):
+    def set_level(self, level: str | int):
         # translate string to integer
         if isinstance(level, str):
             level = LEVELS[level.upper()]
@@ -93,7 +91,7 @@ class Logger:
         if self._logger.isEnabledFor(WARNING):
             self._logger._log(WARNING, message, ())
 
-    def error(self, message: Union[str, Exception]):
+    def error(self, message: str | Exception):
         """Error log message
 
         Parameters
@@ -167,14 +165,14 @@ def logger_exists(name: str) -> bool:
     ndlers()
 
 
-def set_level(name: str, level: Union[int, str]):
+def set_level(name: str, level: int | str):
     """Sets log level for the specified logger
 
     Parameters
     ----------
     name : str
         Name of the module
-    level : Union[int, str]
+    level : int | str
         Level to set
     """
     logger = logging.getLogger(name)

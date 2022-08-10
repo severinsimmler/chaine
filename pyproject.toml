@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "chaine"
-version = "2.0.0"
+version = "2.0.1"
 description = "Linear-chain conditional random fields for natural language processing"
 authors = ["Severin Simmler <s.simmler@snapaddy.com>"]
 readme = "README.md"
 build = "build.py"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
@@ -31,7 +31,7 @@ all = true
 exclude = "__init__.py"
 
 [tool.cibuildwheel]
-build = "cp39-*"
+build = "cp310-*"
 test-requires = "pytest"
 test-command = "pytest {project}/tests"
 

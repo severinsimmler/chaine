@@ -1824,7 +1824,6 @@ static const char __pyx_k_tell[] = "tell";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_type[] = "type";
 static const char __pyx_k_Model[] = "Model";
-static const char __pyx_k_Union[] = "Union";
 static const char __pyx_k_crf1d[] = "crf1d";
 static const char __pyx_k_delta[] = "delta";
 static const char __pyx_k_enter[] = "__enter__";
@@ -1940,7 +1939,6 @@ static PyObject *__pyx_n_s_Sequence;
 static PyObject *__pyx_n_s_Trainer;
 static PyObject *__pyx_n_s_Trainer_lambda;
 static PyObject *__pyx_n_s_TypeError;
-static PyObject *__pyx_n_s_Union;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_kp_b__6;
 static PyObject *__pyx_kp_u__7;
@@ -3170,7 +3168,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_8append(struct __pyx_obj_3crf_Trainer *_
  * 
  *         self._trainer.append(to_seq(sequence), labels, group)             # <<<<<<<<<<<<<<
  * 
- *     def translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):
+ *     def translate_params(self, kwargs: dict[str, str | int | float | bool]):
  */
   try {
     __pyx_t_8 = __pyx_f_3crf_to_seq(__pyx_v_sequence);
@@ -3216,14 +3214,14 @@ static PyObject *__pyx_pf_3crf_7Trainer_8append(struct __pyx_obj_3crf_Trainer *_
 /* "crf.pyx":113
  *         self._trainer.append(to_seq(sequence), labels, group)
  * 
- *     def translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):             # <<<<<<<<<<<<<<
+ *     def translate_params(self, kwargs: dict[str, str | int | float | bool]):             # <<<<<<<<<<<<<<
  *         return {
  *             self.kwarg2param.get(kwarg, kwarg): value
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3crf_7Trainer_11translate_params(PyObject *__pyx_v_self, PyObject *__pyx_v_kwargs); /*proto*/
-static char __pyx_doc_3crf_7Trainer_10translate_params[] = "Trainer.translate_params(self, kwargs: dict[str, Union[str, int, float, bool]])";
+static char __pyx_doc_3crf_7Trainer_10translate_params[] = "Trainer.translate_params(self, kwargs: dict[str, str | int | float | bool])";
 static PyObject *__pyx_pw_3crf_7Trainer_11translate_params(PyObject *__pyx_v_self, PyObject *__pyx_v_kwargs) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -3257,7 +3255,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_10translate_params(struct __pyx_obj_3crf
 
   /* "crf.pyx":114
  * 
- *     def translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):
+ *     def translate_params(self, kwargs: dict[str, str | int | float | bool]):
  *         return {             # <<<<<<<<<<<<<<
  *             self.kwarg2param.get(kwarg, kwarg): value
  *             for kwarg, value in kwargs.items()
@@ -3383,7 +3381,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_10translate_params(struct __pyx_obj_3crf
       __pyx_t_7 = 0;
 
       /* "crf.pyx":115
- *     def translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):
+ *     def translate_params(self, kwargs: dict[str, str | int | float | bool]):
  *         return {
  *             self.kwarg2param.get(kwarg, kwarg): value             # <<<<<<<<<<<<<<
  *             for kwarg, value in kwargs.items()
@@ -3467,7 +3465,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_10translate_params(struct __pyx_obj_3crf
   /* "crf.pyx":113
  *         self._trainer.append(to_seq(sequence), labels, group)
  * 
- *     def translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):             # <<<<<<<<<<<<<<
+ *     def translate_params(self, kwargs: dict[str, str | int | float | bool]):             # <<<<<<<<<<<<<<
  *         return {
  *             self.kwarg2param.get(kwarg, kwarg): value
  */
@@ -3666,7 +3664,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_12select_algorithm(struct __pyx_obj_3crf
  *         if not self._trainer.select(algorithm, "crf1d"):
  *             raise ValueError(f"{algorithm} is no available algorithm")             # <<<<<<<<<<<<<<
  * 
- *     def set_params(self, params: dict[str, Union[str, int, float, bool]]):
+ *     def set_params(self, params: dict[str, str | int | float | bool]):
  */
     __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_algorithm, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 125, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -3718,14 +3716,14 @@ static PyObject *__pyx_pf_3crf_7Trainer_12select_algorithm(struct __pyx_obj_3crf
 /* "crf.pyx":127
  *             raise ValueError(f"{algorithm} is no available algorithm")
  * 
- *     def set_params(self, params: dict[str, Union[str, int, float, bool]]):             # <<<<<<<<<<<<<<
+ *     def set_params(self, params: dict[str, str | int | float | bool]):             # <<<<<<<<<<<<<<
  *         for param, value in params.items():
  *             self.set_param(param, value)
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3crf_7Trainer_15set_params(PyObject *__pyx_v_self, PyObject *__pyx_v_params); /*proto*/
-static char __pyx_doc_3crf_7Trainer_14set_params[] = "Trainer.set_params(self, params: dict[str, Union[str, int, float, bool]])";
+static char __pyx_doc_3crf_7Trainer_14set_params[] = "Trainer.set_params(self, params: dict[str, str | int | float | bool])";
 static PyObject *__pyx_pw_3crf_7Trainer_15set_params(PyObject *__pyx_v_self, PyObject *__pyx_v_params) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -3758,7 +3756,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_14set_params(struct __pyx_obj_3crf_Train
 
   /* "crf.pyx":128
  * 
- *     def set_params(self, params: dict[str, Union[str, int, float, bool]]):
+ *     def set_params(self, params: dict[str, str | int | float | bool]):
  *         for param, value in params.items():             # <<<<<<<<<<<<<<
  *             self.set_param(param, value)
  * 
@@ -3872,11 +3870,11 @@ static PyObject *__pyx_pf_3crf_7Trainer_14set_params(struct __pyx_obj_3crf_Train
     __pyx_t_6 = 0;
 
     /* "crf.pyx":129
- *     def set_params(self, params: dict[str, Union[str, int, float, bool]]):
+ *     def set_params(self, params: dict[str, str | int | float | bool]):
  *         for param, value in params.items():
  *             self.set_param(param, value)             # <<<<<<<<<<<<<<
  * 
- *     def set_param(self, param: str, value: Union[str, int, float, bool]):
+ *     def set_param(self, param: str, value: str | int | float | bool):
  */
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_set_param); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 129, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -3929,7 +3927,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_14set_params(struct __pyx_obj_3crf_Train
 
     /* "crf.pyx":128
  * 
- *     def set_params(self, params: dict[str, Union[str, int, float, bool]]):
+ *     def set_params(self, params: dict[str, str | int | float | bool]):
  *         for param, value in params.items():             # <<<<<<<<<<<<<<
  *             self.set_param(param, value)
  * 
@@ -3940,7 +3938,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_14set_params(struct __pyx_obj_3crf_Train
   /* "crf.pyx":127
  *             raise ValueError(f"{algorithm} is no available algorithm")
  * 
- *     def set_params(self, params: dict[str, Union[str, int, float, bool]]):             # <<<<<<<<<<<<<<
+ *     def set_params(self, params: dict[str, str | int | float | bool]):             # <<<<<<<<<<<<<<
  *         for param, value in params.items():
  *             self.set_param(param, value)
  */
@@ -3967,14 +3965,14 @@ static PyObject *__pyx_pf_3crf_7Trainer_14set_params(struct __pyx_obj_3crf_Train
 /* "crf.pyx":131
  *             self.set_param(param, value)
  * 
- *     def set_param(self, param: str, value: Union[str, int, float, bool]):             # <<<<<<<<<<<<<<
+ *     def set_param(self, param: str, value: str | int | float | bool):             # <<<<<<<<<<<<<<
  *         if isinstance(value, bool):
  *             value = int(value)
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3crf_7Trainer_17set_param(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3crf_7Trainer_16set_param[] = "Trainer.set_param(self, str param: str, value: Union[str, int, float, bool])";
+static char __pyx_doc_3crf_7Trainer_16set_param[] = "Trainer.set_param(self, str param: str, value: str | int | float | bool)";
 static PyObject *__pyx_pw_3crf_7Trainer_17set_param(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_param = 0;
   PyObject *__pyx_v_value = 0;
@@ -4058,7 +4056,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16set_param(struct __pyx_obj_3crf_Traine
 
   /* "crf.pyx":132
  * 
- *     def set_param(self, param: str, value: Union[str, int, float, bool]):
+ *     def set_param(self, param: str, value: str | int | float | bool):
  *         if isinstance(value, bool):             # <<<<<<<<<<<<<<
  *             value = int(value)
  *         self._trainer.set(param, str(value))
@@ -4071,7 +4069,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16set_param(struct __pyx_obj_3crf_Traine
   if (__pyx_t_3) {
 
     /* "crf.pyx":133
- *     def set_param(self, param: str, value: Union[str, int, float, bool]):
+ *     def set_param(self, param: str, value: str | int | float | bool):
  *         if isinstance(value, bool):
  *             value = int(value)             # <<<<<<<<<<<<<<
  *         self._trainer.set(param, str(value))
@@ -4084,7 +4082,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16set_param(struct __pyx_obj_3crf_Traine
 
     /* "crf.pyx":132
  * 
- *     def set_param(self, param: str, value: Union[str, int, float, bool]):
+ *     def set_param(self, param: str, value: str | int | float | bool):
  *         if isinstance(value, bool):             # <<<<<<<<<<<<<<
  *             value = int(value)
  *         self._trainer.set(param, str(value))
@@ -4113,7 +4111,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_16set_param(struct __pyx_obj_3crf_Traine
   /* "crf.pyx":131
  *             self.set_param(param, value)
  * 
- *     def set_param(self, param: str, value: Union[str, int, float, bool]):             # <<<<<<<<<<<<<<
+ *     def set_param(self, param: str, value: str | int | float | bool):             # <<<<<<<<<<<<<<
  *         if isinstance(value, bool):
  *             value = int(value)
  */
@@ -4183,7 +4181,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_18get_param(struct __pyx_obj_3crf_Traine
  *     def get_param(self, param: str):
  *         return self.cast_parameter(param, self._trainer.get(param))             # <<<<<<<<<<<<<<
  * 
- *     def cast_parameter(self, param: str, value: Union[str, int, float, bool]):
+ *     def cast_parameter(self, param: str, value: str | int | float | bool):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_cast_parameter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
@@ -4274,14 +4272,14 @@ static PyObject *__pyx_pf_3crf_7Trainer_18get_param(struct __pyx_obj_3crf_Traine
 /* "crf.pyx":139
  *         return self.cast_parameter(param, self._trainer.get(param))
  * 
- *     def cast_parameter(self, param: str, value: Union[str, int, float, bool]):             # <<<<<<<<<<<<<<
+ *     def cast_parameter(self, param: str, value: str | int | float | bool):             # <<<<<<<<<<<<<<
  *         if param in self._parameter_types:
  *             return self._parameter_types[param](value)
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3crf_7Trainer_21cast_parameter(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3crf_7Trainer_20cast_parameter[] = "Trainer.cast_parameter(self, str param: str, value: Union[str, int, float, bool])";
+static char __pyx_doc_3crf_7Trainer_20cast_parameter[] = "Trainer.cast_parameter(self, str param: str, value: str | int | float | bool)";
 static PyObject *__pyx_pw_3crf_7Trainer_21cast_parameter(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_param = 0;
   PyObject *__pyx_v_value = 0;
@@ -4364,7 +4362,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_20cast_parameter(struct __pyx_obj_3crf_T
 
   /* "crf.pyx":140
  * 
- *     def cast_parameter(self, param: str, value: Union[str, int, float, bool]):
+ *     def cast_parameter(self, param: str, value: str | int | float | bool):
  *         if param in self._parameter_types:             # <<<<<<<<<<<<<<
  *             return self._parameter_types[param](value)
  *         return value
@@ -4377,7 +4375,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_20cast_parameter(struct __pyx_obj_3crf_T
   if (__pyx_t_3) {
 
     /* "crf.pyx":141
- *     def cast_parameter(self, param: str, value: Union[str, int, float, bool]):
+ *     def cast_parameter(self, param: str, value: str | int | float | bool):
  *         if param in self._parameter_types:
  *             return self._parameter_types[param](value)             # <<<<<<<<<<<<<<
  *         return value
@@ -4410,7 +4408,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_20cast_parameter(struct __pyx_obj_3crf_T
 
     /* "crf.pyx":140
  * 
- *     def cast_parameter(self, param: str, value: Union[str, int, float, bool]):
+ *     def cast_parameter(self, param: str, value: str | int | float | bool):
  *         if param in self._parameter_types:             # <<<<<<<<<<<<<<
  *             return self._parameter_types[param](value)
  *         return value
@@ -4432,7 +4430,7 @@ static PyObject *__pyx_pf_3crf_7Trainer_20cast_parameter(struct __pyx_obj_3crf_T
   /* "crf.pyx":139
  *         return self.cast_parameter(param, self._trainer.get(param))
  * 
- *     def cast_parameter(self, param: str, value: Union[str, int, float, bool]):             # <<<<<<<<<<<<<<
+ *     def cast_parameter(self, param: str, value: str | int | float | bool):             # <<<<<<<<<<<<<<
  *         if param in self._parameter_types:
  *             return self._parameter_types[param](value)
  */
@@ -8556,7 +8554,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Trainer, __pyx_k_Trainer, sizeof(__pyx_k_Trainer), 0, 0, 1, 1},
   {&__pyx_n_s_Trainer_lambda, __pyx_k_Trainer_lambda, sizeof(__pyx_k_Trainer_lambda), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
-  {&__pyx_n_s_Union, __pyx_k_Union, sizeof(__pyx_k_Union), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_kp_b__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 0, 0, 0},
   {&__pyx_kp_u__7, __pyx_k__7, sizeof(__pyx_k__7), 0, 1, 0, 0},
@@ -9104,7 +9101,7 @@ if (!__Pyx_RefNanny) {
  * import os
  * 
  * from chaine.logging import Logger             # <<<<<<<<<<<<<<
- * from chaine.typing import Filepath, Labels, Sequence, Union
+ * from chaine.typing import Filepath, Labels, Sequence
  * 
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
@@ -9124,11 +9121,11 @@ if (!__Pyx_RefNanny) {
   /* "crf.pyx":13
  * 
  * from chaine.logging import Logger
- * from chaine.typing import Filepath, Labels, Sequence, Union             # <<<<<<<<<<<<<<
+ * from chaine.typing import Filepath, Labels, Sequence             # <<<<<<<<<<<<<<
  * 
  * LOGGER = Logger(__name__)
  */
-  __pyx_t_2 = PyList_New(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_Filepath);
   __Pyx_GIVEREF(__pyx_n_s_Filepath);
@@ -9139,9 +9136,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_Sequence);
   __Pyx_GIVEREF(__pyx_n_s_Sequence);
   PyList_SET_ITEM(__pyx_t_2, 2, __pyx_n_s_Sequence);
-  __Pyx_INCREF(__pyx_n_s_Union);
-  __Pyx_GIVEREF(__pyx_n_s_Union);
-  PyList_SET_ITEM(__pyx_t_2, 3, __pyx_n_s_Union);
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_chaine_typing, __pyx_t_2, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -9157,14 +9151,10 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_Sequence, __pyx_t_2) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Union); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Union, __pyx_t_2) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "crf.pyx":15
- * from chaine.typing import Filepath, Labels, Sequence, Union
+ * from chaine.typing import Filepath, Labels, Sequence
  * 
  * LOGGER = Logger(__name__)             # <<<<<<<<<<<<<<
  * 

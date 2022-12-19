@@ -10,7 +10,7 @@ from libcpp.string cimport string
 import os
 
 from chaine.logging import Logger
-from chaine.typing import Filepath, Labels, Sequence, Union
+from chaine.typing import Filepath, Labels, Sequence
 
 LOGGER = Logger(__name__)
 
@@ -110,7 +110,7 @@ cdef class Trainer:
 
         self._trainer.append(to_seq(sequence), labels, group)
 
-    def translate_params(self, kwargs: dict[str, Union[str, int, float, bool]]):
+    def translate_params(self, kwargs: dict[str, str | int | float | bool]):
         return {
             self.kwarg2param.get(kwarg, kwarg): value
             for kwarg, value in kwargs.items()
@@ -124,11 +124,11 @@ cdef class Trainer:
         if not self._trainer.select(algorithm, "crf1d"):
             raise ValueError(f"{algorithm} is no available algorithm")
 
-    def set_params(self, params: dict[str, Union[str, int, float, bool]]):
+    def set_params(self, params: dict[str, str | int | float | bool]):
         for param, value in params.items():
             self.set_param(param, value)
 
-    def set_param(self, param: str, value: Union[str, int, float, bool]):
+    def set_param(self, param: str, value: str | int | float | bool):
         if isinstance(value, bool):
             value = int(value)
         self._trainer.set(param, str(value))
@@ -136,7 +136,7 @@ cdef class Trainer:
     def get_param(self, param: str):
         return self.cast_parameter(param, self._trainer.get(param))
 
-    def cast_parameter(self, param: str, value: Union[str, int, float, bool]):
+    def cast_parameter(self, param: str, value: str | int | float | bool):
         if param in self._parameter_types:
             return self._parameter_types[param](value)
         return value

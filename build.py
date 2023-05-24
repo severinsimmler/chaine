@@ -1,6 +1,7 @@
 from setuptools import Extension
 from setuptools.command.build_ext import build_ext
 
+
 SOURCES = [
     "chaine/_core/crf.cpp",
     "chaine/_core/crfsuite/lib/cqdb/src/cqdb.c",

@@ -4,6 +4,7 @@ version = "3.11.0"
 description = "Linear-chain conditional random fields for natural language processing"
 authors = ["Severin Simmler <s.simmler@snapaddy.com>"]
 readme = "README.md"
+include = [{ path = "chaine/_core/*.so", format = "wheel" }]
 
 [tool.poetry.dependencies]
 python = "3.11.*"

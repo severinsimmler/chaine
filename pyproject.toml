@@ -4,7 +4,6 @@ version = "3.11.0"
 description = "Linear-chain conditional random fields for natural language processing"
 authors = ["Severin Simmler <s.simmler@snapaddy.com>"]
 readme = "README.md"
-include = [{ path = "chaine/_core/*.so", format = "wheel" }]
 
 [tool.poetry.dependencies]
 python = "3.11.*"
@@ -18,7 +17,7 @@ jupyterlab = "^4.0.0"
 pycln = "^2.1.1"
 
 [tool.poetry.build]
-generate-setup-file = false
+generate-setup-file = true
 script = "build.py"
 
 [tool.black]

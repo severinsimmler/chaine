@@ -1,9 +1,9 @@
+from Cython.Build import cythonize
 from setuptools import Extension
 from setuptools.command.build_ext import build_ext
 
-
 SOURCES = [
-    "chaine/_core/crf.cpp",
+    "chaine/_core/crf.pyx",
     "chaine/_core/crfsuite/lib/cqdb/src/cqdb.c",
     "chaine/_core/crfsuite/lib/cqdb/src/lookup3.c",
     "chaine/_core/crfsuite/lib/crf/src/crf1d_context.c",
@@ -57,5 +57,6 @@ class ExtensionBuilder(build_ext):
         build_ext.build_extensions(self)
 
 
-def build(setup_kwargs: dict):
-    setup_kwargs.update({"cmdclass": {"build_ext": ExtensionBuilder}, "ext_modules": [EXTENSION]})
+def build(kwargs: dict):
+    kwargs["cmdclass"] = {"build_ext": ExtensionBuilder}
+    kwargs["ext_modules"] =  cythonize([EXTENSION])

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chaine"
-version = "3.12.0"
+version = "3.12.1"
 description = "Linear-chain conditional random fields for natural language processing"
 authors = ["Severin Simmler <s.simmler@snapaddy.com>"]
 readme = "README.md"
@@ -40,5 +40,5 @@ test-requires = "pytest"
 test-command = "pytest {project}/tests"
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "setuptools"]
+requires = ["poetry-core>=1.0.0", "setuptools", "cython"]
 build-backend = "poetry.core.masonry.api"

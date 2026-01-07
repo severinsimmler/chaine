@@ -30,7 +30,10 @@ class NumberSeries(Iterable):
 
 
 def cross_validation(
-    dataset: Iterable[Sequence], labels: Iterable[Labels], k: int, seed: int | None = None
+    dataset: Iterable[Sequence],
+    labels: Iterable[Labels],
+    k: int,
+    seed: int | None = None,
 ) -> Iterator[tuple[tuple[Iterable[Sequence], Iterable[Labels]]]]:
     """K-fold cross validation.
 
@@ -68,16 +71,22 @@ def cross_validation(
 
         # yield train and test split
         yield (
-            [d for i, d in enumerate(dataset) if i in train],
-            [l for i, l in enumerate(labels) if i in train],
-        ), (
-            [d for i, d in enumerate(dataset) if i in test],
-            [l for i, l in enumerate(labels) if i in test],
+            (
+                [d for i, d in enumerate(dataset) if i in train],
+                [l for i, l in enumerate(labels) if i in train],
+            ),
+            (
+                [d for i, d in enumerate(dataset) if i in test],
+                [l for i, l in enumerate(labels) if i in test],
+            ),
         )
 
 
 def downsample(
-    dataset: Iterable[Sequence], labels: Iterable[Labels], n: int, seed: int | None = None
+    dataset: Iterable[Sequence],
+    labels: Iterable[Labels],
+    n: int,
+    seed: int | None = None,
 ) -> tuple[Iterable[Sequence], Iterable[Labels]]:
     """Downsample the given data set to the specified size.
 

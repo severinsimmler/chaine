@@ -14,32 +14,30 @@ from chaine.typing import Filepath, Labels, Sequence
 
 LOGGER = Logger(__name__)
 
+PARAM_MAPPING = {
+    "feature.minfreq": "min_freq",
+    "feature.possible_states": "all_possible_states",
+    "feature.possible_transitions": "all_possible_transitions",
+    "calibration.eta": "calibration_eta",
+    "calibration.rate": "calibration_rate",
+    "calibration.samples": "calibration_samples",
+    "calibration.candidates": "calibration_candidates",
+    "calibration.max_trials": "calibration_max_trials",
+    "type": "pa_type",
+}
+
+# Constants for model validation
+MODEL_MAGIC = b"lCRF"
+MIN_MODEL_SIZE = 48
+
 
 cdef class Trainer:
+    """Trainer for Conditional Random Fields (CRF) models."""
+
     cdef crfsuite_api.Trainer _trainer
 
-    param2kwarg = {
-        "feature.minfreq": "min_freq",
-        "feature.possible_states": "all_possible_states",
-        "feature.possible_transitions": "all_possible_transitions",
-        "calibration.eta": "calibration_eta",
-        "calibration.rate": "calibration_rate",
-        "calibration.samples": "calibration_samples",
-        "calibration.candidates": "calibration_candidates",
-        "calibration.max_trials": "calibration_max_trials",
-        "type": "pa_type",
-    }
-    kwarg2param = {
-        "min_freq": "feature.minfreq",
-        "all_possible_states": "feature.possible_states",
-        "all_possible_transitions": "feature.possible_transitions",
-        "calibration_eta": "calibration.eta",
-        "calibration_rate": "calibration.rate",
-        "calibration_samples": "calibration.samples",
-        "calibration_candidates": "calibration.candidates",
-        "calibration_max_trials": "calibration.max_trials",
-        "pa_type": "type",
-    }
+    param2kwarg = PARAM_MAPPING
+    kwarg2param = {v: k for k, v in PARAM_MAPPING.items()}
     _algorithm_aliases = {
         "lbfgs": "lbfgs",
         "limited-memory-bfgs": "lbfgs",
@@ -91,6 +89,7 @@ cdef class Trainer:
         return self._trainer.params()
 
     def train(self, model_filepath: Filepath):
+        """Train the CRF model and save to the specified filepath."""
         self._trainer.train(str(model_filepath), -1)
 
     def _log(self, message: str):
@@ -100,11 +99,15 @@ cdef class Trainer:
         self._log(message)
 
     def append(self, sequence: Sequence, labels: Labels, int group=0):
+        """Append a labeled sequence to the training data."""
+        if isinstance(sequence, (str, bytes)):
+            raise TypeError("sequence cannot be a string or bytes object")
+        if isinstance(labels, (str, bytes)):
+            raise TypeError("labels cannot be a string or bytes object")
         # no generators allowed
         if not isinstance(sequence, list):
             sequence = [item for item in sequence]
         if not isinstance(labels, list):
-            # labels must be strings
             labels = [str(label) for label in labels]
 
         self._trainer.append(to_seq(sequence), labels, group)
@@ -116,12 +119,13 @@ cdef class Trainer:
         }
 
     def select_algorithm(self, algorithm: str):
+        """Select the training algorithm."""
         try:
             algorithm = self._algorithm_aliases[algorithm.lower()]
         except KeyError:
-            raise ValueError(f"{algorithm} is not an available algorithm")
+            raise ValueError(f"Unsupported algorithm: {algorithm}")
         if not self._trainer.select(algorithm, "crf1d"):
-            raise ValueError(f"{algorithm} is not an available algorithm")
+            raise ValueError(f"Failed to select algorithm: {algorithm}")
 
     def set_params(self, params: dict[str, str | int | float | bool]):
         for param, value in params.items():
@@ -142,6 +146,8 @@ cdef class Trainer:
 
 
 cdef class Model:
+    """Model for CRF tagging and prediction."""
+
     cdef crfsuite_api.Tagger _tagger
 
     def __init__(self, model_filepath: Filepath):
@@ -152,10 +158,12 @@ cdef class Model:
         return self._tagger.labels()
 
     def predict_single(self, sequence: Sequence) -> list[str]:
+        """Predict labels for a single sequence."""
         self.set_sequence(sequence)
         return self._tagger.viterbi()
 
     def predict_proba_single(self, sequence: Sequence) -> list[dict[str, float]]:
+        """Predict label probabilities for a single sequence."""
         self.set_sequence(sequence)
         return [
             {label: self.marginal(label, index) for label in self.labels}
@@ -163,26 +171,31 @@ cdef class Model:
         ]
 
     def load(self, filepath: Filepath):
+        """Load a CRF model from the specified filepath."""
         filepath = str(filepath)
         self.check_model(filepath)
         if not self._tagger.open(filepath):
-            raise ValueError(f"Cannot load model file {filepath}")
+            raise ValueError(f"Failed to open model file: {filepath}")
 
     def marginal(self, label: str, index: int):
         return self._tagger.marginal(label, index)
 
     cpdef set_sequence(self, sequence) except +:
+        """Set the sequence for prediction."""
+        if isinstance(sequence, (str, bytes)):
+            raise TypeError("sequence cannot be a string or bytes object")
         self._tagger.set(to_seq(sequence))
 
     @staticmethod
     def check_model(filepath: str):
+        """Validate the model file format and size."""
         with open(filepath, "rb") as model:
             magic = model.read(4)
-            if magic != b"lCRF":
-                raise ValueError(f"Invalid model file {filepath}")
+            if magic != MODEL_MAGIC:
+                raise ValueError(f"Invalid model file magic bytes in {filepath}")
             model.seek(0, os.SEEK_END)
-            if model.tell() <= 48:
-                raise ValueError(f"Model file {filepath} does not have a complete header")
+            if model.tell() <= MIN_MODEL_SIZE:
+                raise ValueError(f"Model file {filepath} is too small (incomplete header)")
 
     def dump_transitions(self, filepath: Filepath):
         self._tagger.dump_transitions(os.open(str(filepath), os.O_WRONLY | os.O_CREAT))
@@ -218,18 +231,24 @@ cdef crfsuite_api.Item to_item(sequence) except+:
                         crfsuite_api.Attribute(c_token + separator + attr.attr, attr.value)
                     )
             else:
-                if isinstance(value, str):
-                    c_token += separator
-                    c_token += <string>value.encode("utf8")
-                    c_value = 1.0
-                elif isinstance(value, bytes):
-                    c_token += separator
-                    c_token += <string>value
-                    c_value = 1.0
-                else:
-                    c_value = value
-                c_item.push_back(crfsuite_api.Attribute(c_token, c_value))
+                c_item.push_back(_create_attribute(c_token, value, separator))
     return c_item
+
+
+cdef crfsuite_api.Attribute _create_attribute(string c_token, value, string separator):
+    cdef double c_value
+    cdef string c_attr
+
+    if isinstance(value, str):
+        c_attr = c_token + separator + value.encode("utf8")
+        c_value = 1.0
+    elif isinstance(value, bytes):
+        c_attr = c_token + separator + value
+        c_value = 1.0
+    else:
+        c_attr = c_token
+        c_value = value
+    return crfsuite_api.Attribute(c_attr, c_value)
 
 
 cdef crfsuite_api.ItemSequence to_seq(sequence) except+:
@@ -244,6 +263,8 @@ cdef crfsuite_api.ItemSequence to_seq(sequence) except+:
 
 
 cdef class ItemSequence:
+    """Sequence of CRF items for training/prediction."""
+
     cdef crfsuite_api.ItemSequence c_sequence
 
     def __init__(self, sequence):

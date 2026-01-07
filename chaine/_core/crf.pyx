@@ -2,7 +2,7 @@
 # cython: c_string_type=str
 # cython: c_string_encoding=utf-8
 # cython: profile=False
-# cython: language_level=2
+# cython: language_level=3
 # distutils: language=c++
 
 cimport crfsuite_api
@@ -81,11 +81,10 @@ cdef class Trainer:
     def __init__(self, algorithm: str, **kwargs):
         self.select_algorithm(algorithm)
         self.set_params(self.translate_params(kwargs))
+        self._trainer._init_trainer()
 
     def __cinit__(self):
         self._trainer.set_handler(self, <crfsuite_api.messagefunc>self._on_message)
-        self._trainer.select("l2sgd", "crf1d")
-        self._trainer._init_trainer()
 
     @property
     def params(self):
@@ -119,10 +118,10 @@ cdef class Trainer:
     def select_algorithm(self, algorithm: str):
         try:
             algorithm = self._algorithm_aliases[algorithm.lower()]
-        except:
-            raise ValueError(f"{algorithm} is no available algorithm")
+        except KeyError:
+            raise ValueError(f"{algorithm} is not an available algorithm")
         if not self._trainer.select(algorithm, "crf1d"):
-            raise ValueError(f"{algorithm} is no available algorithm")
+            raise ValueError(f"{algorithm} is not an available algorithm")
 
     def set_params(self, params: dict[str, str | int | float | bool]):
         for param, value in params.items():
@@ -204,8 +203,8 @@ cdef crfsuite_api.Item to_item(sequence) except+:
     c_item.reserve(len(sequence))
 
     for token in sequence:
-        if isinstance(token, unicode):
-            c_token = (<unicode>token).encode("utf8")
+        if isinstance(token, str):
+            c_token = token.encode("utf8")
         else:
             c_token = token
         if not is_dict:
@@ -219,9 +218,9 @@ cdef crfsuite_api.Item to_item(sequence) except+:
                         crfsuite_api.Attribute(c_token + separator + attr.attr, attr.value)
                     )
             else:
-                if isinstance(value, unicode):
+                if isinstance(value, str):
                     c_token += separator
-                    c_token += <string>(<unicode>value).encode("utf8")
+                    c_token += <string>value.encode("utf8")
                     c_value = 1.0
                 elif isinstance(value, bytes):
                     c_token += separator

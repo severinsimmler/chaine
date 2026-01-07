@@ -8,6 +8,7 @@ A collection of type hints.
 from os import PathLike
 from pathlib import Path
 from typing import Any, Iterable
+from typing import Iterator as Iterator
 
 Sequence = Iterable[dict[str, str | int | float | bool]]
 Labels = Iterable[str]

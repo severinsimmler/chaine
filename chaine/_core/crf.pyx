@@ -238,16 +238,20 @@ cdef crfsuite_api.Item to_item(sequence) except+:
 cdef crfsuite_api.Attribute _create_attribute(string c_token, value, string separator):
     cdef double c_value
     cdef string c_attr
+    cdef string temp
 
     if isinstance(value, str):
-        c_attr = c_token + separator + value.encode("utf8")
+        temp = value.encode("utf8")
+        c_attr = c_token + separator + temp
         c_value = 1.0
     elif isinstance(value, bytes):
-        c_attr = c_token + separator + value
+        temp = value
+        c_attr = c_token + separator + temp
         c_value = 1.0
     else:
         c_attr = c_token
         c_value = value
+    return crfsuite_api.Attribute(c_attr, c_value)
     return crfsuite_api.Attribute(c_attr, c_value)
 
 

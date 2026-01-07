@@ -1,5 +1,17 @@
 from chaine.typing import Dataset, Features, Sentence, Tags
 
+LABEL_MAPPING = {
+    0: "O",
+    1: "B-PER",
+    2: "I-PER",
+    3: "B-ORG",
+    4: "I-ORG",
+    5: "B-LOC",
+    6: "I-LOC",
+    7: "B-MISC",
+    8: "I-MISC",
+}
+
 
 def featurize_token(token_index: int, sentence: Sentence, pos_tags: Tags) -> Features:
     """Extract features from a token in a sentence.
@@ -94,7 +106,10 @@ def featurize_dataset(dataset: Dataset) -> list[list[Features]]:
     """
     return [
         featurize_sentence(sentence, pos_tags)
-        for sentence, pos_tags in zip(dataset["tokens"], dataset["pos_tags"])
+        for sentence, pos_tags in zip(
+            dataset["tokens"],
+            dataset["pos_tags"],
+        )
     ]
 
 
@@ -111,5 +126,6 @@ def preprocess_labels(dataset: Dataset) -> list[list[str]]:
     list[list[Features]]
         Preprocessed labels.
     """
-    labels = dataset.features["ner_tags"].feature.names
-    return [[labels[index] for index in indices] for indices in dataset["ner_tags"]]
+    return [
+        [LABEL_MAPPING[index] for index in indices] for indices in dataset["ner_tags"]
+    ]

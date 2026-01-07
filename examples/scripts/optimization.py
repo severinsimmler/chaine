@@ -11,7 +11,7 @@ LOGGER = Logger(__name__)
 
 if __name__ == "__main__":
     LOGGER.info("Loading raw data set")
-    dataset = datasets.load_dataset("conll2003")
+    dataset = datasets.load_dataset("lhoestq/conll2003")
 
     LOGGER.info(f"Number of sentences for training: {len(dataset['train']['tokens'])}")
 

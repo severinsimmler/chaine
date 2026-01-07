@@ -37,7 +37,7 @@ One approach to solve this problem is to train a linear-chain conditional random
 You can train and evaluate a CRF with the English [CoNLL 2003](https://www.clips.uantwerpen.be/conll2003/ner/) data set:
 
 ```sh
-$ python ner.py
+$ python training.py
 ```
 
 This should only take a few minutes, serializes the trained model and outputs a classification report with precision, recall and f1 scores.

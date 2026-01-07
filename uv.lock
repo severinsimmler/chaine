@@ -231,7 +231,7 @@ wheels = [
 
 [[package]]
 name = "chaine"
-version = "4.0.0b2"
+version = "4.0.0b3"
 source = { editable = "." }
 
 [package.dev-dependencies]
@@ -239,6 +239,7 @@ dev = [
     { name = "cython" },
     { name = "jupyterlab" },
     { name = "pytest" },
+    { name = "setuptools" },
 ]
 
 [package.metadata]
@@ -248,6 +249,7 @@ dev = [
     { name = "cython", specifier = ">=3.0.0" },
     { name = "jupyterlab", specifier = ">=4.5.0" },
     { name = "pytest", specifier = ">=9.0.0" },
+    { name = "setuptools", specifier = ">=80.0.0" },
 ]
 
 [[package]]

@@ -1,13 +1,18 @@
 [project]
 name = "chaine"
-version = "4.0.0b2"
+version = "4.0.0b3"
 description = "Linear-chain conditional random fields for natural language processing"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "Severin Simmler", email = "s.simmler@snapaddy.com" }]
 
 [dependency-groups]
-dev = ["cython>=3.0.0", "pytest>=9.0.0", "jupyterlab>=4.5.0"]
+dev = [
+    "cython>=3.0.0",
+    "setuptools>=80.0.0",
+    "pytest>=9.0.0",
+    "jupyterlab>=4.5.0",
+]
 
 [tool.cibuildwheel]
 build = "cp311-* cp312-* cp313-* cp314-*"

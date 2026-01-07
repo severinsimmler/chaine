@@ -1,7 +1,6 @@
-from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext
 from Cython.Build import cythonize
-
+from setuptools import Extension, setup
+from setuptools.command.build_ext import build_ext
 
 SOURCES = [
     "chaine/_core/crf.pyx",
@@ -33,9 +32,11 @@ SOURCES = [
 ]
 
 INCLUDE_DIRS = [
-    "chaine/_core/crfsuite/include/",
+    "chaine/_core/crfsuite/include",
     "chaine/_core/crfsuite/lib/cqdb/include",
+    "chaine/_core/crfsuite/lib/crf/src",
     "chaine/_core/liblbfgs/include",
+    "chaine/_core/liblbfgs/lib",
     "chaine/_core",
 ]
 
@@ -54,7 +55,10 @@ class ExtensionBuilder(build_ext):
 
         def c_compile(obj, src, ext, cc_args, extra_postargs, pp_opts):
             if src.endswith(".c"):
-                extra_postargs = extra_postargs + ["-std=c99", "-D_POSIX_C_SOURCE=200112L"]
+                extra_postargs = extra_postargs + [
+                    "-std=c99",
+                    "-D_POSIX_C_SOURCE=200112L",
+                ]
             return _compile(obj, src, ext, cc_args, extra_postargs, pp_opts)
 
         c._compile = c_compile

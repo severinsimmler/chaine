@@ -1,0 +1,8 @@
+include chaine/_core/*.pyx
+include chaine/_core/*.pxd
+recursive-include chaine/_core/crfsuite/include *.h
+recursive-include chaine/_core/crfsuite/include *.hpp
+recursive-include chaine/_core/crfsuite/lib/cqdb/include *.h
+recursive-include chaine/_core/crfsuite/lib/crf/src *.h
+recursive-include chaine/_core/liblbfgs/include *.h
+recursive-include chaine/_core/liblbfgs/lib *.h

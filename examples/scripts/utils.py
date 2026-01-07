@@ -74,7 +74,8 @@ def featurize_sentence(sentence: Sentence, pos_tags: Tags) -> list[Features]:
         List of features representing tokens of a sentence.
     """
     return [
-        featurize_token(token_index, sentence, pos_tags) for token_index in range(len(sentence))
+        featurize_token(token_index, sentence, pos_tags)
+        for token_index in range(len(sentence))
     ]
 
 

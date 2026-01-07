@@ -23,6 +23,6 @@ if __name__ == "__main__":
     optimizer = HyperparameterOptimizer()
     result = optimizer.optimize_hyperparameters(sentences, labels, sample_size=100)
 
-    LOGGER.info(f"Writing result to hyperparameter-optimization.json")
+    LOGGER.info("Writing result to hyperparameter-optimization.json")
     with open("hyperparameter-optimization.json", "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=4)

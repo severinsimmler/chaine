@@ -1,6 +1,6 @@
 [project]
 name = "chaine"
-version = "4.0.0b1"
+version = "4.0.0b2"
 description = "Linear-chain conditional random fields for natural language processing"
 readme = "README.md"
 requires-python = ">=3.11"

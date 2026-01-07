@@ -13,20 +13,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
-        name: Install Python
-        with:
-          python-version: "3.13"
-
-      - name: Install Python tools
-        run: pip install poetry cibuildwheel
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Build wheels
-        run: cibuildwheel --output-dir dist
+        run: uv tool run cibuildwheel --output-dir dist
 
-      - name: Deploy wheels
-        run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
-          poetry publish
+      - name: Publish wheels
+        run: uv publish --token ${{ secrets.PYPI_TOKEN }}

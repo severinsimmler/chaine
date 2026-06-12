@@ -59,13 +59,15 @@ def calculate_f1(true_positives: int, false_positives: int, false_negatives: int
     ----------
     true_positives : int
         Number of true positives.
+    false_positives : int
+        Number of false positives.
     false_negatives : int
         Number of false negatives.
 
     Returns
     -------
     float
-        Precision score
+        F1 score.
     """
     precision = calculate_precision(true_positives, false_positives)
     recall = calculate_recall(true_positives, false_negatives)
@@ -103,7 +105,7 @@ def evaluate_predictions(true: list[list[str]], pred: list[list[str]]) -> dict[s
     counts = Counter()
 
     # get true positives, true negatives, false positives, false negatives
-    for true_labels, predicted_labels in zip(true, pred):
+    for true_labels, predicted_labels in zip(true, pred, strict=True):
         # ignore prefixes
         true_labels = [l.removeprefix("B-").removeprefix("I-") for l in true_labels]
         predicted_labels = [l.removeprefix("B-").removeprefix("I-") for l in predicted_labels]
@@ -111,7 +113,7 @@ def evaluate_predictions(true: list[list[str]], pred: list[list[str]]) -> dict[s
         if len(true_labels) != len(predicted_labels):
             raise ValueError(f"Different lengths: '{true_labels}' vs. '{predicted_labels}'")
 
-        for true_label, predicted_label in zip(true_labels, predicted_labels):
+        for true_label, predicted_label in zip(true_labels, predicted_labels, strict=True):
             if true_label != "O" and predicted_label == true_label:
                 counts["tp"] += 1
             if predicted_label != "O" and predicted_label != true_label:

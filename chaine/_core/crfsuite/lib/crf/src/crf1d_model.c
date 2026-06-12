@@ -1016,7 +1016,7 @@ void crf1dm_dump_states(crf1dm_t *crf1dm, FILE *fp)
     uint32_t i;
     feature_refs_t refs;
     const header_t *hfile = crf1dm->header;
-    const char *stringified_json;
+    char *stringified_json;
     JsonNode *states = json_mkarray();
 
     for (i = 0; i < hfile->num_attrs; ++i)
@@ -1043,8 +1043,9 @@ void crf1dm_dump_states(crf1dm_t *crf1dm, FILE *fp)
     }
 
     stringified_json = json_stringify(states, "  ");
-    fprintf(fp, stringified_json);
+    fputs(stringified_json, fp);
     free(stringified_json);
+    json_delete(states);
 }
 
 void crf1dm_dump_transitions(crf1dm_t *crf1dm, FILE *fp)
@@ -1053,7 +1054,7 @@ void crf1dm_dump_transitions(crf1dm_t *crf1dm, FILE *fp)
     uint32_t i;
     feature_refs_t refs;
     const header_t *hfile = crf1dm->header;
-    const char *stringified_json;
+    char *stringified_json;
     JsonNode *transitions = json_mkarray();
 
     for (i = 0; i < hfile->num_labels; ++i)
@@ -1080,6 +1081,7 @@ void crf1dm_dump_transitions(crf1dm_t *crf1dm, FILE *fp)
     }
 
     stringified_json = json_stringify(transitions, "  ");
-    fprintf(fp, stringified_json);
+    fputs(stringified_json, fp);
     free(stringified_json);
+    json_delete(transitions);
 }

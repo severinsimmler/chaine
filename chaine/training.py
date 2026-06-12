@@ -5,10 +5,11 @@ chaine.training
 This module implements the high-level API to train a conditional random field.
 """
 
+from collections.abc import Iterable
 
 from chaine.crf import HyperparameterOptimizer, Model, Trainer
 from chaine.logging import Logger, set_verbosity
-from chaine.typing import Filepath, Iterable, Labels, Sequence
+from chaine.typing import Filepath, Labels, Sequence
 
 LOGGER = Logger(__name__)
 

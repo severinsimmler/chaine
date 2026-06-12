@@ -8,7 +8,7 @@ This module implements the trainer, optimizer and model.
 import json
 import random
 import tempfile
-import uuid
+from collections.abc import Callable, Iterable
 from functools import cached_property
 from operator import itemgetter
 from pathlib import Path
@@ -26,7 +26,7 @@ from chaine.optimization.spaces import (
 )
 from chaine.optimization.trial import OptimizationTrial
 from chaine.optimization.utils import cross_validation, downsample
-from chaine.typing import Filepath, Iterable, Labels, Sequence
+from chaine.typing import Filepath, Labels, Sequence
 from chaine.validation import is_valid_sequence
 
 LOGGER = Logger(__name__)
@@ -183,7 +183,7 @@ class Trainer:
             Path to model location.
         """
         LOGGER.info("Loading data set")
-        for i, (sequence, labels_) in enumerate(zip(dataset, labels)):
+        for i, (sequence, labels_) in enumerate(zip(dataset, labels, strict=True)):
             if not is_valid_sequence(sequence):
                 raise ValueError(f"Invalid format: {sequence}")
 
@@ -224,13 +224,7 @@ class HyperparameterOptimizer:
         seed: int | None = None,
         metric: str = "f1",
         folds: int = 5,
-        spaces: list[SearchSpace] = [
-            AROWSearchSpace(),
-            APSearchSpace(),
-            LBFGSSearchSpace(),
-            L2SGDSearchSpace(),
-            PASearchSpace(),
-        ],
+        spaces: list[SearchSpace] | None = None,
     ):
         """Optimize hyperparameters in a randomized manner.
 
@@ -241,10 +235,10 @@ class HyperparameterOptimizer:
         seed : int | None, optional
             Random seed, by default None.
         metric : str, optional
-            Metric to sort the results by, by default "f1"..
+            Metric to sort the results by, by default "f1".
         folds : int, optional
             Number of folds to split the data set into, by default 5.
-        spaces : list[SearchSpace], optional
+        spaces : list[SearchSpace] | None, optional
             Search spaces to select hyperparameters from, by default [AROWSearchSpace(),
             APSearchSpace(), LBFGSSearchSpace(), L2SGDSearchSpace(), PASearchSpace()].
         """
@@ -252,7 +246,17 @@ class HyperparameterOptimizer:
         self.seed = seed
         self.metric = metric
         self.folds = folds
-        self.spaces = spaces
+        self.spaces = (
+            spaces
+            if spaces is not None
+            else [
+                AROWSearchSpace(),
+                APSearchSpace(),
+                LBFGSSearchSpace(),
+                L2SGDSearchSpace(),
+                PASearchSpace(),
+            ]
+        )
         self.results = []
         self.baselines = []
         self.logger = Logger("hyperparameter-optimization")
@@ -296,14 +300,16 @@ class HyperparameterOptimizer:
             self.logger.info(f"Starting with {space.algorithm} ({i + 1}/{len(self.spaces)})")
             self.logger.info(f"Baseline for {space.algorithm}")
 
-            with OptimizationTrial(splits, space, is_baseline=True) as trial:
+            trial = self._run_trial(splits, space, is_baseline=True)
+            if trial is not None:
                 self.results.append(trial)
                 self.baselines.append(trial["stats"])
 
             for j in range(self.trials):
                 self.logger.info(f"Trial {j + 1}/{self.trials} for {space.algorithm}")
 
-                with OptimizationTrial(splits, space, is_baseline=False) as trial:
+                trial = self._run_trial(splits, space, is_baseline=False)
+                if trial is not None:
                     self.results.append(trial)
 
                 self.logger.info(f"Best baseline model: {self._best_baseline_score}")
@@ -317,6 +323,35 @@ class HyperparameterOptimizer:
 
         # return sorted results
         return sorted(self.results, key=self._metric, reverse=True)
+
+    def _run_trial(
+        self,
+        splits: list,
+        space: SearchSpace,
+        *,
+        is_baseline: bool,
+    ) -> dict[str, dict] | None:
+        """Run a single optimization trial, skipping it on failure.
+
+        Parameters
+        ----------
+        splits : list
+            K-fold split data set.
+        space : SearchSpace
+            Search space for hyperparameter optimization.
+        is_baseline : bool
+            True if trial is a baseline (i.e. default hyperparameters to be used).
+
+        Returns
+        -------
+        dict[str, dict] | None
+            Selected hyperparameters and evaluation scores (or None if the trial failed).
+        """
+        try:
+            return OptimizationTrial(splits, space, is_baseline=is_baseline).run()
+        except Exception as error:
+            self.logger.warning(f"Skipping failed trial: {error}")
+            return None
 
     @property
     def _best_baseline_score(self) -> str | float:
@@ -387,36 +422,19 @@ class Model:
     @cached_property
     def transitions(self) -> dict[str, float]:
         """Learned transition weights."""
-        # get temporary file to dump the transitions
-        filepath = Path(tempfile.gettempdir(), str(uuid.uuid4()))
-
-        # write model to disk
-        self.dump_transitions(filepath)
-
-        # return the components
-        transitions = json.loads(filepath.read_text())
-
-        # cleanup
-        filepath.unlink()
-
-        return transitions
+        return self._read_dump(self.dump_transitions)
 
     @cached_property
     def states(self) -> dict[str, float]:
         """Learned state feature weights."""
-        # get temporary file to dump the states
-        filepath = Path(tempfile.gettempdir(), str(uuid.uuid4()))
+        return self._read_dump(self.dump_states)
 
-        # write model to disk
-        self.dump_states(filepath)
-
-        # return the components
-        states = json.loads(filepath.read_text())
-
-        # cleanup
-        filepath.unlink()
-
-        return states
+    def _read_dump(self, dump: Callable[[Filepath], None]) -> dict[str, float]:
+        """Dump a model component to a temporary file and load it back."""
+        with tempfile.TemporaryDirectory() as directory:
+            filepath = Path(directory, "dump.json")
+            dump(filepath)
+            return json.loads(filepath.read_text())
 
     def predict_single(self, sequence: Sequence) -> list[str]:
         """Predict most likely labels for a given sequence of tokens.

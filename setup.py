@@ -55,7 +55,8 @@ class ExtensionBuilder(build_ext):
 
         def c_compile(obj, src, ext, cc_args, extra_postargs, pp_opts):
             if src.endswith(".c"):
-                extra_postargs = extra_postargs + [
+                extra_postargs = [
+                    *extra_postargs,
                     "-std=c99",
                     "-D_POSIX_C_SOURCE=200112L",
                 ]

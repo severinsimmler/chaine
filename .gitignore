@@ -125,3 +125,4 @@ venv.bak/
 *.chaine
 hyperparameter-optimization.json
 chaine/_core/crf.cpp
+.ruff_cache

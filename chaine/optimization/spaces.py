@@ -14,12 +14,20 @@ from chaine.optimization.utils import NumberSeries
 class SearchSpace(ABC):
     @property
     @abstractmethod
-    def algorithm(self) -> str:
-        ...
+    def algorithm(self) -> str: ...
 
-    @abstractmethod
     def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
-        ...
+        """Select random hyperparameters from the search space.
+
+        Returns
+        -------
+        dict[str, int | float | bool | str]
+            Randomly selected hyperparameters.
+        """
+        return {
+            "algorithm": self.algorithm,
+            **{name: random.choice(list(values)) for name, values in vars(self).items()},
+        }
 
 
 class LBFGSSearchSpace(SearchSpace):
@@ -33,9 +41,9 @@ class LBFGSSearchSpace(SearchSpace):
         period: NumberSeries = NumberSeries(start=1, stop=20, step=1),
         delta: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         max_linesearch: NumberSeries = NumberSeries(start=0, stop=50, step=1),
-        linesearch: set[str] = {"MoreThuente", "Backtracking", "StrongBacktracking"},
-        all_possible_states: set[bool] = {True, False},
-        all_possible_transitions: set[bool] = {True, False},
+        linesearch: tuple[str, ...] = ("MoreThuente", "Backtracking", "StrongBacktracking"),
+        all_possible_states: tuple[bool, ...] = (True, False),
+        all_possible_transitions: tuple[bool, ...] = (True, False),
     ):
         """Hyperparameter search space for Limited-Memory BFGS.
 
@@ -65,15 +73,15 @@ class LBFGSSearchSpace(SearchSpace):
         max_linesearch : NumberSeries, optional
             Maximum number of trials for the line search algorithm,
             by default NumberSeries(start=0, stop=50, step=1).
-        linesearch : set[str], optional
+        linesearch : tuple[str, ...], optional
             Line search algorithm used in updates,
-            by default {"MoreThuente", "Backtracking", "StrongBacktracking"}.
-        all_possible_states : set[bool], optional
+            by default ("MoreThuente", "Backtracking", "StrongBacktracking").
+        all_possible_states : tuple[bool, ...], optional
             Generate state features that do not even occur in the training data,
-            by default {True, False}.
-        all_possible_transitions : set[bool], optional
+            by default (True, False).
+        all_possible_transitions : tuple[bool, ...], optional
             Generate transition features that do not even occur in the training data,
-            by default {True, False}.
+            by default (True, False).
         """
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
@@ -91,36 +99,13 @@ class LBFGSSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "lbfgs"
 
-    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
-        """Select random hyperparameters from the search space.
-
-        Returns
-        -------
-        dict[str, int | float | bool | str]
-            Randomly selected hyperparameters.
-        """
-        return {
-            "algorithm": self.algorithm,
-            "min_freq": random.choice(list(self.min_freq)),
-            "all_possible_states": random.choice(list(self.all_possible_states)),
-            "all_possible_transitions": random.choice(list(self.all_possible_transitions)),
-            "num_memories": random.choice(list(self.num_memories)),
-            "c1": random.choice(list(self.c1)),
-            "c2": random.choice(list(self.c2)),
-            "epsilon": random.choice(list(self.epsilon)),
-            "period": random.choice(list(self.period)),
-            "delta": random.choice(list(self.delta)),
-            "linesearch": random.choice(list(self.linesearch)),
-            "max_linesearch": random.choice(list(self.max_linesearch)),
-        }
-
 
 class L2SGDSearchSpace(SearchSpace):
     def __init__(
         self,
         min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
-        all_possible_states: set[bool] = {True, False},
-        all_possible_transitions: set[bool] = {True, False},
+        all_possible_states: tuple[bool, ...] = (True, False),
+        all_possible_transitions: tuple[bool, ...] = (True, False),
         c2: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
         period: NumberSeries = NumberSeries(start=1, stop=20, step=1),
         delta: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
@@ -137,12 +122,12 @@ class L2SGDSearchSpace(SearchSpace):
         min_freq : NumberSeries, optional
             Threshold value for minimum frequency of a feature occurring in training data,
             by default NumberSeries(start=0, stop=5, step=1).
-        all_possible_states : set[bool], optional
+        all_possible_states : tuple[bool, ...], optional
             Generate state features that do not even occur in the training data,
-            by default {True, False}.
-        all_possible_transitions : set[bool], optional
+            by default (True, False).
+        all_possible_transitions : tuple[bool, ...], optional
             Generate transition features that do not even occur in the training data,
-            by default {True, False}.
+            by default (True, False).
         c2 : NumberSeries, optional
             Coefficient for L2 regularization,
             by default NumberSeries(start=0.0, stop=2.0, step=0.01).
@@ -184,36 +169,13 @@ class L2SGDSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "l2sgd"
 
-    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
-        """Select random hyperparameters from the search space.
-
-        Returns
-        -------
-        dict[str, int | float | bool | str]
-            Randomly selected hyperparameters.
-        """
-        return {
-            "algorithm": self.algorithm,
-            "min_freq": random.choice(list(self.min_freq)),
-            "all_possible_states": random.choice(list(self.all_possible_states)),
-            "all_possible_transitions": random.choice(list(self.all_possible_transitions)),
-            "c2": random.choice(list(self.c2)),
-            "period": random.choice(list(self.period)),
-            "delta": random.choice(list(self.delta)),
-            "calibration_eta": random.choice(list(self.calibration_eta)),
-            "calibration_rate": random.choice(list(self.calibration_rate)),
-            "calibration_samples": random.choice(list(self.calibration_samples)),
-            "calibration_candidates": random.choice(list(self.calibration_candidates)),
-            "calibration_max_trials": random.choice(list(self.calibration_max_trials)),
-        }
-
 
 class APSearchSpace(SearchSpace):
     def __init__(
         self,
         min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
-        all_possible_states: set[bool] = {True, False},
-        all_possible_transitions: set[bool] = {True, False},
+        all_possible_states: tuple[bool, ...] = (True, False),
+        all_possible_transitions: tuple[bool, ...] = (True, False),
         epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
     ):
         """Hyperparameter search space for Averaged Perceptron.
@@ -223,12 +185,12 @@ class APSearchSpace(SearchSpace):
         min_freq : NumberSeries, optional
             Threshold value for minimum frequency of a feature occurring in training data,
             by default NumberSeries(start=0, stop=5, step=1).
-        all_possible_states : set[bool], optional
+        all_possible_states : tuple[bool, ...], optional
             Generate state features that do not even occur in the training data,
-            by default {True, False}.
-        all_possible_transitions : set[bool], optional
+            by default (True, False).
+        all_possible_transitions : tuple[bool, ...], optional
             Generate transition features that do not even occur in the training data,
-            by default {True, False}.
+            by default (True, False).
         epsilon : NumberSeries, optional
             Parameter that determines the condition of convergence,
             by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
@@ -242,34 +204,18 @@ class APSearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "ap"
 
-    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
-        """Select random hyperparameters from the search space.
-
-        Returns
-        -------
-        dict[str, int | float | bool | str]
-            Randomly selected hyperparameters.
-        """
-        return {
-            "algorithm": self.algorithm,
-            "min_freq": random.choice(list(self.min_freq)),
-            "all_possible_states": random.choice(list(self.all_possible_states)),
-            "all_possible_transitions": random.choice(list(self.all_possible_transitions)),
-            "epsilon": random.choice(list(self.epsilon)),
-        }
-
 
 class PASearchSpace(SearchSpace):
     def __init__(
         self,
         min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
-        all_possible_states: set[bool] = {True, False},
-        all_possible_transitions: set[bool] = {True, False},
+        all_possible_states: tuple[bool, ...] = (True, False),
+        all_possible_transitions: tuple[bool, ...] = (True, False),
         epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
-        pa_type: NumberSeries = {0, 1, 2},
+        pa_type: tuple[int, ...] = (0, 1, 2),
         c: NumberSeries = NumberSeries(start=0.0, stop=2.0, step=0.01),
-        error_sensitive: set[bool] = {True, False},
-        averaging: set[bool] = {True, False},
+        error_sensitive: tuple[bool, ...] = (True, False),
+        averaging: tuple[bool, ...] = (True, False),
     ):
         """Hyperparameter search space for Passive Aggressive.
 
@@ -278,24 +224,24 @@ class PASearchSpace(SearchSpace):
         min_freq : NumberSeries, optional
             Threshold value for minimum frequency of a feature occurring in training data,
             by default NumberSeries(start=0, stop=5, step=1).
-        all_possible_states : set[bool], optional
+        all_possible_states : tuple[bool, ...], optional
             Generate state features that do not even occur in the training data,
-            by default {True, False}.
-        all_possible_transitions : set[bool], optional
+            by default (True, False).
+        all_possible_transitions : tuple[bool, ...], optional
             Generate transition features that do not even occur in the training data,
-            by default {True, False}.
+            by default (True, False).
         epsilon : NumberSeries, optional
             Parameter that determines the condition of convergence,
             by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
-        pa_type : NumberSeries, optional
-            Strategy for updating feature weights, by default {0, 1, 2}.
+        pa_type : tuple[int, ...], optional
+            Strategy for updating feature weights, by default (0, 1, 2).
         c : NumberSeries, optional
             Aggressiveness parameter, by default NumberSeries(start=0.0, stop=2.0, step=0.01).
-        error_sensitive : set[bool], optional
+        error_sensitive : tuple[bool, ...], optional
             Include square root of predicted incorrect labels into optimization routine,
-            by default {True, False}.
-        averaging : set[bool], optional
-            Compute average of feature weights at all updates, by default {True, False}.
+            by default (True, False).
+        averaging : tuple[bool, ...], optional
+            Compute average of feature weights at all updates, by default (True, False).
         """
         self.min_freq = min_freq
         self.all_possible_states = all_possible_states
@@ -310,33 +256,13 @@ class PASearchSpace(SearchSpace):
     def algorithm(self) -> str:
         return "pa"
 
-    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
-        """Select random hyperparameters from the search space.
-
-        Returns
-        -------
-        dict[str, int | float | bool | str]
-            Randomly selected hyperparameters.
-        """
-        return {
-            "algorithm": self.algorithm,
-            "min_freq": random.choice(list(self.min_freq)),
-            "all_possible_states": random.choice(list(self.all_possible_states)),
-            "all_possible_transitions": random.choice(list(self.all_possible_transitions)),
-            "epsilon": random.choice(list(self.epsilon)),
-            "pa_type": random.choice(list(self.pa_type)),
-            "c": random.choice(list(self.c)),
-            "error_sensitive": random.choice(list(self.error_sensitive)),
-            "averaging": random.choice(list(self.averaging)),
-        }
-
 
 class AROWSearchSpace(SearchSpace):
     def __init__(
         self,
         min_freq: NumberSeries = NumberSeries(start=0, stop=5, step=1),
-        all_possible_states: set[bool] = {True, False},
-        all_possible_transitions: set[bool] = {True, False},
+        all_possible_states: tuple[bool, ...] = (True, False),
+        all_possible_transitions: tuple[bool, ...] = (True, False),
         epsilon: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         variance: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
         gamma: NumberSeries = NumberSeries(start=0.00001, stop=0.001, step=0.00001),
@@ -348,12 +274,12 @@ class AROWSearchSpace(SearchSpace):
         min_freq : NumberSeries, optional
             Threshold value for minimum frequency of a feature occurring in training data,
             by default NumberSeries(start=0, stop=5, step=1).
-        all_possible_states : set[bool], optional
+        all_possible_states : tuple[bool, ...], optional
             Generate state features that do not even occur in the training data,
-            by default {True, False}.
-        all_possible_transitions : set[bool], optional
+            by default (True, False).
+        all_possible_transitions : tuple[bool, ...], optional
             Generate transition features that do not even occur in the training data,
-            by default {True, False}.
+            by default (True, False).
         epsilon : NumberSeries, optional
             Parameter that determines the condition of convergence,
             by default NumberSeries(start=0.00001, stop=0.001, step=0.00001).
@@ -374,21 +300,3 @@ class AROWSearchSpace(SearchSpace):
     @property
     def algorithm(self) -> str:
         return "arow"
-
-    def random_hyperparameters(self) -> dict[str, int | float | bool | str]:
-        """Select random hyperparameters from the search space.
-
-        Returns
-        -------
-        dict[str, int | float | bool | str]
-            Randomly selected hyperparameters.
-        """
-        return {
-            "algorithm": self.algorithm,
-            "min_freq": random.choice(list(self.min_freq)),
-            "all_possible_states": random.choice(list(self.all_possible_states)),
-            "all_possible_transitions": random.choice(list(self.all_possible_transitions)),
-            "epsilon": random.choice(list(self.epsilon)),
-            "variance": random.choice(list(self.variance)),
-            "gamma": random.choice(list(self.gamma)),
-        }

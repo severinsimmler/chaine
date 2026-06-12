@@ -51,30 +51,30 @@ cdef class Trainer:
         "arow": "arow"
     }
     _parameter_types = {
-            "feature.minfreq": float,
-            "feature.possible_states": lambda value: bool(int(value)),
-            "feature.possible_transitions": lambda value: bool(int(value)),
-            "c1": float,
-            "c2": float,
-            "max_iterations": int,
-            "num_memories": int,
-            "epsilon": float,
-            "period": int,
-            "delta": float,
-            "linesearch": str,
-            "max_linesearch": int,
-            "calibration.eta": float,
-            "calibration.rate": float,
-            "calibration.samples": float,
-            "calibration.candidates": int,
-            "calibration.max_trials": int,
-            "type": int,
-            "c": float,
-            "error_sensitive": lambda value: bool(int(value)),
-            "averaging": lambda value: bool(int(value)),
-            "variance": float,
-            "gamma": float,
-        }
+        "feature.minfreq": float,
+        "feature.possible_states": lambda value: bool(int(value)),
+        "feature.possible_transitions": lambda value: bool(int(value)),
+        "c1": float,
+        "c2": float,
+        "max_iterations": int,
+        "num_memories": int,
+        "epsilon": float,
+        "period": int,
+        "delta": float,
+        "linesearch": str,
+        "max_linesearch": int,
+        "calibration.eta": float,
+        "calibration.rate": float,
+        "calibration.samples": float,
+        "calibration.candidates": int,
+        "calibration.max_trials": int,
+        "type": int,
+        "c": float,
+        "error_sensitive": lambda value: bool(int(value)),
+        "averaging": lambda value: bool(int(value)),
+        "variance": float,
+        "gamma": float,
+    }
 
     def __init__(self, algorithm: str, **kwargs):
         self.select_algorithm(algorithm)
@@ -106,7 +106,7 @@ cdef class Trainer:
             raise TypeError("labels cannot be a string or bytes object")
         # no generators allowed
         if not isinstance(sequence, list):
-            sequence = [item for item in sequence]
+            sequence = list(sequence)
         if not isinstance(labels, list):
             labels = [str(label) for label in labels]
 
@@ -123,7 +123,7 @@ cdef class Trainer:
         try:
             algorithm = self._algorithm_aliases[algorithm.lower()]
         except KeyError:
-            raise ValueError(f"Unsupported algorithm: {algorithm}")
+            raise ValueError(f"Unsupported algorithm: {algorithm}") from None
         if not self._trainer.select(algorithm, "crf1d"):
             raise ValueError(f"Failed to select algorithm: {algorithm}")
 
@@ -198,10 +198,33 @@ cdef class Model:
                 raise ValueError(f"Model file {filepath} is too small (incomplete header)")
 
     def dump_transitions(self, filepath: Filepath):
-        self._tagger.dump_transitions(os.open(str(filepath), os.O_WRONLY | os.O_CREAT))
+        fd = _open_for_dump(filepath)
+        try:
+            self._tagger.dump_transitions(fd)
+        except:
+            _close_quietly(fd)
+            raise
 
     def dump_states(self, filepath: Filepath):
-        self._tagger.dump_states(os.open(str(filepath), os.O_WRONLY | os.O_CREAT))
+        fd = _open_for_dump(filepath)
+        try:
+            self._tagger.dump_states(fd)
+        except:
+            _close_quietly(fd)
+            raise
+
+def _open_for_dump(filepath: Filepath) -> int:
+    # the file descriptor is consumed and closed by the C++ wrapper on success
+    return os.open(str(filepath), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
+
+
+def _close_quietly(fd: int):
+    try:
+        os.close(fd)
+    except OSError:
+        # already closed by the C++ wrapper
+        pass
+
 
 cdef crfsuite_api.Item to_item(sequence) except+:
     cdef crfsuite_api.Item c_item
@@ -251,7 +274,6 @@ cdef crfsuite_api.Attribute _create_attribute(string c_token, value, string sepa
     else:
         c_attr = c_token
         c_value = value
-    return crfsuite_api.Attribute(c_attr, c_value)
     return crfsuite_api.Attribute(c_attr, c_value)
 
 

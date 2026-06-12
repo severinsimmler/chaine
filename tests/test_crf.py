@@ -60,8 +60,8 @@ def test_special_param_values():
     )
 
     assert trainer.params["min_freq"] == 1000
-    assert trainer.params["all_possible_states"] == True
-    assert trainer.params["all_possible_transitions"] == True
+    assert trainer.params["all_possible_states"] is True
+    assert trainer.params["all_possible_transitions"] is True
     assert trainer.params["max_iterations"] == 50
 
 
@@ -81,7 +81,7 @@ def test_lbfgs_params():
         "linesearch",
         "max_linesearch",
     }:
-        assert param in trainer.params.keys()
+        assert param in trainer.params
 
 
 def test_l2sgd_params():
@@ -100,7 +100,7 @@ def test_l2sgd_params():
         "calibration_candidates",
         "calibration_max_trials",
     }:
-        assert param in trainer.params.keys()
+        assert param in trainer.params
 
 
 def test_ap_params():
@@ -112,7 +112,7 @@ def test_ap_params():
         "max_iterations",
         "epsilon",
     }:
-        assert param in trainer.params.keys()
+        assert param in trainer.params
 
 
 def test_pa_params():
@@ -128,7 +128,7 @@ def test_pa_params():
         "error_sensitive",
         "averaging",
     }:
-        assert param in trainer.params.keys()
+        assert param in trainer.params
 
 
 def test_arow_params():
@@ -142,7 +142,7 @@ def test_arow_params():
         "variance",
         "gamma",
     }:
-        assert param in trainer.params.keys()
+        assert param in trainer.params
 
 
 def test_training(tmpdir, sequences: list[list[dict[str, str]]], labels: list[list[str]]):
@@ -180,7 +180,7 @@ def test_model_predict(
 def test_model_predict_generator(
     model: crf.Model, sequences: list[list[dict[str, str]]], labels: list[list[str]]
 ):
-    generator = ([features for features in sequence] for sequence in sequences)
+    generator = (list(sequence) for sequence in sequences)
     predicted = model.predict(generator)
     expected = labels
     assert predicted == expected
@@ -206,15 +206,17 @@ def test_model_predict_proba(
 
 
 def test_model_predict_proba_generator(model: crf.Model, sequences: list[list[dict[str, str]]]):
-    generator = ([features for features in sequence] for sequence in sequences)
+    generator = (list(sequence) for sequence in sequences)
     for predictions in model.predict_proba(generator):
         for prediction in predictions:
             assert isinstance(prediction["A"], float)
             assert isinstance(prediction["B"], float)
 
 
-def test_dump_transitions(model: crf.Model):
-    filepath = Path("transitions.json")
+def test_dump_transitions(model: crf.Model, tmp_path: Path):
+    filepath = tmp_path / "transitions.json"
+    # overwriting a longer pre-existing file must not leave trailing garbage
+    filepath.write_text("x" * 10_000)
 
     model.dump_transitions(filepath)
     assert filepath.exists()
@@ -223,14 +225,38 @@ def test_dump_transitions(model: crf.Model):
     assert len(transitions) > 0
 
 
-def test_dump_states(model: crf.Model):
-    filepath = Path("states.json")
+def test_dump_states(model: crf.Model, tmp_path: Path):
+    filepath = tmp_path / "states.json"
+    # overwriting a longer pre-existing file must not leave trailing garbage
+    filepath.write_text("x" * 10_000)
 
     model.dump_states(filepath)
     assert filepath.exists()
 
     states = json.loads(filepath.read_text())
     assert len(states) > 0
+
+
+def test_dump_with_format_specifiers(tmp_path: Path):
+    # feature names and labels containing printf format specifiers
+    # must neither crash nor corrupt the dumps
+    sequences = [[{"wor%s%n%d": "x"}, {"wor%s%n%d": "y"}] for _ in range(5)]
+    labels = [["A%s", "B%n"] for _ in range(5)]
+
+    model_filepath = tmp_path / "model.chaine"
+    trainer = crf.Trainer()
+    trainer.train(sequences, labels, model_filepath=model_filepath)
+    model = crf.Model(model_filepath)
+
+    states_filepath = tmp_path / "states.json"
+    model.dump_states(states_filepath)
+    states = json.loads(states_filepath.read_text())
+    assert any("%" in state["feature"] for state in states)
+
+    transitions_filepath = tmp_path / "transitions.json"
+    model.dump_transitions(transitions_filepath)
+    transitions = json.loads(transitions_filepath.read_text())
+    assert any("%" in transition["from"] for transition in transitions)
 
 
 def test_optimizer(sequences: list[list[dict[str, str]]], labels: list[list[str]]):

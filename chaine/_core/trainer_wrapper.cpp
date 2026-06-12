@@ -13,15 +13,15 @@ namespace CRFSuiteWrapper
 
     void Trainer::message(const std::string &msg)
     {
-        if (this->m_obj == NULL)
+        if (this->m_obj == nullptr)
         {
             std::cerr << "** Trainer invalid state: obj [" << this->m_obj << "]\n";
             return;
         }
         PyObject *result = handler(this->m_obj, msg);
-        if (result == NULL)
+        if (result == nullptr)
         {
-            throw std::runtime_error("AAAaaahhhhHHhh!!!!!");
+            throw std::runtime_error("Python message handler raised an exception");
         }
     }
 

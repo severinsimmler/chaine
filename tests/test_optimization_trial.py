@@ -26,8 +26,7 @@ def space():
 
 
 def test_optimization_trial(splits, space):
-    with OptimizationTrial(splits, space, is_baseline=False) as trial:
-        result = trial
+    result = OptimizationTrial(splits, space, is_baseline=False).run()
 
     assert "hyperparameters" in result
     assert "stats" in result
@@ -35,8 +34,7 @@ def test_optimization_trial(splits, space):
 
 
 def test_optimization_trial_baseline(splits, space):
-    with OptimizationTrial(splits, space, is_baseline=True) as trial:
-        result = trial
+    result = OptimizationTrial(splits, space, is_baseline=True).run()
 
     assert "hyperparameters" in result
     assert "stats" in result

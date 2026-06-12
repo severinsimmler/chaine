@@ -6,52 +6,55 @@ This module implements utility functions for hyperparameter optimization.
 """
 
 import random
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterator
 from dataclasses import dataclass
 
 from chaine.typing import Labels, Sequence
 
+# one half of a cross-validation split: data set and corresponding labels
+Fold = tuple[list[Sequence], list[Labels]]
 
-@dataclass
-class NumberSeries(Iterable):
-    start: int
-    stop: int
+
+@dataclass(frozen=True)
+class NumberSeries:
+    start: int | float
+    stop: int | float
     step: int | float
 
     def __repr__(self) -> str:
         return f"<NumberSeries (start={self.start}, stop={self.stop}, step={self.step})>"
 
     def __iter__(self) -> Iterator[int | float]:
-        n = int(round((self.stop - self.start) / float(self.step)))
+        n = round((self.stop - self.start) / self.step)
         if n > 1:
-            yield from [self.start + self.step * i for i in range(n + 1)]
+            yield from (self.start + self.step * i for i in range(n + 1))
         elif n == 1:
             yield self.start
 
 
 def cross_validation(
-    dataset: Iterable[Sequence],
-    labels: Iterable[Labels],
+    dataset: list[Sequence],
+    labels: list[Labels],
     k: int,
     seed: int | None = None,
-) -> Iterator[tuple[tuple[Iterable[Sequence], Iterable[Labels]]]]:
+) -> Iterator[tuple[Fold, Fold]]:
     """K-fold cross validation.
 
     Parameters
     ----------
-    dataset : Iterable[Sequence]
+    dataset : list[Sequence]
         Data set to split into k folds.
-    labels : Iterable[Labels]
+    labels : list[Labels]
         Labels to split into k folds.
     k : int
         Number of folds.
-    shuffle : bool, optional
-        True if data set should be shuffled first, by default True.
+    seed : int | None, optional
+        Random seed, by default None.
 
     Yields
     -------
-    Iterator[tuple[tuple[Iterable[Sequence], Iterable[Labels]]]]
-        Train and test set.
+    tuple[Fold, Fold]
+        Train and test split.
     """
     # get indices of the examples
     indices = list(range(len(dataset)))
@@ -64,10 +67,10 @@ def cross_validation(
     folds = [indices[i::k] for i in range(k)]
 
     # yield every fold split
-    for i in range(k):
-        # get train and test split
-        test = folds[i]
-        train = [s for x in [fold for fold in folds if fold != test] for s in x]
+    for i, fold in enumerate(folds):
+        # get train and test indices
+        test = set(fold)
+        train = {index for j, other in enumerate(folds) if j != i for index in other}
 
         # yield train and test split
         yield (
@@ -83,18 +86,18 @@ def cross_validation(
 
 
 def downsample(
-    dataset: Iterable[Sequence],
-    labels: Iterable[Labels],
+    dataset: list[Sequence],
+    labels: list[Labels],
     n: int,
     seed: int | None = None,
-) -> tuple[Iterable[Sequence], Iterable[Labels]]:
+) -> tuple[list[Sequence], list[Labels]]:
     """Downsample the given data set to the specified size.
 
     Parameters
     ----------
-    dataset : Iterable[Sequence]
+    dataset : list[Sequence]
         Data set to downsample.
-    labels : Iterable[Labels]
+    labels : list[Labels]
         Labels for the data set.
     n : int
         Number of samples to keep.
@@ -103,7 +106,7 @@ def downsample(
 
     Returns
     -------
-    tuple[Iterable[Sequence], Iterable[Labels]]
+    tuple[list[Sequence], list[Labels]]
         Downsampled data set and labels.
 
     Raises
@@ -114,15 +117,12 @@ def downsample(
     if len(dataset) < n:
         raise ValueError("Data set is too small")
 
-    # get indices of the data set
-    indices = list(range(len(dataset)))
-
-    # sample indices
+    # sample indices of the data set
     random.seed(seed)
-    sample = set(random.sample(indices, n))
+    sample = set(random.sample(range(len(dataset)), n))
 
     # keep only instances of the sample
-    dataset = [s for i, s in enumerate(dataset) if i in sample]
-    labels = [l for i, l in enumerate(labels) if i in sample]
-
-    return dataset, labels
+    return (
+        [s for i, s in enumerate(dataset) if i in sample],
+        [l for i, l in enumerate(labels) if i in sample],
+    )

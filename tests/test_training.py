@@ -6,9 +6,7 @@ from chaine.crf import Model
 
 @pytest.fixture
 def sequences():
-    return [
-        [{"word": "foo", "pos": "NN"}, {"word": "bar", "pos": "VB"}] for _ in range(50)
-    ]
+    return [[{"word": "foo", "pos": "NN"}, {"word": "bar", "pos": "VB"}] for _ in range(50)]
 
 
 @pytest.fixture
@@ -48,7 +46,7 @@ def test_train(sequences, labels):
     predictions = crf.predict(sequences)
     assert predictions == labels
     # ensure predictions have correct length and valid labels
-    for pred_seq, orig_seq in zip(predictions, sequences):
+    for pred_seq, orig_seq in zip(predictions, sequences, strict=True):
         assert len(pred_seq) == len(orig_seq)
         assert all(label in crf.labels for label in pred_seq)
 
@@ -61,7 +59,7 @@ def test_train_optimize_hyperparameters(sequences, labels):
     predictions = crf.predict(sequences)
     assert predictions == labels
     # ensure predictions have correct length and valid labels
-    for pred_seq, orig_seq in zip(predictions, sequences):
+    for pred_seq, orig_seq in zip(predictions, sequences, strict=True):
         assert len(pred_seq) == len(orig_seq)
         assert all(label in crf.labels for label in pred_seq)
 
@@ -76,7 +74,7 @@ def test_train_all_algorithms(sequences, labels, algorithm):
     # for training data, predictions should match labels for simple cases
     assert predictions == labels
     # ensure predictions have correct length and valid labels
-    for pred_seq, orig_seq in zip(predictions, sequences):
+    for pred_seq, orig_seq in zip(predictions, sequences, strict=True):
         assert len(pred_seq) == len(orig_seq)
         assert all(label in crf.labels for label in pred_seq)
 
@@ -89,7 +87,7 @@ def test_train_all_algorithms_mixed_data(mixed_sequences, mixed_labels, algorith
     assert crf.labels == {"B-PER", "I-PER", "O"}
     predictions = crf.predict(mixed_sequences)
     # ensure predictions have correct length and valid labels
-    for pred_seq, orig_seq in zip(predictions, mixed_sequences):
+    for pred_seq, orig_seq in zip(predictions, mixed_sequences, strict=True):
         assert len(pred_seq) == len(orig_seq)
         assert all(label in crf.labels for label in pred_seq)
 
@@ -107,7 +105,7 @@ def test_train_with_custom_hyperparameters(sequences, labels):
 
     assert isinstance(crf, Model)
     predictions = crf.predict(sequences)
-    for pred_seq, orig_seq in zip(predictions, sequences):
+    for pred_seq, orig_seq in zip(predictions, sequences, strict=True):
         assert len(pred_seq) == len(orig_seq)
         assert all(label in crf.labels for label in pred_seq)
 
@@ -126,7 +124,7 @@ def test_train_with_different_label_sets():
     crf = training.train(sequences, labels)
     assert crf.labels == {"START", "END"}
     predictions = crf.predict(sequences)
-    for pred_seq, orig_seq in zip(predictions, sequences):
+    for pred_seq, orig_seq in zip(predictions, sequences, strict=True):
         assert len(pred_seq) == len(orig_seq)
         assert all(label in crf.labels for label in pred_seq)
 

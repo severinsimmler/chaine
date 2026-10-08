@@ -2,4 +2,4 @@
 uv = "latest"
 
 [settings.python]
-uv_venv_auto = true
+uv_venv_auto = "create|source"
